@@ -2,33 +2,42 @@ package com.fmat.proyecto3;
 
 import java.io.IOException;
 
+import com.fmat.proyecto3.json.Exercise;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.json.gson.GsonFactory;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 
-public class SampleSpiceRequest extends
-		GoogleHttpClientSpiceRequest<Message> {
+public class SampleSpiceRequest extends GoogleHttpClientSpiceRequest<Exercise> {
+
+	private static final String API = "http://mobileservice.site40.net/api/exercise/";
 
 	private String baseUrl;
 
-	public SampleSpiceRequest(String zipCode) {
-		super(Message.class);
+	public SampleSpiceRequest(String id) {
+		super(Exercise.class);
 
-		this.baseUrl = "https://graph.facebook.com/me";
+		this.baseUrl = String.format(API + id);
 
-		// this.baseUrl = String
-		// .format("http://www.myweather2.com/developer/forecast.ashx?uac=AQmS68n6Ku&query=%s&output=json",
-		// zipCode);
 	}
-	
+
 	@Override
-	public Message loadDataFromNetwork() throws IOException {
+	public Exercise loadDataFromNetwork() throws IOException {
+
 		// Ln.d("Call web service " + baseUrl);
-		HttpRequest request = getHttpRequestFactory()//
-				.buildGetRequest(new GenericUrl(baseUrl));
+		HttpRequest request = getHttpRequestFactory().buildGetRequest(
+				new GenericUrl(baseUrl));
+
+		// request.getHeaders().setContentType("application/json");
+
 		request.setParser(new GsonFactory().createJsonObjectParser());
-		return request.execute().parseAs(getResultType());
+
+		HttpResponse response = request.execute();
+
+		Exercise result = response.parseAs(getResultType());
+
+		return result;
 	}
 
 }

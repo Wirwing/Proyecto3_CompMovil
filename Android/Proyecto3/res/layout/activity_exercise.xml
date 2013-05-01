@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res/com.fmat.proyecto3"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ExerciseActivity" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <com.mobeta.android.dslv.DragSortListView
+            android:id="@+id/list_statements"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="3dp"
+            android:choiceMode="multipleChoice"
+            android:dividerHeight="1dp"
+            android:padding="3dp"
+            dslv:click_remove_id="@+id/click_remove"
+            dslv:collapsed_height="1dp"
+            dslv:drag_enabled="true"
+            dslv:drag_handle_id="@+id/drag_handle"
+            dslv:drag_scroll_start="0.33"
+            dslv:drag_start_mode="onDown"
+            dslv:float_alpha="0.6"
+            dslv:remove_enabled="true"
+            dslv:remove_mode="clickRemove"
+            dslv:slide_shuffle_speed="0.3" />
+
+        <!-- <ListView -->
+        <!-- android:id="@+id/list_statements" -->
+        <!-- android:layout_width="fill_parent" -->
+        <!-- android:layout_height="fill_parent" /> -->
+
+        <ViewStub
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout="@layout/empty" />
+    </FrameLayout>
+
+    <LinearLayout
+        style="@android:style/ButtonBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="showKeys"
+            android:text="@string/finish_exercise" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel_exercise" />
+    </LinearLayout>
+
+</LinearLayout>

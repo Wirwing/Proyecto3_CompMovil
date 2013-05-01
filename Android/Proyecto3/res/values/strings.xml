@@ -4,5 +4,15 @@
     <string name="app_name">Proyecto3</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_exercise">ExerciseActivity</string>
+    <string name="no_cheese">There is no cheese!</string>
+    <string name="finish_exercise">Ejercicio terminado!</string>
+    <string name="cancel_exercise">Cancelar</string>
+
+    <string-array name="dummy_statements">
+        <item>System.out.println("Hello world");</item>
+        <item>}</item>
+        <item>public static void main(String[] args){</item>
+    </string-array>
 
 </resources>
