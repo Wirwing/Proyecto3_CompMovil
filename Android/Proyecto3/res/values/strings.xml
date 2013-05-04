@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_exercise">ExerciseActivity</string>
+    <string name="title_activity_settings">Configuración</string>
     <string name="no_cheese">There is no cheese!</string>
     <string name="finish_exercise">Ejercicio terminado!</string>
     <string name="cancel_exercise">Cancelar</string>
@@ -15,4 +16,7 @@
         <item>public static void main(String[] args){</item>
     </string-array>
 
+    <string name="select">Seleccionar</string>
+    <string name="up">Arriba</string>
+    
 </resources>

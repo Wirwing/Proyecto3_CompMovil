@@ -30,20 +30,42 @@
         <service
             android:name="com.fmat.proyecto3.SampleSpiceService"
             android:exported="false" />
-
         <service
             android:name="com.fmat.proyecto3.service.ExerciseRESTService"
             android:enabled="true"
             android:exported="false" />
+        <service
+            android:name="com.octo.android.robospice.JacksonSpringAndroidSpiceService"
+            android:exported="false" />
 
-         <service
-          android:name="com.octo.android.robospice.JacksonSpringAndroidSpiceService"
-          android:exported="false" />
-        
         <activity
             android:name="com.fmat.proyecto3.ExerciseActivity"
             android:label="@string/title_activity_exercise" >
-            
+        </activity>
+        <activity
+            android:name="com.fmat.proyecto3.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="com.fmat.proyecto3.dropbox.DirectoryChooserActivity"
+            android:label="@string/title_activity_settings" >
+            <intent-filter>
+                <action android:name=".activites.DropboxSelector" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.dropbox.client2.android.AuthActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <data android:scheme="db-51n0mgo2szoy31k" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 
