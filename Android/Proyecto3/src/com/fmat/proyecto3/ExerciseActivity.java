@@ -6,7 +6,6 @@ import java.util.Arrays;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -68,13 +67,11 @@ public class ExerciseActivity extends Activity {
 
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.exercise, menu);
-		return true;
-	}
-
+	/*
+	 * public boolean onCreateOptionsMenu(Menu menu) { // Inflate the menu; this
+	 * adds items to the action bar if it is present.
+	 * getMenuInflater().inflate(R.menu.exercise, menu); return true; }
+	 */
 	public void showKeys(View v) {
 
 		for (int i : keys)
