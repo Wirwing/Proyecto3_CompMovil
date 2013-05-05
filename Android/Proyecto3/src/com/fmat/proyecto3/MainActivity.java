@@ -1,35 +1,33 @@
 package com.fmat.proyecto3;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 
-public class MainActivity extends Activity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.fmat.proyecto3.fragment.LoadingFragment;
+import com.fmat.proyecto3.fragment.MainFragment;
+
+public class MainActivity extends SherlockFragmentActivity implements
+		MainFragment.OnExerciseSelectedListener {
 
 	private static final String TAG = MainActivity.class.getName();
+
+	private Fragment contentFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+		contentFragment = MainFragment.newInstance("10002900",
+				"Azaneth Aguilar", "Nutricion");
 
-	@Override
-	protected void onStart() {
-		super.onStart();
+		// Set Convent View
+		setContentView(R.layout.activity_content);
 
-	}
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, contentFragment).commit();
 
-	@Override
-	protected void onStop() {
-		super.onStop();
 	}
 
 	// Exercise ex = new Exercise();
@@ -54,5 +52,18 @@ public class MainActivity extends Activity {
 	// intent.putExtra(RESTService.EXTRA_HTTP_RESOURCE_ID, "1");
 	//
 	// startService(intent);
+
+	@Override
+	public void onExerciseSelected(String number) {
+
+		String message = "Loading exercise " + number;
+
+		Log.i(TAG, "Exercise number: " + number);
+
+		Fragment messageFragment = LoadingFragment.newInstance(message);
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, messageFragment).commit();
+
+	}
 
 }

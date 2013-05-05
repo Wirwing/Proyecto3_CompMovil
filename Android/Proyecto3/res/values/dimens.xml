@@ -7,4 +7,6 @@
 	<!--     Statement item dim -->
 <!--     <dimen name="item_height">67dp</dimen> -->
     
+    <dimen name="profile_item_vertical_margin">16dp</dimen>
+    
 </resources>

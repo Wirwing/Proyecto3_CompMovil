@@ -15,4 +15,10 @@
         <item>public static void main(String[] args){</item>
     </string-array>
 
+    <string name="matricula_description">Matrícula</string>
+    <string name="name_description">Nombre</string>
+    <string name="degree_description">Licenciatura</string>
+    <string name="exercise_description"># Ejercicio</string>
+    <string name="play_description">Jugar</string>
+    
 </resources>
