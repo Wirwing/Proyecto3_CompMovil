@@ -1,13 +1,19 @@
 package com.fmat.proyecto3.dropbox;
 
 import java.util.List;
+import java.util.Map;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dropbox.client2.DropboxAPI.Entry;
@@ -20,7 +26,7 @@ import com.fmat.proyecto3.R;
  * 
  */
 public class EntryListAdapter extends ArrayAdapter<Entry> {
-	private Context mContext;
+	private Activity mActivity;
 	private List<Entry> mEntries;
 	private Entry mParent;
 
@@ -35,53 +41,76 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 	 *            The entry that represents the parent folder for the entries of
 	 *            this adapter. Null means no parent will be displayed.
 	 */
-	public EntryListAdapter(Context context, List<Entry> entries, Entry parent) {
-		super(context, android.R.layout.simple_list_item_1, entries);
-		this.mContext = context;
+	public EntryListAdapter(Activity activity, List<Entry> entries, Entry parent) {
+		super(activity, android.R.layout.simple_list_item_1, entries);
+		this.mActivity = activity;
 		if (parent != null) {
 			entries.add(0, parent);
-			super.insert(parent, 0);
+			//super.insert(parent, 0);
 		}
 		this.mEntries = entries;
 		this.mParent = parent;
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 
-		View itemView = convertView;
-		if (itemView == null) {
-			LayoutInflater inflater = (LayoutInflater) mContext
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			//itemView = inflater.inflate(R.layout.list_item_file, parent, false);
-			itemView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-		}
-
+		View itemView = prepareView(convertView, parent);
+		ViewHolder holder = (ViewHolder) itemView.getTag();
+		
 		Entry entry = mEntries.get(position);
 		if (entry != null) {
-			/*TextView tvName = (TextView) itemView.findViewById(R.id.TextView01);
-			TextView tvData = (TextView) itemView.findViewById(R.id.TextView02);
-			TextView tvDate = (TextView) itemView
-					.findViewById(R.id.TextViewDate);
-			Button selectButton = (Button) itemView
-					.findViewById(R.id.fc_select);*/
-			TextView tv = (TextView) itemView.findViewById(android.R.id.text1);
-			if (mParent != entry) {
-				/*tvName.setText(entry.fileName());
-				tvData.setText(entry.size);
-				tvDate.setText(entry.modified);
-				selectButton.setVisibility(View.VISIBLE);*/
-				tv.setText(entry.fileName());
+			if(mParent != entry){
+				holder.textView.setText(entry.path.equals("/") ? "/" : entry.fileName());
+				holder.imageView.setImageResource(R.drawable.folder);
+				holder.button.setVisibility(View.VISIBLE);
+				holder.button.setTag(position);
+				
+				holder.button.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						//SharedPreferences preferences = mActivity.getSharedPreferences("preferences", Context.MODE_PRIVATE);
+						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+						Entry entry = mEntries.get(position);
+						SharedPreferences.Editor editor = preferences.edit();
+						editor.putString("pref_dropbox_dir", entry.path);
+						editor.commit();
+						mActivity.finish();
+					}
+				});
+				
 			} else {
-				tv.setText("^UP");
-				/*tvName.setText("..");
-				tvData.setText(R.string.up);
-				tvDate.setText("");
-				selectButton.setVisibility(View.INVISIBLE);*/
+				holder.textView.setText("A " + entry.fileName());
+				holder.imageView.setImageResource(R.drawable.arrow_up);
+				holder.button.setVisibility(View.GONE);
 			}
 
 		}
 		return itemView;
+	}
+	
+	private View prepareView(View convertView, ViewGroup parent){
+		if (convertView == null) {
+			LayoutInflater inflater = (LayoutInflater) mActivity
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = inflater.inflate(R.layout.list_item_file, parent, false);
+			
+			ViewHolder viewHolder = new ViewHolder();
+			viewHolder.textView = (TextView) convertView.findViewById(R.id.text);
+			viewHolder.imageView = (ImageView) convertView.findViewById(R.id.image);
+			viewHolder.button = (Button) convertView.findViewById(R.id.button);
+			
+			convertView.setTag(viewHolder);
+			
+		}
+		return convertView;
+	}
+	
+	static class ViewHolder{
+		TextView textView;
+		ImageView imageView;
+		Button button;
 	}
 
 }

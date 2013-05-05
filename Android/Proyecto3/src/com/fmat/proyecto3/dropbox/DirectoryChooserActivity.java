@@ -1,13 +1,17 @@
 package com.fmat.proyecto3.dropbox;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -20,12 +24,14 @@ import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AccessTokenPair;
 
+@SuppressLint("NewApi")
 public class DirectoryChooserActivity extends ListActivity {
 
 	private Entry mCurrentDir;
 	private EntryListAdapter mAdapter;
 	private DropboxAPI<AndroidAuthSession> mDBApi;
 	private FileListLoader mCurrentLoader = null;
+	private List<Entry> mCurrentList = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +40,28 @@ public class DirectoryChooserActivity extends ListActivity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		progressOn();
 
-		initDropboxSession();
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		if (mDBApi.getSession().isLinked()) {
-			loadAndDisplayDir("/");
-		}
+		initDropbox();
 		
+		//Para evitar el recargar la lista al rotar el dispositivo
+		mCurrentDir = (Entry) getLastNonConfigurationInstance();
+		if(mCurrentDir != null){
+			updateList(mCurrentDir);
+		} else if(mDBApi.getSession().isLinked()){
+			loadAndDisplayDir("/"); 
+		}
+
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -59,9 +81,8 @@ public class DirectoryChooserActivity extends ListActivity {
 			try {
 				// terminar la autentificación
 				session.finishAuthentication();
-				AccessTokenPair tokens = session
-						.getAccessTokenPair();
-				
+				AccessTokenPair tokens = session.getAccessTokenPair();
+
 				storeKeys(tokens.key, tokens.secret);
 				loadAndDisplayDir("/");
 			} catch (IllegalStateException e) {
@@ -76,11 +97,16 @@ public class DirectoryChooserActivity extends ListActivity {
 
 	@Override
 	public void onBackPressed() {
-		if(mCurrentDir != null && !mCurrentDir.path.equals("/")){
+		if (mCurrentDir != null && !mCurrentDir.path.equals("/")) {
 			loadAndDisplayDir(mCurrentDir.parentPath());
 		} else {
 			finish();
 		}
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		return mCurrentDir;
 	}
 
 	private void loadAndDisplayDir(String path) {
@@ -89,30 +115,31 @@ public class DirectoryChooserActivity extends ListActivity {
 		}
 		setProgressBarIndeterminateVisibility(true);
 		FileListLoader loader = new FileListLoader();
-		
+
 		loader.execute(path);
 		mCurrentLoader = loader;
 	}
 
 	private void updateList(Entry entry) {
 		List<Entry> directories = new ArrayList<Entry>();
-		for(Entry childEntry : entry.contents){
-			if(childEntry.isDir){
+		for (Entry childEntry : entry.contents) {
+			if (childEntry.isDir) {
 				directories.add(childEntry);
 			}
 		}
-		
+
 		Entry parent = entry;
 		if (entry.path.equals("/")) {
 			parent = null;
+			directories.add(0, entry);
 		}
 
 		EntryListAdapter adapter = new EntryListAdapter(this, directories,
 				parent);
-		//ArrayAdapter<Entry> adapter = new ArrayAdapter<DropboxAPI.Entry>(this, android.R.layout.simple_list_item_1, directories);
 		setListAdapter(adapter);
 		mAdapter = adapter;
-		
+		mCurrentList = directories;
+
 		setProgressBarIndeterminateVisibility(false);
 	}
 
@@ -125,7 +152,7 @@ public class DirectoryChooserActivity extends ListActivity {
 		return null;
 	}
 
-	private void initDropboxSession() {
+	private void initDropbox() {
 		// Se obtiene el objeto DropboxAPI
 		mDBApi = DropboxAPIFactory.getDropboxAPI();
 
@@ -175,12 +202,12 @@ public class DirectoryChooserActivity extends ListActivity {
 		}
 		return null;
 	}
-	
-	private void progressOn(){
+
+	private void progressOn() {
 		setProgressBarIndeterminateVisibility(true);
 	}
-	
-	private void progressOff(){
+
+	private void progressOff() {
 		setProgressBarIndeterminateVisibility(false);
 	}
 

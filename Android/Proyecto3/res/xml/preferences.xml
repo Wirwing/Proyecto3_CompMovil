@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <EditTextPreference
-        android:dialogTitle="Matrícula"
-        android:key="pref_student_id"
-        android:summary="Matrícula del alumno"
-        android:title="Editar matrícula" />
-    <EditTextPreference
-        android:dialogTitle="Servidor"
-        android:key="pref_server"
-        android:summary="Matrícula del alumno"
-        android:title="Editar matrícula" />
-
-    <Preference android:title="Directorio de dropbox" >
-        <intent
-            android:action=".activites.DropboxSelector" />
-    </Preference>
+    <PreferenceCategory
+        android:key="pref_student_settings"
+        android:title="@string/pref_student_settings_title" >
+        <EditTextPreference
+            android:dialogTitle="Matrícula"
+            android:key="pref_student_id"
+            android:summary="Matrícula"
+            android:title="Matrícula" />
+        <EditTextPreference
+            android:dialogTitle="Nombre"
+            android:key="pref_student_name"
+            android:summary="Nombre del alumno"
+            android:title="Nombre" />
+        <EditTextPreference
+            android:dialogTitle="Licenciatura"
+            android:key="pref_student_career"
+            android:summary="Licenciatura del alumno"
+            android:title="Licenciatura" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_server_settings"
+        android:title="@string/pref_server_settings_title" >
+        <EditTextPreference
+            android:defaultValue="@string/default_server"
+            android:dialogTitle="Servidor de webservice"
+            android:key="pref_server"
+            android:summary="Dirección de servidor"
+            android:title="Servidor webservice" />
+        <EditTextPreference
+            android:defaultValue="@string/default_api_get_exercise"
+            android:dialogTitle="Método API para obtener ejercicio"
+            android:key="pref_get_exercise"
+            android:summary="Método API para obtener ejercicio"
+            android:title="SMétodo API para obtener ejercicio" />
+        <EditTextPreference
+            android:defaultValue="@string/default_api_send_exercise"
+            android:dialogTitle="Método API para enviar ejercicio"
+            android:key="pref_send_exercise"
+            android:summary="Método API para enviar ejercicio"
+            android:title="SMétodo API para enviar ejercicio" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_dropbox_settings"
+        android:title="@string/pref_dropbox_settings_title" >
+        <Preference
+            android:key="pref_dropbox_dir"
+            android:title="Directorio de dropbox" >
+            <intent android:action=".activites.DropboxSelector" />
+        </Preference>
+    </PreferenceCategory>
 
 </PreferenceScreen>

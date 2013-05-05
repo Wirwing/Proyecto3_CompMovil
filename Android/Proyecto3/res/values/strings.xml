@@ -5,7 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_exercise">ExerciseActivity</string>
-    <string name="title_activity_settings">Configuración</string>
     <string name="no_cheese">There is no cheese!</string>
     <string name="finish_exercise">Ejercicio terminado!</string>
     <string name="cancel_exercise">Cancelar</string>
@@ -15,8 +14,18 @@
         <item>}</item>
         <item>public static void main(String[] args){</item>
     </string-array>
+    
+    <string name="default_server">http://mobileservice.site40.net/api</string>
+    <string name="default_api_get_exercise">/ejercicio</string>
+    <string name="default_api_send_exercise">/ejercicio</string>
 
-    <string name="select">Seleccionar</string>
+    <!-- Settings -->
+    <string name="title_activity_settings">Configuración</string>
+    <string name="title_activity_dropbox_chooser">Sel. directorio dropbox</string>
+    <string name="folder_select">Usar</string>
     <string name="up">Arriba</string>
+    <string name="pref_student_settings_title">Config. de alumno</string>
+    <string name="pref_server_settings_title">Config. de servidor de webservice</string>
+    <string name="pref_dropbox_settings_title">Config. de Dropbox</string>
     
 </resources>
