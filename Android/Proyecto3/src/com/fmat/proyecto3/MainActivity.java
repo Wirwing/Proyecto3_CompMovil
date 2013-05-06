@@ -26,7 +26,7 @@ public class MainActivity extends BaseActivity  implements
 
 	private ExerciseReceiver receiver;
 	private IntentFilter filter;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +44,9 @@ public class MainActivity extends BaseActivity  implements
 		
 		if(!super.hastAllSettings())
 			startActivity(new Intent(this, SettingsActivity.class));
+	
+		if(!super.hasDropboxCredentials())
+			startActivity(new Intent(this, DropboxCredentialsActivity.class));
 		
 		contentFragment = MainFragment.newInstance(studentId,
 				studentName, studentCareer);

@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.fmat.proyecto3.fragment.ExerciseDescriptionFragment;
@@ -66,8 +65,6 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, content).commit();
 	}
-
-	
 	
 	
 }

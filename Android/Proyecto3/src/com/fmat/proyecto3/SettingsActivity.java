@@ -4,27 +4,34 @@
 package com.fmat.proyecto3;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.text.TextUtils;
-
-import com.fmat.proyecto3.R;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 /**
  * Actividad para la configuración de las preferencias del usuario.
+ * 
  * @author Fabián Castillo
  * 
  */
 public class SettingsActivity extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
+		OnSharedPreferenceChangeListener, OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
+		setContentView(R.layout.activity_preferences);
+		
+		((Button)findViewById(R.id.bnt_clear_dropbox)).setOnClickListener(this);
+		
 		SharedPreferences preferences = getPreferenceScreen()
 				.getSharedPreferences();
 
@@ -62,15 +69,17 @@ public class SettingsActivity extends PreferenceActivity implements
 		if (pref instanceof EditTextPreference) {
 			EditTextPreference etp = (EditTextPreference) pref;
 			String value = etp.getText();
-			String summary = TextUtils.isEmpty(value) ? getString(R.string.not_set) : value;
+			String summary = TextUtils.isEmpty(value) ? getString(R.string.not_set)
+					: value;
 			pref.setSummary(summary);
 		}
 	}
 
-	/* Carga la información de las preferencias del dir de dropbox
-	 * Se realiza aparte porque esta preferencia se realiza mediante un intent
-	 * Y PreferenceActivity no escucha ese evento
-	 */ 
+	/*
+	 * Carga la información de las preferencias del dir de dropbox Se realiza
+	 * aparte porque esta preferencia se realiza mediante un intent Y
+	 * PreferenceActivity no escucha ese evento
+	 */
 	private void loadDropboxSettingSummary() {
 		String dbKey = getString(R.string.pref_dropbox_dir);
 		Preference pref = findPreference(dbKey);
@@ -79,4 +88,23 @@ public class SettingsActivity extends PreferenceActivity implements
 		pref.setSummary(summary);
 	}
 
+	@Override
+	public void onClick(View v) {
+
+		String key = getResources().getString(R.string.dropbox_access_key);
+		String secret = getResources()
+				.getString(R.string.dropbox_access_secret);
+
+		if (getPreferenceScreen().getSharedPreferences().contains(key)
+				|| getPreferenceScreen().getSharedPreferences()
+						.contains(secret)) {
+			
+			Editor editor = getPreferenceScreen().getSharedPreferences().edit();
+			editor.remove(key);
+			editor.remove(secret);
+				
+			editor.commit();
+
+		}
+	}
 }

@@ -65,4 +65,9 @@ public class BaseActivity extends SherlockFragmentActivity {
 				&& wsUrl != null && wsExercisePath != null ? true : false;
 
 	}
+	
+	protected boolean hasDropboxCredentials(){
+		return preferences.contains(getString(R.string.dropbox_access_key)) && preferences.contains(getString(R.string.dropbox_access_secret));  
+	}
+	
 }

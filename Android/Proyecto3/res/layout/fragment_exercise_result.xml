@@ -47,7 +47,7 @@
         android:inputType="textMultiLine" />
 
     <CheckBox
-        android:id="@+id/chbx_dropbox"
+        android:id="@+id/chkbx_dropbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/et_answer_comments"

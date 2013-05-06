@@ -52,7 +52,6 @@ public class ExerciseResultFragment extends SherlockFragment implements
 	public static ExerciseResultFragment newInstance(String id, int elapsedTimeInSeconds, String[] statements) {
 
 		long millis = TimeUnit.SECONDS.toMillis(elapsedTimeInSeconds);
-
 		
 		String elapsedTime = String.format(
 				"Tiempo: %d minutos, %d segundos",
@@ -127,6 +126,7 @@ public class ExerciseResultFragment extends SherlockFragment implements
 		
 		comments = et_comments.getText().toString();
 		listener.onSendAnswer(comments);
+		
 	}
 
 }

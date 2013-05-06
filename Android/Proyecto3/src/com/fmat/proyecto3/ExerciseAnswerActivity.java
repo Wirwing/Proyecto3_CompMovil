@@ -14,8 +14,10 @@ import com.fmat.proyecto3.fragment.ExerciseResultFragment;
 import com.fmat.proyecto3.fragment.LoadingFragment;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
+import com.fmat.proyecto3.service.DropboxUploadService;
 import com.fmat.proyecto3.service.ExercisePostService;
 import com.fmat.proyecto3.service.ExerciseRESTService;
+import com.fmat.proyecto3.utils.StatementSorter;
 
 public class ExerciseAnswerActivity extends BaseActivity implements
 		ExerciseResultFragment.OnResultListener {
@@ -23,6 +25,8 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 	private static final String TAG = ExerciseAnswerActivity.class.getName();
 
 	private AnswerReceiver receiver;
+	private DropBoxReceiver dropReceiver;
+
 	private IntentFilter filter;
 
 	private ExerciseAnswer answer;
@@ -42,7 +46,7 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 		loadSettings();
 
-		String[] statements = rearrangeStatementsByKeys(
+		String[] statements = StatementSorter.rearrangeStatementsByKeys(
 				exercise.getStatements(), answer.getAnswerKeys());
 
 		Fragment resultFragment = ExerciseResultFragment.newInstance(
@@ -61,24 +65,6 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	}
 
-	private String[] rearrangeStatementsByKeys(String[] statements,
-			int[] sortKeys) {
-
-		if (statements == null || sortKeys == null
-				|| statements.length - sortKeys.length != 0) {
-			throw new IllegalArgumentException(
-					"Arrays must have the same length");
-		}
-
-		String[] arrangedStaments = new String[statements.length];
-
-		for (int i = 0; i < arrangedStaments.length; i++)
-			arrangedStaments[i] = statements[sortKeys[i]];
-
-		return arrangedStaments;
-
-	}
-
 	@Override
 	public void onSendAnswer(String comments) {
 
@@ -94,15 +80,14 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, messageFragment).commit();
 
+		// Start WS Service
 		Intent intent = new Intent(this, ExercisePostService.class);
-
 		String url = wsUrl + wsExercisePath;
-
 		intent.setData(Uri.parse(url));
-
 		intent.putExtra(ExercisePostService.EXTRA_EXERCISE_ANSWER, answer);
-
 		startService(intent);
+
+		receiver.startUpload();
 
 	}
 
@@ -114,9 +99,16 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		if (receiver != null)
 			return;
 
+		if (dropReceiver != null)
+			return;
+
 		receiver = new AnswerReceiver();
 		filter = new IntentFilter(ExercisePostService.INTENT_RESULT_ACTION);
 		super.registerReceiver(receiver, filter);
+
+		dropReceiver = new DropBoxReceiver();
+		filter = new IntentFilter(DropboxUploadService.INTENT_RESULT_ACTION);
+		super.registerReceiver(dropReceiver, filter);
 
 	}
 
@@ -130,6 +122,11 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 			receiver = null;
 		}
 
+		if (dropReceiver != null) {
+			unregisterReceiver(dropReceiver);
+			dropReceiver = null;
+		}
+
 	}
 
 	class AnswerReceiver extends BroadcastReceiver {
@@ -141,10 +138,7 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 			if (!intent.hasExtra(ExerciseRESTService.EXTRA_ERROR_MESSAGE)) {
 
-				Intent mainIntent = new Intent(ExerciseAnswerActivity.this,
-						MainActivity.class);
-
-				startActivity(mainIntent);
+				startUpload();
 
 			} else {
 
@@ -155,6 +149,34 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 			}
 
 		}
+
+		protected void startUpload() {
+
+			Intent dropboxIntent = new Intent(ExerciseAnswerActivity.this,
+					DropboxUploadService.class);
+
+			dropboxIntent
+					.putExtra(ExerciseAnswer.EXTRA_EXERCISE_ANSWER, answer);
+			dropboxIntent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
+
+			startService(dropboxIntent);
+
+		}
+
+	}
+
+	class DropBoxReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			Intent mainIntent = new Intent(ExerciseAnswerActivity.this,
+					MainActivity.class);
+
+			startActivity(mainIntent);
+
+		}
+
 	}
 
 }

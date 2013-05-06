@@ -30,6 +30,8 @@
     <string name="send_exercise">Enviar Respuesta</string>
     
     <string name="dropbox">"DropBox"</string>
+    <string name="dropbox_access_key">"ACCESS_KEY"</string>
+    <string name="dropbox_access_secret">"ACCES_SECRET"</string>
 
     <!-- Settings -->
     <string name="title_activity_settings">Configuración</string>
