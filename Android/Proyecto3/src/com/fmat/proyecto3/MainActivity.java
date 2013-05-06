@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.fmat.proyecto3.fragment.LoadingFragment;
 import com.fmat.proyecto3.fragment.MainFragment;
 import com.fmat.proyecto3.json.Exercise;
@@ -52,6 +53,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 		filter = new IntentFilter(ExerciseRESTService.INTENT_RESULT_ACTION);
 		super.registerReceiver(receiver, filter);
 
+	}
+	
+	//Para fines de prueba se configuración
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.action_settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			break;
+			default:break;
+		}
+		return true;
 	}
 
 	@Override

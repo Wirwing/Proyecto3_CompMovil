@@ -1,6 +1,7 @@
 <?php
 /* @var $this ReplyController */
 /* @var $reply ExerciseReply */
+Yii::app()->clientScript->registerScriptFile("https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js");
 ?>
 <h1>Resultado de ejercicio</h1>
 <dl class="dl-horizontal">

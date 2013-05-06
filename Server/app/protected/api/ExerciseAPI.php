@@ -73,7 +73,7 @@ class ExerciseAPI implements APIProvider
                 array('student_id' => $idStudent, 'exercise_id' => $idExercise));
         if ($existsExerciseReply) {
             $APIManager->sendResponse(
-                    400, 'El estudiante con id "' . htmlspecialchars($idStudent)
+                    409, 'El estudiante con id "' . htmlspecialchars($idStudent)
                     . '" ya ha resuelto el ejercicio con id "' . htmlspecialchars($idExercise) . '"');
         }
 
