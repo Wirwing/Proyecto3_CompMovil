@@ -1,11 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dslv="http://schemas.android.com/apk/res/com.fmat.proyecto3"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ExerciseActivity" >
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:background="@color/abs__bright_foreground_disabled_holo_dark"
+        android:paddingTop="10dip" />
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -31,11 +40,6 @@
             dslv:remove_mode="clickRemove"
             dslv:slide_shuffle_speed="0.3" />
 
-        <!-- <ListView -->
-        <!-- android:id="@+id/list_statements" -->
-        <!-- android:layout_width="fill_parent" -->
-        <!-- android:layout_height="fill_parent" /> -->
-
         <ViewStub
             android:id="@android:id/empty"
             android:layout_width="wrap_content"
@@ -47,14 +51,13 @@
     <LinearLayout
         style="@android:style/ButtonBar"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content" >
 
         <Button
+            android:id="@+id/btn_finish_exercise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="showKeys"
             android:text="@string/finish_exercise" />
 
         <Button

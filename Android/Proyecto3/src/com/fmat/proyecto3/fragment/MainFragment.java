@@ -23,11 +23,11 @@ import com.fmat.proyecto3.R;
  */
 public class MainFragment extends SherlockFragment implements OnClickListener {
 
-	private static final String STUDENT_NUMBER_PARAM = "NUMBER_PARAM";
+	private static final String STUDENT_NUMBER_PARAM = "STUDENT_NUMBER_PARAM";
 
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-	private static final String STUDENT_NAME_PARAM = "NAME_PARAM";
+	private static final String STUDENT_NAME_PARAM = "STUDENT_NAME_PARAM";
 	private static final String DEGREE_PARAM = "DEGREE_PARAM";
 
 	private String number;
@@ -35,7 +35,6 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	private String degree;
 
 	private EditText et_exercise_number;
-
 	private OnExerciseSelectedListener listener;
 
 	/**
@@ -141,6 +140,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		public void onExerciseSelected(String number);
 	}
 
+	
 	@Override
 	public void onClick(View v) {
 		

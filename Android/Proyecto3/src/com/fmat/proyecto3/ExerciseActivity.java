@@ -1,82 +1,73 @@
 package com.fmat.proyecto3;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
-import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import com.mobeta.android.dslv.DragSortListView;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.fmat.proyecto3.fragment.ExerciseDescriptionFragment;
+import com.fmat.proyecto3.fragment.ExerciseFragment;
+import com.fmat.proyecto3.json.Exercise;
 
-public class ExerciseActivity extends Activity {
+public class ExerciseActivity extends SherlockFragmentActivity implements
+		ExerciseDescriptionFragment.OnDescriptionListener,
+		ExerciseFragment.OnExerciseListener {
 
-	private ArrayAdapter<String> adapter;
+	private static final String TAG = ExerciseActivity.class.getName();
+	
+	public static final String EXTRA_EXERCISE = "EXTRA_EXERCISE";
 
-	private int[] keys;
-
-	private ListView listView;
-
-	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
-		@Override
-		public void drop(int from, int to) {
-			if (from != to) {
-
-				int temp = keys[from];
-				keys[from] = keys[to];
-				keys[to] = temp;
-
-				String item = adapter.getItem(from);
-				adapter.remove(item);
-				adapter.insert(item, to);
-			}
-		}
-	};
+	private SharedPreferences preferences;
+	
+	private String studentNumber;
+	private String name;
+	private String degree;
+	
+	private Exercise exercise;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_exercise);
 
-		listView = (ListView) findViewById(R.id.list_statements);
+		if (savedInstanceState == null)
+			savedInstanceState = getIntent().getExtras();
 
-		setAdapterAndKeys();
+		exercise = (Exercise) savedInstanceState.get(EXTRA_EXERCISE);
 
-	}
+		Fragment descriptionFragment = ExerciseDescriptionFragment.newInstance(
+				exercise.getId(), exercise.getDescription());
 
-	private void setAdapterAndKeys() {
+		setContentView(R.layout.activity_content);
 
-		String[] array = getResources()
-				.getStringArray(R.array.dummy_statements);
-		ArrayList<String> arrayList = new ArrayList<String>(
-				Arrays.asList(array));
-
-		keys = new int[arrayList.size()];
-		for (int i = 0; i < arrayList.size(); i++) {
-			keys[i] = i;
-		}
-
-		adapter = new ArrayAdapter<String>(this, R.layout.list_item_statement,
-				R.id.tv_statement, arrayList);
-		listView.setAdapter(adapter);
-		((DragSortListView) listView).setDropListener(onDrop);
-		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, descriptionFragment).commit();
 
 	}
 
-	/*
-	 * public boolean onCreateOptionsMenu(Menu menu) { // Inflate the menu; this
-	 * adds items to the action bar if it is present.
-	 * getMenuInflater().inflate(R.menu.exercise, menu); return true; }
-	 */
-	public void showKeys(View v) {
+	@Override
+	public void onFinishExcercise(int[] keys, long millis) {
 
-		for (int i : keys)
-			Log.i("Exercise", "Key: " + String.valueOf(i));
+		String elapsedTime = String.format(
+				"%d min, %d sec",
+				TimeUnit.MILLISECONDS.toMinutes(millis),
+				TimeUnit.MILLISECONDS.toSeconds(millis)
+						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+								.toMinutes(millis)));
 
+		Log.i(TAG, elapsedTime);
+		
+	}
+
+	@Override
+	public void onStartExcercise() {
+
+		Fragment content = ExerciseFragment.newInstance(exercise
+				.getStatements());
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, content).commit();
 	}
 
 }

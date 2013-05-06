@@ -29,19 +29,19 @@ public class ExerciseRESTService extends IntentService {
 	public static final String EXTRA_HTTP_RESOURCE_ID = "EXTRA_HTTP_RESOURCE_ID";
 	public static final String EXTRA_HTTP_VERB = "EXTRA_HTTP_VERB";
 	public static final String EXTRA_WSRESOURCE = "EXTRA_WSRESOURCE";
-	public static final String EXTRA_PARAMS = "EXTRA_PARAMS";
-	public static final String ERROR_MESSAGE = "ERROR_MESSAGE";
-
+	
+	public static final String INTENT_RESULT_ACTION = "com.fmat.REST_RESULT";
+	
+	public static final String EXTRA_EXERCISE = "EXTRA_EXERCISE";
+	public static final String EXTRA_ERROR_MESSAGE = "EXTRA_ERROR_MESSAGE";
+	
 	public ExerciseRESTService() {
 		super(TAG);
 	}
 
 	@Override
 	public void onCreate() {
-		// TODO Auto-generated method stub
 		super.onCreate();
-		Log.i(TAG, "Creando servicio!");
-
 	}
 
 	@Override
@@ -56,7 +56,6 @@ public class ExerciseRESTService extends IntentService {
 			// Extras contain our ResultReceiver and data is our REST action.
 			// So, without these components we can't do anything useful.
 			Log.e(TAG, "You did not pass extras or data with the Intent.");
-
 			return;
 		}
 
@@ -65,7 +64,8 @@ public class ExerciseRESTService extends IntentService {
 		String id = extras.getString(EXTRA_HTTP_RESOURCE_ID);
 
 		String errorMessage = null;
-
+		Intent resultIntent = new Intent(INTENT_RESULT_ACTION);
+		
 		try {
 			// Here we define our base request object which we will
 			// send to our REST service via HttpClient.
@@ -99,33 +99,37 @@ public class ExerciseRESTService extends IntentService {
 				HttpResponse response = client.execute(request);
 
 				HttpEntity responseEntity = response.getEntity();
-
+				
 				if (responseEntity != null) {
 
 					Exercise exercise = (Exercise) ResponseHandler.getInstance()
 							.handleSingleMessage(responseEntity);
 
 					Log.i(TAG, exercise.toString());
-					
+					resultIntent.putExtra(EXTRA_EXERCISE, exercise);
 				}
+				
 			}
 		} catch (UnsupportedEncodingException e) {
 			errorMessage = "A UrlEncodedFormEntity was created with an unsupported encoding.";
-			Log.e(TAG, errorMessage, e);
+//			Log.e(TAG, errorMessage, e);
+			
 		} catch (ClientProtocolException e) {
 			errorMessage = "There was a problem when sending the request.";
-			Log.e(TAG, errorMessage, e);
+//			Log.e(TAG, errorMessage, e);
 		} catch (ConnectTimeoutException e) {
 			errorMessage = "There's no Internet Connection. Please Verify it.";
-			Log.e(TAG, errorMessage, e);
+//			Log.e(TAG, errorMessage, e);
 		} catch (IOException e) {
 			errorMessage = "There was a problem when sending the request.";
-			Log.e(TAG, errorMessage, e);
-		} finally {
-			if (errorMessage != null) {
-			}
+//			Log.e(TAG, errorMessage, e);
 		}
 
+		if(errorMessage != null)
+			resultIntent.putExtra(EXTRA_ERROR_MESSAGE, errorMessage);
+		
+		sendBroadcast(resultIntent);
+		
 	}
 
 	private static void attachUriWithQuery(HttpRequestBase request, Uri uri,
