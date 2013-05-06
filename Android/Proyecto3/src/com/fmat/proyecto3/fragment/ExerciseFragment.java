@@ -2,6 +2,7 @@ package com.fmat.proyecto3.fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -22,29 +23,30 @@ import com.mobeta.android.dslv.DragSortListView;
 public class ExerciseFragment extends SherlockFragment {
 
 	public static final String STATEMENTS_PARAM = "STATEMENTS_PARAM";
-	
+
 	private ArrayAdapter<String> adapter;
-	private int[] keys;
 	private ListView listView;
 	private Chronometer chronometer;
-	
+
+	private ArrayList<Integer> keys;
+
 	private OnExerciseListener listener;
-	
+
 	private String[] statements;
-	
+
 	public interface OnExerciseListener {
 		public void onFinishExcercise(int[] keys, long time);
 	}
-	
+
 	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
 		@Override
 		public void drop(int from, int to) {
 			if (from != to) {
-
-				int temp = keys[from];
-				keys[from] = keys[to];
-				keys[to] = temp;
-
+				
+				Integer key = keys.get(from);
+				keys.remove(key);
+				keys.add(to, key);
+				
 				String item = adapter.getItem(from);
 				adapter.remove(item);
 				adapter.insert(item, to);
@@ -52,25 +54,26 @@ public class ExerciseFragment extends SherlockFragment {
 		}
 	};
 
-	public static ExerciseFragment newInstance(String[] statements){
+	public static ExerciseFragment newInstance(String[] statements) {
 
 		ExerciseFragment fragment = new ExerciseFragment();
-		
+
 		Bundle args = new Bundle();
 		args.putStringArray(STATEMENTS_PARAM, statements);
 		fragment.setArguments(args);
 		return fragment;
-		
+
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
+
 			statements = getArguments().getStringArray(STATEMENTS_PARAM);
 		}
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -80,14 +83,15 @@ public class ExerciseFragment extends SherlockFragment {
 				false);
 
 		listView = (ListView) rootView.findViewById(R.id.list_statements);
-		
-		((Button)rootView.findViewById(R.id.btn_finish_exercise)).setOnClickListener(new OnFinishExerciseListener());
-		
+
+		((Button) rootView.findViewById(R.id.btn_finish_exercise))
+				.setOnClickListener(new OnFinishExerciseListener());
+
 		chronometer = (Chronometer) rootView.findViewById(R.id.chronometer);
-		
+
 		chronometer.setBase(SystemClock.elapsedRealtime());
 		chronometer.start();
-		
+
 		setAdapterAndKeys();
 
 		return rootView;
@@ -98,9 +102,9 @@ public class ExerciseFragment extends SherlockFragment {
 		ArrayList<String> arrayList = new ArrayList<String>(
 				Arrays.asList(statements));
 
-		keys = new int[arrayList.size()];
+		keys = new ArrayList<Integer>();
 		for (int i = 0; i < arrayList.size(); i++) {
-			keys[i] = i;
+			keys.add(i);
 		}
 
 		adapter = new ArrayAdapter<String>(getActivity(),
@@ -111,7 +115,7 @@ public class ExerciseFragment extends SherlockFragment {
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -128,27 +132,25 @@ public class ExerciseFragment extends SherlockFragment {
 		super.onDetach();
 		listener = null;
 	}
-	
-	// public void showKeys(View v) {
-	//
-	// for (int i : keys)
-	// Log.i("Exercise", "Key: " + String.valueOf(i));
-	//
-	// }
 
-	private class OnFinishExerciseListener implements OnClickListener{
-		
-		
+	private class OnFinishExerciseListener implements OnClickListener {
+
 		@Override
 		public void onClick(View v) {
-			
+
 			chronometer.stop();
-			
-			long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-			
-			listener.onFinishExcercise(keys, elapsedMillis);
+
+			long elapsedMillis = SystemClock.elapsedRealtime()
+					- chronometer.getBase();
+
+			int[] ret = new int[keys.size()];
+			int i = 0;
+			for (Integer e : keys)
+				ret[i++] = e.intValue();
+
+			listener.onFinishExcercise(ret, elapsedMillis);
 		}
-		
+
 	}
-	
+
 }

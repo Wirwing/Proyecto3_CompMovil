@@ -1,22 +1,28 @@
-package com.fmat.proyecto3;
+package com.fmat.proyecto3.fragment;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class StatementAdapter extends BaseAdapter {
+import com.fmat.proyecto3.R;
 
-	private HashMap<Integer, String> statements;
+public class StatementAdapter extends ArrayAdapter<String> {
+
+	private List<String> statements;
 	private LayoutInflater inflater;
-
-	public StatementAdapter(Context ctx) {
-		inflater = (LayoutInflater) ctx
+	
+	public StatementAdapter(Context context, int textViewResourceId, ArrayList<String> objects) {
+		super(context, textViewResourceId, objects);
+		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
+		statements = objects;
 	}
 
 	@Override
@@ -28,7 +34,7 @@ public class StatementAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public String getItem(int position) {
 		return statements.get(position);
 	}
 
@@ -37,6 +43,23 @@ public class StatementAdapter extends BaseAdapter {
 		return position;
 	}
 
+	@Override
+	public void remove(String object) {
+		// TODO Auto-generated method stub
+		statements.remove(object);
+		notifyDataSetChanged();
+	}
+	
+	@Override
+	public void insert(String object, int index) {
+		statements.add(index, object);
+		notifyDataSetChanged();
+	}
+	
+	public List<String> getAll(){
+		return statements;
+	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;

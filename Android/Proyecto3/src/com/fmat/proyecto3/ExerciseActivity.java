@@ -2,7 +2,7 @@ package com.fmat.proyecto3;
 
 import java.util.concurrent.TimeUnit;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,20 +11,13 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.fmat.proyecto3.fragment.ExerciseDescriptionFragment;
 import com.fmat.proyecto3.fragment.ExerciseFragment;
 import com.fmat.proyecto3.json.Exercise;
+import com.fmat.proyecto3.json.ExerciseAnswer;
 
 public class ExerciseActivity extends SherlockFragmentActivity implements
 		ExerciseDescriptionFragment.OnDescriptionListener,
 		ExerciseFragment.OnExerciseListener {
 
 	private static final String TAG = ExerciseActivity.class.getName();
-	
-	public static final String EXTRA_EXERCISE = "EXTRA_EXERCISE";
-	public static final String EXTRA_NUMBER = "EXTRA_EXERCISE";
-	public static final String EXTRA_DEGREE = "EXTRA_EXERCISE";
-
-	private String studentNumber;
-	private String name;
-	private String degree;
 	
 	private Exercise exercise;
 
@@ -35,8 +28,8 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 		if (savedInstanceState == null)
 			savedInstanceState = getIntent().getExtras();
 
-		exercise = (Exercise) savedInstanceState.get(EXTRA_EXERCISE);
-
+		exercise = (Exercise) savedInstanceState.get(Exercise.EXTRA_EXERCISE);
+		
 		Fragment descriptionFragment = ExerciseDescriptionFragment.newInstance(
 				exercise.getId(), exercise.getDescription());
 
@@ -50,14 +43,18 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onFinishExcercise(int[] keys, long millis) {
 
-		String elapsedTime = String.format(
-				"%d min, %d sec",
-				TimeUnit.MILLISECONDS.toMinutes(millis),
-				TimeUnit.MILLISECONDS.toSeconds(millis)
-						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-								.toMinutes(millis)));
-
-		Log.i(TAG, elapsedTime);
+		
+		int durationInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(millis);
+		
+		ExerciseAnswer answer = new ExerciseAnswer();
+		answer.setId(exercise.getId());
+		answer.setAnswerKeys(keys);
+		answer.setDurationInSeconds(durationInSeconds);
+		
+		Intent intent = new Intent(this, ExerciseAnswerActivity.class);
+		intent.putExtra(ExerciseAnswer.EXTRA_EXERCISE_ANSWER, answer);
+		intent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
+		startActivity(intent);
 		
 	}
 
@@ -70,4 +67,7 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 				.replace(R.id.content_frame, content).commit();
 	}
 
+	
+	
+	
 }

@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Exercise implements Parcelable {
 
+	public static final String EXTRA_EXERCISE = "EXTRA_EXERCISE";
+	
 	private String id;
 
 	@SerializedName("titulo")

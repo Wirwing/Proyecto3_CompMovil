@@ -25,7 +25,11 @@
     <string name="play_description">Jugar</string>
     <string name="exercise">Ejercicio</string>
     <string name="exercise_dummy_description">Banana banana banana banana banana</string>
+    <string name="exercise_answer_comments">Comentarios</string>
     <string name="start">Iniciar</string>
+    <string name="send_exercise">Enviar Respuesta</string>
+    
+    <string name="dropbox">"DropBox"</string>
 
     <!-- Settings -->
     <string name="title_activity_settings">Configuración</string>
@@ -51,5 +55,6 @@
     <string name="pref_server_get_exercise_title">Método API para obtener ejercicio</string>
     <string name="pref_server_send_exercise_title">Método API para enviar respuesta de ejercicio</string>
     <string name="pref_dropbox_dir_title">Directorio de dropbox</string>
+    <string name="sentences">Sentencias</string>
 
 </resources>

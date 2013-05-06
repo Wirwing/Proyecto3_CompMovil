@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainFragment" >
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/tv_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
+        android:layout_marginTop="18dp"
+        android:text="@string/exercise"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        style="@android:style/ButtonBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_send_exercise"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
+            android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
+            android:layout_weight="1"
+            android:text="@string/send_exercise" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_answer_comments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_exercise_description"
+        android:layout_below="@+id/tv_exercise_description"
+        android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
+        android:layout_marginTop="20dp"
+        android:ems="140"
+        android:inputType="textMultiLine" />
+
+    <CheckBox
+        android:id="@+id/chbx_dropbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/et_answer_comments"
+        android:layout_below="@+id/et_answer_comments"
+        android:layout_marginTop="20dp"
+        android:text="@string/dropbox" />
+
+    <TextView
+        android:id="@+id/tv_exercise_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lv_statements"
+        android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
+        android:layout_marginTop="16dp"
+        android:text="@string/exercise_answer_comments"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/lv_statements"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
+        android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
+        android:layout_marginTop="6dp" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tv_elapsed_time"
+        android:background="@color/abs__bright_foreground_disabled_holo_light"
+        android:gravity="center"
+        android:text="@string/sentences"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_elapsed_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_exercise"
+        android:layout_below="@+id/tv_exercise"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="23dp"
+        android:layout_marginTop="6dp"
+        android:text="Ola ke ase" />
+
+</RelativeLayout>

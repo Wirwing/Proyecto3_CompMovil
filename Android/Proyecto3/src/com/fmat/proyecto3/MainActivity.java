@@ -4,22 +4,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.fmat.proyecto3.fragment.LoadingFragment;
 import com.fmat.proyecto3.fragment.MainFragment;
 import com.fmat.proyecto3.json.Exercise;
+import com.fmat.proyecto3.service.ExerciseGetService;
 import com.fmat.proyecto3.service.ExerciseRESTService;
 
-public class MainActivity extends SherlockFragmentActivity implements
+public class MainActivity extends BaseActivity  implements
 		MainFragment.OnExerciseSelectedListener {
 
 	private static final String TAG = MainActivity.class.getName();
@@ -29,45 +27,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private ExerciseReceiver receiver;
 	private IntentFilter filter;
 
-	private SharedPreferences preferences;
-
-	private String studentId;
-	private String studentName;
-	private String studentCareer;
-	private String dropboxFolder;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-	}
-
-	private void validateSettings() {
-
-		if (preferences.contains(getString(R.string.pref_student_id)))
-			studentId = preferences.getString(
-					getString(R.string.pref_student_id), null);
-
-		if (preferences.contains(getString(R.string.pref_student_name)))
-			studentName = preferences.getString(
-					getString(R.string.pref_student_name), null);
-
-		if (preferences.contains(getString(R.string.pref_student_career)))
-			studentCareer = preferences.getString(
-					getString(R.string.pref_student_career), null);
-
-		if (preferences.contains(getString(R.string.pref_dropbox_dir)))
-			dropboxFolder = preferences.getString(
-					getString(R.string.pref_dropbox_dir), null);
-
-		
-		if (studentId == null || studentName == null || studentCareer == null)
-			startActivity(new Intent(this, SettingsActivity.class));
-
 	}
 
 	@Override
@@ -75,7 +40,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// TODO Auto-generated method stub
 		super.onResume();
 
-		validateSettings();
+		loadSettings();
+		
+		if(!super.hastAllSettings())
+			startActivity(new Intent(this, SettingsActivity.class));
 		
 		contentFragment = MainFragment.newInstance(studentId,
 				studentName, studentCareer);
@@ -91,7 +59,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			return;
 		
 		receiver = new ExerciseReceiver();
-		filter = new IntentFilter(ExerciseRESTService.INTENT_RESULT_ACTION);
+		filter = new IntentFilter(ExerciseGetService.INTENT_RESULT_ACTION);
 		super.registerReceiver(receiver, filter);
 
 	}
@@ -144,13 +112,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, messageFragment).commit();
 
-		Intent intent = new Intent(this, ExerciseRESTService.class);
-		String url = Constants.WS_URL + Constants.EXERCISE_PATH;
+		Intent intent = new Intent(this, ExerciseGetService.class);
+		String url = wsUrl + wsExercisePath;
 
 		intent.setData(Uri.parse(url));
 
 		// intent.putExtra(ExerciseRESTService.EXTRA_HTTP_VERB, HttpMethod.GET);
-		intent.putExtra(ExerciseRESTService.EXTRA_HTTP_RESOURCE_ID, number);
+		intent.putExtra(ExerciseGetService.EXTRA_HTTP_RESOURCE_ID, number);
 
 		startService(intent);
 
@@ -169,14 +137,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 			if (errorMessage == null) {
 
 				Exercise exercise = (Exercise) extras
-						.get(ExerciseRESTService.EXTRA_EXERCISE);
+						.get(Exercise.EXTRA_EXERCISE);
 
 				if (exercise != null) {
 
 					Intent exerciseIntent = new Intent(MainActivity.this,
 							ExerciseActivity.class);
 
-					exerciseIntent.putExtra(ExerciseActivity.EXTRA_EXERCISE,
+					exerciseIntent.putExtra(Exercise.EXTRA_EXERCISE,
 							exercise);
 
 					startActivity(exerciseIntent);
