@@ -4,12 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.fmat.proyecto3.fragment.LoadingFragment;
 import com.fmat.proyecto3.fragment.MainFragment;
@@ -26,18 +29,44 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private ExerciseReceiver receiver;
 	private IntentFilter filter;
 
+	private SharedPreferences preferences;
+
+	private String studentId;
+	private String studentName;
+	private String studentCareer;
+	private String dropboxFolder;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		contentFragment = MainFragment.newInstance("10002900",
-				"Azaneth Aguilar", "Nutricion");
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		// Set Convent View
-		setContentView(R.layout.activity_content);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+	}
 
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, contentFragment).commit();
+	private void validateSettings() {
+
+		if (preferences.contains(getString(R.string.pref_student_id)))
+			studentId = preferences.getString(
+					getString(R.string.pref_student_id), null);
+
+		if (preferences.contains(getString(R.string.pref_student_name)))
+			studentName = preferences.getString(
+					getString(R.string.pref_student_name), null);
+
+		if (preferences.contains(getString(R.string.pref_student_career)))
+			studentCareer = preferences.getString(
+					getString(R.string.pref_student_career), null);
+
+		if (preferences.contains(getString(R.string.pref_dropbox_dir)))
+			dropboxFolder = preferences.getString(
+					getString(R.string.pref_dropbox_dir), null);
+
+		
+		if (studentId == null || studentName == null || studentCareer == null)
+			startActivity(new Intent(this, SettingsActivity.class));
 
 	}
 
@@ -46,24 +75,46 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// TODO Auto-generated method stub
 		super.onResume();
 
+		validateSettings();
+		
+		contentFragment = MainFragment.newInstance(studentId,
+				studentName, studentCareer);
+
+		// Set Convent View
+		setContentView(R.layout.activity_content);
+
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, contentFragment).commit();
+
+		
 		if (receiver != null)
 			return;
-
+		
 		receiver = new ExerciseReceiver();
 		filter = new IntentFilter(ExerciseRESTService.INTENT_RESULT_ACTION);
 		super.registerReceiver(receiver, filter);
 
 	}
-	
-	//Para fines de prueba se configuración
+
+	/**
+	 * Infla el menu.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	// Para fines de prueba se configuración
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		switch(item.getItemId()){
+		switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			break;
-			default:break;
+		default:
+			break;
 		}
 		return true;
 	}
@@ -124,11 +175,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 					Intent exerciseIntent = new Intent(MainActivity.this,
 							ExerciseActivity.class);
-					
-					exerciseIntent.putExtra(ExerciseActivity.EXTRA_EXERCISE, exercise);
-					
+
+					exerciseIntent.putExtra(ExerciseActivity.EXTRA_EXERCISE,
+							exercise);
+
 					startActivity(exerciseIntent);
-					
+
 				}
 
 			} else {

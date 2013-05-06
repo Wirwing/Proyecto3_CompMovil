@@ -19,9 +19,9 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 	private static final String TAG = ExerciseActivity.class.getName();
 	
 	public static final String EXTRA_EXERCISE = "EXTRA_EXERCISE";
+	public static final String EXTRA_NUMBER = "EXTRA_EXERCISE";
+	public static final String EXTRA_DEGREE = "EXTRA_EXERCISE";
 
-	private SharedPreferences preferences;
-	
 	private String studentNumber;
 	private String name;
 	private String degree;
