@@ -4,6 +4,7 @@
 ?>
 
 <?php
+Yii::app()->clientScript->registerScriptFile("https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js");
 $this->breadcrumbs = array('Ejercicios' => array('ejercicios/index'), 'Ver');
 ?>
 
