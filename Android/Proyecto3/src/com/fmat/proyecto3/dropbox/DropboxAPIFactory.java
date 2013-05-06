@@ -7,8 +7,8 @@ import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
 
 /**
- * Encapsula la creación del objeto DropboxAPI
- * @author Fabián
+ * Creación del objeto DropboxAPI
+ * @author Fabián Castillo
  *
  */
 public class DropboxAPIFactory {

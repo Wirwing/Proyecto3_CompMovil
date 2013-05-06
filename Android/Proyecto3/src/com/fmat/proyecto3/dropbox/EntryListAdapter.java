@@ -19,8 +19,7 @@ import com.dropbox.client2.DropboxAPI.Entry;
 import com.fmat.proyecto3.R;
 
 /**
- * List Adapter for Dropbox's Entry objects.
- * 
+ * Adaptador para listas de objetos Entry de Dropbox
  * @author Fabián Castillo
  * 
  */
@@ -30,22 +29,17 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 	private Entry mParent;
 
 	/**
-	 * Class constructor
-	 * 
-	 * @param context
-	 *            The current context
-	 * @param entries
-	 *            List of entries to represent in the ListView
-	 * @param parent
-	 *            The entry that represents the parent folder for the entries of
-	 *            this adapter. Null means no parent will be displayed.
+	 * Constructor de la clase
+	 * @param activity La activida del listview de este adaptador
+	 * @param entries Lista de objetos Entry que se mostrarán en el list view
+	 * @param parent El objeto entry que reprsenta el directorio padre de los Entry de este
+	 * adaptador. Un valor nulls significará que no se mostrará un elemento padre.
 	 */
 	public EntryListAdapter(Activity activity, List<Entry> entries, Entry parent) {
 		super(activity, android.R.layout.simple_list_item_1, entries);
 		this.mActivity = activity;
 		if (parent != null) {
 			entries.add(0, parent);
-			//super.insert(parent, 0);
 		}
 		this.mEntries = entries;
 		this.mParent = parent;
@@ -54,7 +48,7 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 
-		View itemView = prepareView(convertView, parent);
+		View itemView = prepareViewHolder(convertView, parent);
 		ViewHolder holder = (ViewHolder) itemView.getTag();
 		
 		Entry entry = mEntries.get(position);
@@ -65,11 +59,12 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 				holder.button.setVisibility(View.VISIBLE);
 				holder.button.setTag(position);
 				
+				// Se prepara el listener para el presionado del botón 'usar'
+				// Si se presiona el botón se guarda en preferencias el directorio indicado
+				// Y se finaliza la aplicación
 				holder.button.setOnClickListener(new OnClickListener() {
-					
 					@Override
 					public void onClick(View v) {
-						//SharedPreferences preferences = mActivity.getSharedPreferences("preferences", Context.MODE_PRIVATE);
 						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
 						Entry entry = mEntries.get(position);
 						SharedPreferences.Editor editor = preferences.edit();
@@ -90,7 +85,13 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 		return itemView;
 	}
 	
-	private View prepareView(View convertView, ViewGroup parent){
+	/**
+	 * Prepara el view holder para un objeto view, de ser necesario 
+	 * @param convertView El objeto view antiguo para reusar, si es posible.
+	 * @param parent El padre al que esta vista estará asociada
+	 * @return vista preparada
+	 */
+	private View prepareViewHolder(View convertView, ViewGroup parent){
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) mActivity
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -107,6 +108,10 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 		return convertView;
 	}
 	
+	/**
+	 * Clase contenedor de elementos view para una fila del listview.
+	 * Siguiendo el patrón ViewHolder
+	 */
 	static class ViewHolder{
 		TextView textView;
 		ImageView imageView;

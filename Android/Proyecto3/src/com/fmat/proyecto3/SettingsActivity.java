@@ -9,12 +9,12 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.text.TextUtils;
 
 import com.fmat.proyecto3.R;
 
 /**
+ * Actividad para la configuración de las preferencias del usuario.
  * @author Fabián Castillo
  * 
  */
@@ -24,8 +24,6 @@ public class SettingsActivity extends PreferenceActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// getFragmentManager().beginTransaction()
-		// .replace(android.R.id.content, new SettingsFragment()).commit();
 		addPreferencesFromResource(R.xml.preferences);
 		SharedPreferences preferences = getPreferenceScreen()
 				.getSharedPreferences();
@@ -69,6 +67,10 @@ public class SettingsActivity extends PreferenceActivity implements
 		}
 	}
 
+	/* Carga la información de las preferencias del dir de dropbox
+	 * Se realiza aparte porque esta preferencia se realiza mediante un intent
+	 * Y PreferenceActivity no escucha ese evento
+	 */ 
 	private void loadDropboxSettingSummary() {
 		String dbKey = getString(R.string.pref_dropbox_dir);
 		Preference pref = findPreference(dbKey);

@@ -21,11 +21,20 @@ import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AccessTokenPair;
 
+/**
+ * Permite seleccionar un directorio de dropbox
+ * @author Fabián Castillo
+ *
+ */
 public class DirectoryChooserActivity extends SherlockListActivity {
 
+	/*Objeto entry de dropbox que representa el dir actual*/
 	private Entry mCurrentDir;
+	/*Adaptador para el listview*/
 	private EntryListAdapter mAdapter;
+	/*API de Dropbox*/
 	private DropboxAPI<AndroidAuthSession> mDBApi;
+	/*Objeto cargador de datos en ejecución*/
 	private FileListLoader mCurrentLoader = null;
 
 	@Override
@@ -126,6 +135,7 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 
 		Entry parent = entry;
 		if (entry.path.equals("/")) {
+			//Ponemos al root como primer elemento de la lista
 			parent = null;
 			directories.add(0, entry);
 		}
@@ -198,14 +208,26 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		return null;
 	}
 
+	/**
+	 * Activa el progress bar
+	 * 
+	 */
 	private void progressOn() {
 		setSupportProgressBarIndeterminateVisibility(true);
 	}
 
+	/**
+	 * Desactiva el progressbar
+	 */
 	private void progressOff() {
 		setSupportProgressBarIndeterminateVisibility(false);
 	}
 
+	/**
+	 * Realiza carga de los datos de un directorio de dropbox
+	 * @author Fabián Castillo
+	 *
+	 */
 	private class FileListLoader extends AsyncTask<String, Integer, Entry> {
 
 		@Override
@@ -226,6 +248,7 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 
 	}
 
+	/*Keys para preferences relacionados con dropbox*/
 	private static final String PREFS_DROPBOX = "dropbpox";
 	private final static String PREF_DROPBOX_KEY = "db_token_key";
 	private final static String PREF_DROPBOX_SECRET = "db_token_secret";
