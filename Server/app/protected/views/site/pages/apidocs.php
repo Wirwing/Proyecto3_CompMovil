@@ -107,13 +107,20 @@ HEADER
         </div>
         <div class="method">
             <h3 id="enviar_ejercicio">Enviar respuesta a un ejercicio</h3>
-            <p>Registra la respuesta a un ejercicio.</p>
+            <p>Registra la respuesta a un ejercicio. Se requieren también los datos
+            del estudiante. En base a la matrícula, que actúa como identificación,
+            se registra un nuevo estudiante o de ser necesario se actualizan sus datos.
+            </p>
             <pre class="prettyprint">POST /ejercicio</pre>
             <h4>Input</h4>
             <dl>
+                <dt>matricula</dt>
+                <dd>string (del estudiante)</dd>
+                <dt>nombre</dt>
+                <dd>string (del estudiante)</dd>
+                <dt>licenciatura</dt>
+                <dd>string (del estudiante)</dd>
                 <dt>idEjercicio</dt>
-                <dd>string</dd>
-                <dt>idUsuario</dt>
                 <dd>string</dd>
                 <dt>duracion (en minutos)</dt>
                 <dd>integer</dd>
@@ -124,6 +131,9 @@ HEADER
             </dl>
             <pre class="prettyprint">
 {
+    "matricula": "09200400",
+    "nombre": "Juan Pérez",
+    "licenciatura": "LIS"
     "idEjercicio": "ej1",
     "idUsuario": "09200400",
     "duracion": 15,
