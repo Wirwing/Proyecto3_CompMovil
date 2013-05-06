@@ -1,56 +1,52 @@
 package com.fmat.proyecto3.dropbox;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AccessTokenPair;
 
-@SuppressLint("NewApi")
-public class DirectoryChooserActivity extends ListActivity {
+public class DirectoryChooserActivity extends SherlockListActivity {
 
 	private Entry mCurrentDir;
 	private EntryListAdapter mAdapter;
 	private DropboxAPI<AndroidAuthSession> mDBApi;
 	private FileListLoader mCurrentLoader = null;
-	private List<Entry> mCurrentList = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		
 		progressOn();
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-
 		initDropbox();
-		
-		//Para evitar el recargar la lista al rotar el dispositivo
+
+		// Para evitar el recargar la lista al rotar el dispositivo
 		mCurrentDir = (Entry) getLastNonConfigurationInstance();
-		if(mCurrentDir != null){
+		if (mCurrentDir != null) {
 			updateList(mCurrentDir);
-		} else if(mDBApi.getSession().isLinked()){
-			loadAndDisplayDir("/"); 
+		} else if (mDBApi.getSession().isLinked()) {
+			loadAndDisplayDir("/");
 		}
 
 	}
@@ -138,9 +134,8 @@ public class DirectoryChooserActivity extends ListActivity {
 				parent);
 		setListAdapter(adapter);
 		mAdapter = adapter;
-		mCurrentList = directories;
 
-		setProgressBarIndeterminateVisibility(false);
+		progressOff();
 	}
 
 	private Entry getEntry(String path) {
@@ -204,11 +199,11 @@ public class DirectoryChooserActivity extends ListActivity {
 	}
 
 	private void progressOn() {
-		setProgressBarIndeterminateVisibility(true);
+		setSupportProgressBarIndeterminateVisibility(true);
 	}
 
 	private void progressOff() {
-		setProgressBarIndeterminateVisibility(false);
+		setSupportProgressBarIndeterminateVisibility(false);
 	}
 
 	private class FileListLoader extends AsyncTask<String, Integer, Entry> {

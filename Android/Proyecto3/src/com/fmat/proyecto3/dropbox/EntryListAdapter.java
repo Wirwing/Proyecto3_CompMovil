@@ -1,7 +1,6 @@
 package com.fmat.proyecto3.dropbox;
 
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
@@ -74,7 +73,8 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
 						Entry entry = mEntries.get(position);
 						SharedPreferences.Editor editor = preferences.edit();
-						editor.putString("pref_dropbox_dir", entry.path);
+						String prefKey = mActivity.getString(R.string.pref_dropbox_dir);
+						editor.putString(prefKey, entry.path);
 						editor.commit();
 						mActivity.finish();
 					}

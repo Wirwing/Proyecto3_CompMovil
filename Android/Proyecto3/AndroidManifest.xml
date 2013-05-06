@@ -48,7 +48,9 @@
         </activity>
         <activity
             android:name="com.fmat.proyecto3.dropbox.DirectoryChooserActivity"
-            android:label="@string/title_activity_dropbox_chooser" >
+            android:label="@string/title_activity_dropbox_chooser" 
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
+            >
             <intent-filter>
                 <action android:name=".activites.DropboxSelector" />
                 <category android:name="android.intent.category.DEFAULT" />

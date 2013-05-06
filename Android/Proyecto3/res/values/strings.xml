@@ -19,7 +19,7 @@
     <string name="default_api_get_exercise">/ejercicio</string>
     <string name="default_api_send_exercise">/ejercicio</string>
 
-    <!-- Settings -->
+    <!-- 	Settings	 -->
     <string name="title_activity_settings">Configuración</string>
     <string name="title_activity_dropbox_chooser">Sel. directorio dropbox</string>
     <string name="folder_select">Usar</string>
@@ -27,5 +27,22 @@
     <string name="pref_student_settings_title">Config. de alumno</string>
     <string name="pref_server_settings_title">Config. de servidor de webservice</string>
     <string name="pref_dropbox_settings_title">Config. de Dropbox</string>
+    <string name="not_set">Sin definir</string>
+
+    <string name="pref_student_id">student_id</string> <!-- (matricula) -->
+    <string name="pref_student_name">student_name</string>
+    <string name="pref_student_career">student_career</string>
+    <string name="pref_server_url">server_url</string>
+    <string name="pref_server_get_exercise">server_get_exercise</string>
+    <string name="pref_server_send_exercise">server_send_exercise</string>
+    <string name="pref_dropbox_dir">dropbox_dir</string>
+    
+    <string name="pref_student_id_title">Matrícula</string>
+    <string name="pref_student_name_title">Nombre</string>
+    <string name="pref_student_career_title">Carrera</string>
+    <string name="pref_server_url_title">Dirección del web service</string>
+    <string name="pref_server_get_exercise_title">Método API para obtener ejercicio</string>
+    <string name="pref_server_send_exercise_title">Método API para enviar respuesta de ejercicio</string>
+    <string name="pref_dropbox_dir_title">Directorio de dropbox</string>
     
 </resources>
