@@ -17,7 +17,7 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 		ExerciseFragment.OnExerciseListener {
 
 	private static final String TAG = ExerciseActivity.class.getName();
-	
+
 	private Exercise exercise;
 
 	@Override
@@ -28,7 +28,7 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 			savedInstanceState = getIntent().getExtras();
 
 		exercise = (Exercise) savedInstanceState.get(Exercise.EXTRA_EXERCISE);
-		
+
 		Fragment descriptionFragment = ExerciseDescriptionFragment.newInstance(
 				exercise.getId(), exercise.getDescription());
 
@@ -42,19 +42,18 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onFinishExcercise(int[] keys, long millis) {
 
-		
-		int durationInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(millis);
-		
+		int durationInSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis);
+
 		ExerciseAnswer answer = new ExerciseAnswer();
 		answer.setId(exercise.getId());
 		answer.setAnswerKeys(keys);
 		answer.setDurationInSeconds(durationInSeconds);
-		
+
 		Intent intent = new Intent(this, ExerciseAnswerActivity.class);
 		intent.putExtra(ExerciseAnswer.EXTRA_EXERCISE_ANSWER, answer);
 		intent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
 		startActivity(intent);
-		
+
 	}
 
 	@Override
@@ -65,6 +64,5 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, content).commit();
 	}
-	
-	
+
 }

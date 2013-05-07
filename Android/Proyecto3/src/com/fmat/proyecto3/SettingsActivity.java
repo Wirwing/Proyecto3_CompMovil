@@ -29,9 +29,10 @@ public class SettingsActivity extends PreferenceActivity implements
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
 		setContentView(R.layout.activity_preferences);
-		
-		((Button)findViewById(R.id.bnt_clear_dropbox)).setOnClickListener(this);
-		
+
+		((Button) findViewById(R.id.bnt_clear_dropbox))
+				.setOnClickListener(this);
+
 		SharedPreferences preferences = getPreferenceScreen()
 				.getSharedPreferences();
 
@@ -98,11 +99,11 @@ public class SettingsActivity extends PreferenceActivity implements
 		if (getPreferenceScreen().getSharedPreferences().contains(key)
 				|| getPreferenceScreen().getSharedPreferences()
 						.contains(secret)) {
-			
+
 			Editor editor = getPreferenceScreen().getSharedPreferences().edit();
 			editor.remove(key);
 			editor.remove(secret);
-				
+
 			editor.commit();
 
 		}
