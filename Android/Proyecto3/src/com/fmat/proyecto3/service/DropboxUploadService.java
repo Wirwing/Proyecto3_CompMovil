@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -15,20 +14,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.fmat.proyecto3.R;
 import com.fmat.proyecto3.dropbox.DropboxAPIFactory;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
+import com.fmat.proyecto3.utils.TempFileHandler;
 
 public class DropboxUploadService extends IntentService {
 
 	public static final String INTENT_RESULT_ACTION = "com.fmat.DROPBOX_RESULT";
-
+	public static final String EXTRA_ERROR_MESSAGE = "EXTRA_ERROR_MESSAGE";
+	
 	private static final String TAG = DropboxUploadService.class.getName();
 
+	private static final String FOLDER_SEPARATION = "/";
+	
 	private SharedPreferences preferences;
 
 	private String key;
@@ -38,9 +44,7 @@ public class DropboxUploadService extends IntentService {
 	private DropboxAPI<AndroidAuthSession> dropboxApi;
 
 	public DropboxUploadService() {
-
 		super(TAG);
-
 	}
 
 	@Override
@@ -61,7 +65,8 @@ public class DropboxUploadService extends IntentService {
 			return;
 
 		Intent resultIntent = new Intent(INTENT_RESULT_ACTION);
-
+		String errorMessage = null;
+		
 		try {
 
 			dropboxApi = DropboxAPIFactory.getDropboxAPI(key, secret);
@@ -80,25 +85,42 @@ public class DropboxUploadService extends IntentService {
 
 			File file = new File(getExternalFilesDir(null), fileName);
 
-			// OutputStreamWriter osw = new OutputStreamWriter();
 			BufferedWriter bwriter = new BufferedWriter(new FileWriter(file));
 			TempFileHandler.createTempFile(bwriter, exercise, answer);
 
 			FileInputStream inputStream = new FileInputStream(file);
+			
+			if(!filePath.equalsIgnoreCase("/")){
+				filePath += FOLDER_SEPARATION;
+			}
+			
 			dropboxApi.putFileOverwrite(filePath + fileName, inputStream,
 					file.length(), null);
 
 			file.delete();
 
 		} catch (ClassCastException ce) {
-			ce.printStackTrace();
+			errorMessage = "La direccion del servicio es invalida.";
+			
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			errorMessage = "Hubo un problema al generar archivo.";
+		} catch (DropboxUnlinkedException e) {
+			errorMessage = "No tienes una cuenta de Dropbox configurada.";
+		} catch (DropboxException e) {
+			errorMessage = "Hubo un problema al subir el archivo a tu cuenta de Dropbox.";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+		
+		if(errorMessage != null){
+			Log.e(TAG, errorMessage);
+			resultIntent.putExtra(EXTRA_ERROR_MESSAGE, errorMessage);
+		}
+		
 		sendBroadcast(resultIntent);
 
 	}
+	
+	
 }

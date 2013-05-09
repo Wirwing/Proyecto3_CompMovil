@@ -7,10 +7,7 @@ import android.os.Bundle;
 
 public abstract class ExerciseRESTService extends IntentService {
 
-	private static final String TAG = ExerciseRESTService.class.getName();
-	
 	public static final String EXTRA_WSRESOURCE = "EXTRA_WSRESOURCE";
-
 	public static final String EXTRA_ERROR_MESSAGE = "EXTRA_ERROR_MESSAGE";
 
 	public ExerciseRESTService(String TAG) {

@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -191,8 +192,7 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 	 *            token secret
 	 */
 	private void storeKeys(String key, String secret) {
-		SharedPreferences preferences = getSharedPreferences(PREFS_DROPBOX,
-				MODE_PRIVATE);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(KEY_PREF, key);
 		editor.putString(SECRET_PREF, secret);
@@ -207,8 +207,7 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 	 *         encuentran almacenadas dichas claves
 	 */
 	private AccessTokenPair getStoredKeys() {
-		SharedPreferences preferences = getSharedPreferences(PREFS_DROPBOX,
-				MODE_PRIVATE);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String key = preferences.getString(KEY_PREF, null);
 		String secret = preferences.getString(SECRET_PREF, null);
 		if (key != null && secret != null) {
@@ -250,8 +249,5 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		}
 
 	}
-
-	/* Keys para preferences relacionados con dropbox */
-	private static final String PREFS_DROPBOX = "dropbpox";
 
 }

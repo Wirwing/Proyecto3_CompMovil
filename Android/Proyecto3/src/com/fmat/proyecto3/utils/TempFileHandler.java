@@ -1,4 +1,4 @@
-package com.fmat.proyecto3.service;
+package com.fmat.proyecto3.utils;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
-import com.fmat.proyecto3.utils.StatementSorter;
 
 public class TempFileHandler {
 
@@ -49,16 +48,23 @@ public class TempFileHandler {
 		bw.newLine();
 		bw.append("ID: " + exercise.getId());
 		bw.newLine();
+		bw.append("Intrucciones: ");
+		bw.newLine();
+		bw.append(exercise.getDescription());
+		bw.newLine();
+		bw.newLine();
 		bw.append("Sentencias: ");
 		bw.newLine();
+		bw.append("------------------------");
 		bw.newLine();
-		
 		for(String statement : statements){
 			bw.append(statement);
 			bw.newLine();
 			bw.newLine();
 		}
-		
+		bw.append("------------------------");
+		bw.newLine();
+		bw.newLine();
 		bw.append("Duracion Ejercicio: " + elapsedTime);
 		bw.newLine();
 		bw.append(SEPARATOR);

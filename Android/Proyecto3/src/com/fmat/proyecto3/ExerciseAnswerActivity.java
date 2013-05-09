@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fmat.proyecto3.fragment.ExerciseResultFragment;
 import com.fmat.proyecto3.fragment.LoadingFragment;
@@ -23,13 +24,18 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	private static final String TAG = ExerciseAnswerActivity.class.getName();
 
-	private AnswerReceiver receiver;
-	private DropBoxReceiver dropReceiver;
+	private SendAnswerReceiver receiver;
+	private UploadToDropBoxReceiver dropboxReceiver;
 
 	private IntentFilter filter;
 
 	private ExerciseAnswer answer;
 	private Exercise exercise;
+
+	private Fragment contentFragment;
+
+	private boolean answerAlreadyOnWS;
+	private boolean sendToDropbox;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +52,19 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		String[] statements = StatementSorter.rearrangeStatementsByKeys(
 				exercise.getStatements(), answer.getAnswerKeys());
 
-		Fragment resultFragment = ExerciseResultFragment.newInstance(
-				answer.getId(), answer.getDurationInSeconds(), statements);
+		contentFragment = ExerciseResultFragment.newInstance(answer.getId(),
+				answer.getDurationInSeconds(), statements);
 
-		switchFragment(resultFragment);
-		
+		switchFragment(contentFragment);
+
+		answerAlreadyOnWS = false;
+
 	}
 
 	@Override
-	public void onSendAnswer(String comments) {
+	public void onSendAnswer(String comments, boolean sendToDropbox) {
+
+		this.sendToDropbox = sendToDropbox;
 
 		answer.setComments(comments);
 
@@ -68,13 +78,20 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		switchFragment(messageFragment);
 
 		// Start WS Service
-		Intent intent = new Intent(this, ExercisePostService.class);
-		String url = wsUrl + wsExercisePath;
-		intent.setData(Uri.parse(url));
-		intent.putExtra(ExercisePostService.EXTRA_EXERCISE_ANSWER, answer);
-		startService(intent);
 
-		receiver.startUpload();
+		if (answerAlreadyOnWS && sendToDropbox) {
+
+			startUpload();
+
+		} else {
+
+			Intent intent = new Intent(this, ExercisePostService.class);
+			String url = wsUrl + wsExercisePath;
+			intent.setData(Uri.parse(url));
+			intent.putExtra(ExercisePostService.EXTRA_EXERCISE_ANSWER, answer);
+			startService(intent);
+
+		}
 
 	}
 
@@ -86,16 +103,16 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		if (receiver != null)
 			return;
 
-		if (dropReceiver != null)
+		if (dropboxReceiver != null)
 			return;
 
-		receiver = new AnswerReceiver();
+		receiver = new SendAnswerReceiver();
 		filter = new IntentFilter(ExercisePostService.INTENT_RESULT_ACTION);
 		super.registerReceiver(receiver, filter);
 
-		dropReceiver = new DropBoxReceiver();
+		dropboxReceiver = new UploadToDropBoxReceiver();
 		filter = new IntentFilter(DropboxUploadService.INTENT_RESULT_ACTION);
-		super.registerReceiver(dropReceiver, filter);
+		super.registerReceiver(dropboxReceiver, filter);
 
 	}
 
@@ -109,14 +126,14 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 			receiver = null;
 		}
 
-		if (dropReceiver != null) {
-			unregisterReceiver(dropReceiver);
-			dropReceiver = null;
+		if (dropboxReceiver != null) {
+			unregisterReceiver(dropboxReceiver);
+			dropboxReceiver = null;
 		}
 
 	}
 
-	class AnswerReceiver extends BroadcastReceiver {
+	class SendAnswerReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -125,7 +142,22 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 			if (!intent.hasExtra(ExerciseRESTService.EXTRA_ERROR_MESSAGE)) {
 
-				startUpload();
+				if (extras.getInt(ExercisePostService.EXTRA_RESULT_CODE) == ExercisePostService.EXERCISE_ALREADY_SOLVED_BY_USER_SERVER_RESPONSE_CODE) {
+					answerAlreadyOnWS = true;
+				}
+
+				if (sendToDropbox) {
+					startUpload();
+				} else {
+					
+					if(answerAlreadyOnWS)
+						Toast.makeText(ExerciseAnswerActivity.this, "Ya has enviado una respuesta para este ejercicio!", Toast.LENGTH_SHORT).show();
+					
+					Intent mainIntent = new Intent(ExerciseAnswerActivity.this,
+							MainActivity.class);
+
+					startActivity(mainIntent);
+				}
 
 			} else {
 
@@ -133,34 +165,55 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 						.getString(ExerciseRESTService.EXTRA_ERROR_MESSAGE);
 
 				Log.e(TAG, errorMessage);
+
+				Toast.makeText(ExerciseAnswerActivity.this, errorMessage,
+						Toast.LENGTH_SHORT).show();
+				switchFragment(contentFragment);
+
 			}
-
-		}
-
-		protected void startUpload() {
-
-			Intent dropboxIntent = new Intent(ExerciseAnswerActivity.this,
-					DropboxUploadService.class);
-
-			dropboxIntent
-					.putExtra(ExerciseAnswer.EXTRA_EXERCISE_ANSWER, answer);
-			dropboxIntent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
-
-			startService(dropboxIntent);
 
 		}
 
 	}
 
-	class DropBoxReceiver extends BroadcastReceiver {
+	private void startUpload() {
+
+		Intent dropboxIntent = new Intent(ExerciseAnswerActivity.this,
+				DropboxUploadService.class);
+
+		dropboxIntent.putExtra(ExerciseAnswer.EXTRA_EXERCISE_ANSWER, answer);
+		dropboxIntent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
+
+		startService(dropboxIntent);
+
+	}
+
+	class UploadToDropBoxReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			Intent mainIntent = new Intent(ExerciseAnswerActivity.this,
-					MainActivity.class);
+			Bundle extras = intent.getExtras();
 
-			startActivity(mainIntent);
+			if (!intent.hasExtra(DropboxUploadService.EXTRA_ERROR_MESSAGE)) {
+
+				Intent mainIntent = new Intent(ExerciseAnswerActivity.this,
+						MainActivity.class);
+
+				startActivity(mainIntent);
+
+			} else {
+
+				String errorMessage = extras
+						.getString(ExerciseRESTService.EXTRA_ERROR_MESSAGE);
+
+				Log.e(TAG, errorMessage);
+
+				Toast.makeText(ExerciseAnswerActivity.this, errorMessage,
+						Toast.LENGTH_SHORT).show();
+				switchFragment(contentFragment);
+
+			}
 
 		}
 

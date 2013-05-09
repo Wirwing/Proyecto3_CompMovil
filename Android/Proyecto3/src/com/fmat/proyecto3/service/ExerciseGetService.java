@@ -26,7 +26,6 @@ public class ExerciseGetService extends ExerciseRESTService {
 	private static final String TAG = ExerciseGetService.class.getName();
 
 	public static final String INTENT_RESULT_ACTION = "com.fmat.REST_GET_RESULT";
-
 	public static final String EXTRA_HTTP_RESOURCE_ID = "EXTRA_HTTP_RESOURCE_ID";
 
 	public ExerciseGetService() {
@@ -110,7 +109,7 @@ public class ExerciseGetService extends ExerciseRESTService {
 	private static void attachUriWithQuery(HttpRequestBase request, Uri uri,
 			String id) throws URISyntaxException {
 
-		// Add Client ID to URL
+		// Add ID to URL
 		Uri.Builder uriBuilder = uri.buildUpon();
 		uri = uriBuilder.appendPath(id).build();
 

@@ -25,6 +25,8 @@ public class ExercisePostService extends ExerciseRESTService {
 
 	public static final String INTENT_RESULT_ACTION = "com.fmat.REST_POST_RESULT";
 
+	public static final int EXERCISE_ALREADY_SOLVED_BY_USER_SERVER_RESPONSE_CODE = 409;
+	
 	public static final String EXTRA_RESULT_CODE = "EXTRA_RESULT_CODE";
 	public static final String EXTRA_EXERCISE_ANSWER = "EXTRA_EXERCISE_ANSWER";
 

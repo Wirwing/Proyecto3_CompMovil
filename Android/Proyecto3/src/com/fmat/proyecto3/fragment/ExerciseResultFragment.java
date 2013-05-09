@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,9 +34,11 @@ public class ExerciseResultFragment extends SherlockFragment implements
 	private EditText et_comments;
 	private String comments;
 	
+	private CheckBox chx_dropbox;
+	
 	public interface OnResultListener {
 		// TODO: Update argument type and name
-		public void onSendAnswer(String comments);
+		public void onSendAnswer(String comments, boolean sendToDropbox);
 	}
 
 	/**
@@ -100,6 +103,8 @@ public class ExerciseResultFragment extends SherlockFragment implements
 				android.R.layout.simple_list_item_1, android.R.id.text1, statements));
 		
 		et_comments = (EditText)rootView.findViewById(R.id.et_answer_comments);
+
+		chx_dropbox = (CheckBox)rootView.findViewById(R.id.chkbx_dropbox);
 		
 		return rootView;
 	}
@@ -125,7 +130,7 @@ public class ExerciseResultFragment extends SherlockFragment implements
 	public void onClick(View v) {
 		
 		comments = et_comments.getText().toString();
-		listener.onSendAnswer(comments);
+		listener.onSendAnswer(comments, chx_dropbox.isChecked());
 		
 	}
 

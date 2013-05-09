@@ -11,8 +11,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class BaseActivity extends SherlockFragmentActivity {
 
-	private static final String TAG = BaseActivity.class.getName();
-
 	private SharedPreferences preferences;
 
 	protected String studentId;
