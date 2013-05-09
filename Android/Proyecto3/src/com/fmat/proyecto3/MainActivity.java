@@ -105,9 +105,7 @@ public class MainActivity extends BaseActivity  implements
 	@Override
 	public void onExerciseSelected(String number) {
 
-		number = "1";
-
-		String message = "Loading exercise " + number;
+		String message = "Cargando ejercicio " + number;
 
 		Log.i(TAG, "Exercise number: " + number);
 

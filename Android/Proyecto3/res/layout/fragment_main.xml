@@ -7,9 +7,56 @@
     <!-- TODO: Update blank fragment layout -->
 
     <RelativeLayout
+        android:id="@+id/relativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp" >
+
+        <TextView
+            android:id="@+id/tv_student_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_student_number_desc"
+            android:layout_alignBottom="@+id/tv_student_number_desc"
+            android:layout_centerHorizontal="true"
+            android:text="04002800" />
+
+        <TextView
+            android:id="@+id/tv_name_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_student_number_desc"
+            android:layout_below="@+id/tv_student_number_desc"
+            android:layout_marginTop="20dp"
+            android:text="@string/name_description" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_name_desc"
+            android:layout_alignBottom="@+id/tv_name_desc"
+            android:layout_alignLeft="@+id/tv_student_number"
+            android:text="John Doe" />
+
+        <TextView
+            android:id="@+id/tv_degree_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_name_desc"
+            android:layout_below="@+id/tv_name_desc"
+            android:layout_marginTop="20dp"
+            android:text="@string/degree_description" />
+
+        <TextView
+            android:id="@+id/tv_degree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_degree_desc"
+            android:layout_alignBottom="@+id/tv_degree_desc"
+            android:layout_alignLeft="@+id/tv_name"
+            android:text="LIS" />
 
         <TextView
             android:id="@+id/tv_student_number_desc"
@@ -17,60 +64,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginLeft="30dp"
             android:text="@string/matricula_description" />
 
-        <TextView
-            android:id="@+id/tv_student_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_student_number_desc"
-            android:layout_marginTop="@dimen/profile_item_vertical_margin"
-            android:layout_toRightOf="@+id/tv_student_number_desc"
-            android:text="04002800" />
-
-        <TextView
-            android:id="@+id/tv_name_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_student_number"
-            android:layout_marginTop="@dimen/profile_item_vertical_margin"
-            android:layout_toLeftOf="@+id/tv_student_number"
-            android:text="@string/name_description" />
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name_desc"
-            android:layout_marginTop="@dimen/profile_item_vertical_margin"
-            android:layout_toRightOf="@+id/tv_name_desc"
-            android:text="John Doe" />
-
-        <TextView
-            android:id="@+id/tv_degree_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name"
-            android:layout_marginTop="@dimen/profile_item_vertical_margin"
-            android:layout_toLeftOf="@+id/tv_name"
-            android:text="@string/degree_description" />
-
-        <TextView
-            android:id="@+id/tv_degree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_degree_desc"
-            android:layout_marginTop="@dimen/profile_item_vertical_margin"
-            android:layout_toRightOf="@+id/tv_degree_desc"
-            android:text="LIS" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_marginTop="22dp" >
 
         <TextView
             android:id="@+id/tv_excercise_number_desc"
@@ -90,17 +94,15 @@
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/tv_excercise_number_desc"
             android:ems="5"
-            android:inputType="numberSigned" >
-
-            <requestFocus />
-        </EditText>
+            android:inputType="numberSigned" />
 
         <Button
             android:id="@+id/btn_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/et_excercise_number"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="15dp"
             android:text="@string/play_description" />
 
     </RelativeLayout>
