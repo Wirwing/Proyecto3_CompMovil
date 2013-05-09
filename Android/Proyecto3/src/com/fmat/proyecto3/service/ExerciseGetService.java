@@ -66,30 +66,37 @@ public class ExerciseGetService extends ExerciseRESTService {
 			// synchronous
 			// long operation that we need to run on this thread.
 			HttpResponse response = client.execute(request);
-			HttpEntity responseEntity = response.getEntity();
 
-			if (responseEntity != null) {
+			if (response.getStatusLine().getStatusCode() == 200) {
 
-				Exercise exercise = ExerciseFactory
-						.unmarshallExercise(responseEntity);
+				HttpEntity responseEntity = response.getEntity();
 
-				Log.i(TAG, exercise.toString());
-				resultIntent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
+				if (responseEntity != null) {
+
+					Exercise exercise = ExerciseFactory
+							.unmarshallExercise(responseEntity);
+
+					Log.i(TAG, exercise.toString());
+					resultIntent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
+				}
+
+			} else {
+				errorMessage = "No existe ejercicio con ID " + id;
 			}
-
+			
 		} catch (UnsupportedEncodingException e) {
-			errorMessage = "A UrlEncodedFormEntity was created with an unsupported encoding.";
+			errorMessage = "La direccion del servicio es invalida.";
 			// Log.e(TAG, errorMessage, e);
 		} catch (URISyntaxException e) {
-			errorMessage = "A URISyntaxException was created with an unsupported encoding.";
+			errorMessage = "La direccion del servicio es invalida.";
 		} catch (ClientProtocolException e) {
-			errorMessage = "There was a problem when sending the request.";
+			errorMessage = "Hubo un problema al contactar al servidor.";
 			// Log.e(TAG, errorMessage, e);
 		} catch (ConnectTimeoutException e) {
-			errorMessage = "There's no Internet Connection. Please Verify it.";
+			errorMessage = "No hay conexion a Internet.";
 			// Log.e(TAG, errorMessage, e);
 		} catch (IOException e) {
-			errorMessage = "There was a problem when sending the request.";
+			errorMessage = "Hubo un problema al contactar al servidor.";
 			// Log.e(TAG, errorMessage, e);
 		}
 

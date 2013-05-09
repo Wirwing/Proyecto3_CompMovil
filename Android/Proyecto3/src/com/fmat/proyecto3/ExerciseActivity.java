@@ -12,7 +12,7 @@ import com.fmat.proyecto3.fragment.ExerciseFragment;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 
-public class ExerciseActivity extends SherlockFragmentActivity implements
+public class ExerciseActivity extends BaseActivity implements
 		ExerciseDescriptionFragment.OnDescriptionListener,
 		ExerciseFragment.OnExerciseListener {
 
@@ -32,10 +32,7 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 		Fragment descriptionFragment = ExerciseDescriptionFragment.newInstance(
 				exercise.getId(), exercise.getDescription());
 
-		setContentView(R.layout.activity_content);
-
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, descriptionFragment).commit();
+		switchFragment(descriptionFragment);
 
 	}
 
@@ -61,8 +58,9 @@ public class ExerciseActivity extends SherlockFragmentActivity implements
 
 		Fragment content = ExerciseFragment.newInstance(exercise
 				.getStatements());
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, content).commit();
+
+		switchFragment(content);
+
 	}
 
 }

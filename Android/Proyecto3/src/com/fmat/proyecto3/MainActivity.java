@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -17,7 +18,7 @@ import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.service.ExerciseGetService;
 import com.fmat.proyecto3.service.ExerciseRESTService;
 
-public class MainActivity extends BaseActivity  implements
+public class MainActivity extends BaseActivity implements
 		MainFragment.OnExerciseSelectedListener {
 
 	private static final String TAG = MainActivity.class.getName();
@@ -26,13 +27,13 @@ public class MainActivity extends BaseActivity  implements
 
 	private ExerciseReceiver receiver;
 	private IntentFilter filter;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 	}
 
 	@Override
@@ -40,27 +41,15 @@ public class MainActivity extends BaseActivity  implements
 		// TODO Auto-generated method stub
 		super.onResume();
 
-		loadSettings();
-		
-		if(!super.hastAllSettings())
-			startActivity(new Intent(this, SettingsActivity.class));
-	
-		if(!super.hasDropboxCredentials())
-			startActivity(new Intent(this, DropboxCredentialsActivity.class));
-		
-		contentFragment = MainFragment.newInstance(studentId,
-				studentName, studentCareer);
+		if (contentFragment == null)
+			contentFragment = MainFragment.newInstance(studentId, studentName,
+					studentCareer);
 
-		// Set Convent View
-		setContentView(R.layout.activity_content);
+		switchFragment(contentFragment);
 
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, contentFragment).commit();
-
-		
 		if (receiver != null)
 			return;
-		
+
 		receiver = new ExerciseReceiver();
 		filter = new IntentFilter(ExerciseGetService.INTENT_RESULT_ACTION);
 		super.registerReceiver(receiver, filter);
@@ -82,12 +71,27 @@ public class MainActivity extends BaseActivity  implements
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
+			startActivityForResult(intent, 200);
 			break;
 		default:
 			break;
 		}
 		return true;
+	}
+
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(arg0, arg1, arg2);
+
+		Intent intent = getIntent();
+	    overridePendingTransition(0, 0);
+	    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+	    finish();
+
+	    overridePendingTransition(0, 0);
+	    startActivity(intent);
+
 	}
 
 	@Override
@@ -110,8 +114,8 @@ public class MainActivity extends BaseActivity  implements
 		Log.i(TAG, "Exercise number: " + number);
 
 		Fragment messageFragment = LoadingFragment.newInstance(message);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, messageFragment).commit();
+
+		switchFragment(messageFragment);
 
 		Intent intent = new Intent(this, ExerciseGetService.class);
 		String url = wsUrl + wsExercisePath;
@@ -145,15 +149,19 @@ public class MainActivity extends BaseActivity  implements
 					Intent exerciseIntent = new Intent(MainActivity.this,
 							ExerciseActivity.class);
 
-					exerciseIntent.putExtra(Exercise.EXTRA_EXERCISE,
-							exercise);
+					exerciseIntent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
 
 					startActivity(exerciseIntent);
 
 				}
 
 			} else {
+				Toast.makeText(MainActivity.this, errorMessage,
+						Toast.LENGTH_SHORT).show();
 				Log.e(TAG, errorMessage);
+
+				switchFragment(contentFragment);
+
 			}
 
 		}

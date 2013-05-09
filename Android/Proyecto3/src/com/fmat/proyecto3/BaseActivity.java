@@ -1,17 +1,17 @@
 package com.fmat.proyecto3;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class BaseActivity extends SherlockFragmentActivity {
 
 	private static final String TAG = BaseActivity.class.getName();
-
-	protected Fragment contentFragment;
 
 	private SharedPreferences preferences;
 
@@ -26,48 +26,71 @@ public class BaseActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Set Convent View
+		setContentView(R.layout.activity_content);
+
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		loadSettings();
+
+		if (!hasAllSettings()) {
+			Toast.makeText(this, "Configura la aplicación primero",
+					Toast.LENGTH_SHORT).show();
+			startActivityForResult(new Intent(this, SettingsActivity.class),
+					200);
+		}
 
 	}
 
 	protected void loadSettings() {
 
-		if (preferences.contains(getString(R.string.pref_student_id)))
-			studentId = preferences.getString(
-					getString(R.string.pref_student_id), null);
+		studentId = preferences.getString(getString(R.string.pref_student_id),
+				null);
 
-		if (preferences.contains(getString(R.string.pref_student_name)))
-			studentName = preferences.getString(
-					getString(R.string.pref_student_name), null);
+		studentName = preferences.getString(
+				getString(R.string.pref_student_name), null);
 
-		if (preferences.contains(getString(R.string.pref_student_career)))
-			studentCareer = preferences.getString(
-					getString(R.string.pref_student_career), null);
+		studentCareer = preferences.getString(
+				getString(R.string.pref_student_career), null);
 
-		if (preferences.contains(getString(R.string.pref_dropbox_dir)))
-			dropboxFolder = preferences.getString(
-					getString(R.string.pref_dropbox_dir), null);
+		dropboxFolder = preferences.getString(
+				getString(R.string.pref_dropbox_dir), null);
 
-		if (preferences.contains(getString(R.string.pref_server_url)))
-			wsUrl = preferences.getString(getString(R.string.pref_server_url),
-					null);
+		wsUrl = preferences
+				.getString(getString(R.string.pref_server_url), null);
 
-		if (preferences.contains(getString(R.string.pref_server_get_exercise)))
-			wsExercisePath = preferences.getString(
-					getString(R.string.pref_server_get_exercise), null);
+		wsExercisePath = preferences.getString(
+				getString(R.string.pref_server_get_exercise), null);
 
 	}
 
-	protected boolean hastAllSettings() {
+	private boolean hasAllSettings() {
 
 		return studentId != null && studentName != null
 				&& studentCareer != null && dropboxFolder != null
 				&& wsUrl != null && wsExercisePath != null ? true : false;
 
 	}
-	
-	protected boolean hasDropboxCredentials(){
-		return preferences.contains(getString(R.string.dropbox_access_key)) && preferences.contains(getString(R.string.dropbox_access_secret));  
+
+	protected void switchFragment(Fragment contentFragment) {
+
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, contentFragment).commit();
+
 	}
-	
+
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(arg0, arg1, arg2);
+
+		loadSettings();
+		if (!hasAllSettings()) {
+			Toast.makeText(this, "Configura la aplicación primero",
+					Toast.LENGTH_SHORT).show();
+			startActivityForResult(new Intent(this, SettingsActivity.class),
+					200);
+		}
+	}
+
 }

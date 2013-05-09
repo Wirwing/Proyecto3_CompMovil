@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
@@ -85,7 +86,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 				false);
 
 		initView(rootView);
-		
+
 		return rootView;
 	}
 
@@ -96,10 +97,12 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		((TextView) rootView.findViewById(R.id.tv_name)).setText(name);
 		((TextView) rootView.findViewById(R.id.tv_degree)).setText(degree);
 
-		((Button)rootView.findViewById(R.id.btn_play)).setOnClickListener(this);
-		
-		et_exercise_number = (EditText)rootView.findViewById(R.id.et_excercise_number);
-		
+		((Button) rootView.findViewById(R.id.btn_play))
+				.setOnClickListener(this);
+
+		et_exercise_number = (EditText) rootView
+				.findViewById(R.id.et_excercise_number);
+
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
@@ -140,13 +143,17 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		public void onExerciseSelected(String number);
 	}
 
-	
 	@Override
 	public void onClick(View v) {
-		
+
 		String number = et_exercise_number.getText().toString();
-		listener.onExerciseSelected(number);
-		
+
+		if (number.isEmpty()) {
+			Toast.makeText(getActivity(), "Selecciona un ejercicio primero",
+					Toast.LENGTH_SHORT).show();
+		} else
+			listener.onExerciseSelected(number);
+
 	}
 
 }

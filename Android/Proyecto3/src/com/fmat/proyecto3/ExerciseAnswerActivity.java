@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fmat.proyecto3.fragment.ExerciseResultFragment;
 import com.fmat.proyecto3.fragment.LoadingFragment;
@@ -44,25 +43,14 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 		exercise = (Exercise) savedInstanceState.get(Exercise.EXTRA_EXERCISE);
 
-		loadSettings();
-
 		String[] statements = StatementSorter.rearrangeStatementsByKeys(
 				exercise.getStatements(), answer.getAnswerKeys());
 
 		Fragment resultFragment = ExerciseResultFragment.newInstance(
 				answer.getId(), answer.getDurationInSeconds(), statements);
 
-		setContentView(R.layout.activity_content);
-
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, resultFragment).commit();
-
-		if (!super.hastAllSettings()) {
-			Toast.makeText(this, "Llena primero la configuracion",
-					Toast.LENGTH_SHORT).show();
-			startActivity(new Intent(this, MainActivity.class));
-		}
-
+		switchFragment(resultFragment);
+		
 	}
 
 	@Override
@@ -77,8 +65,7 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		String message = "Enviando respuesta..";
 
 		Fragment messageFragment = LoadingFragment.newInstance(message);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, messageFragment).commit();
+		switchFragment(messageFragment);
 
 		// Start WS Service
 		Intent intent = new Intent(this, ExercisePostService.class);

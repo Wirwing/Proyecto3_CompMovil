@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -20,6 +19,7 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.session.AccessTokenPair;
 import com.fmat.proyecto3.R;
 
 /**
@@ -30,11 +30,6 @@ import com.fmat.proyecto3.R;
  */
 public class DirectoryChooserActivity extends SherlockListActivity {
 
-	private final String DROPBOX_KEY = getResources().getString(
-			R.string.dropbox_access_key);
-	private final String DROPBOX_SECRET = getResources().getString(
-			R.string.dropbox_access_secret);
-
 	/* Objeto entry de dropbox que representa el dir actual */
 	private Entry mCurrentDir;
 	/* Adaptador para el listview */
@@ -44,10 +39,17 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 	/* Objeto cargador de datos en ejecución */
 	private FileListLoader mCurrentLoader = null;
 
+	private String KEY_PREF;
+	private String SECRET_PREF;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (KEY_PREF == null && SECRET_PREF == null) {
+			KEY_PREF = getString(R.string.dropbox_access_key);
+			SECRET_PREF = getString(R.string.dropbox_access_secret);
+		}
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		ActionBar actionBar = getSupportActionBar();
@@ -55,8 +57,7 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 
 		showProgress(true);
 
-		if (mDBApi == null)
-			initDropbox();
+		initDropbox();
 
 		// Para evitar el recargar la lista al rotar el dispositivo
 		mCurrentDir = (Entry) getLastNonConfigurationInstance();
@@ -89,11 +90,23 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 
 	@Override
 	protected void onResume() {
+		AndroidAuthSession session = mDBApi.getSession();
+		if (session.authenticationSuccessful()) {
+			try {
+				// terminar la autentificación
+				session.finishAuthentication();
+				AccessTokenPair tokens = session.getAccessTokenPair();
 
+				storeKeys(tokens.key, tokens.secret);
+				loadAndDisplayDir("/");
+			} catch (IllegalStateException e) {
+				Log.i("DbAuthLog", "Error authenticating", e);
+				Toast.makeText(this, "Couldn't authenticate to dropbox",
+						Toast.LENGTH_LONG).show();
+				finish();
+			}
+		}
 		super.onResume();
-
-		loadAndDisplayDir("/");
-
 	}
 
 	@Override
@@ -154,31 +167,62 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 	}
 
 	private void initDropbox() {
-
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-
-		String key = preferences.getString(DROPBOX_KEY, null);
-		String secret = preferences.getString(DROPBOX_SECRET, null);
-
-		if (key != null && secret != null) {
-
-			Toast.makeText(this, "Dropbox no se encuentra configurado",
-					Toast.LENGTH_LONG).show();
-			finish();
-		}
-
 		// Se obtiene el objeto DropboxAPI
-		mDBApi = DropboxAPIFactory.getDropboxAPI(key, secret);
+		mDBApi = DropboxAPIFactory.getDropboxAPI();
 
+		// Se obtienen los tokens almacenados
+		AccessTokenPair accessTokens = getStoredKeys();
+		if (accessTokens != null) {
+			mDBApi.getSession().setAccessTokenPair(accessTokens);
+		} else {
+			// Si no hay tokens almacenados se inicia el proceso
+			// de petición de datos para autenticación
+			mDBApi.getSession().startAuthentication(this);
+		}
+	}
+
+	/**
+	 * Guarda las claves proporcionadas para poder establecer automáticamente
+	 * sesiones con dropbox en el futuro
+	 * 
+	 * @param key
+	 *            token key
+	 * @param secret
+	 *            token secret
+	 */
+	private void storeKeys(String key, String secret) {
+		SharedPreferences preferences = getSharedPreferences(PREFS_DROPBOX,
+				MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(KEY_PREF, key);
+		editor.putString(SECRET_PREF, secret);
+		editor.commit();
+	}
+
+	/**
+	 * Obtiene las claves almacenadas para establecer la sesión de dropbox
+	 * 
+	 * @return objeto AccessTokenPair con la información almacenada de las
+	 *         claves key y secret de dropbox, devolverá un objeto null si no se
+	 *         encuentran almacenadas dichas claves
+	 */
+	private AccessTokenPair getStoredKeys() {
+		SharedPreferences preferences = getSharedPreferences(PREFS_DROPBOX,
+				MODE_PRIVATE);
+		String key = preferences.getString(KEY_PREF, null);
+		String secret = preferences.getString(SECRET_PREF, null);
+		if (key != null && secret != null) {
+			return new AccessTokenPair(key, secret);
+		}
+		return null;
 	}
 
 	/**
 	 * Activa el progress bar
 	 * 
 	 */
-	private void showProgress(boolean visible) {
-		setSupportProgressBarIndeterminateVisibility(visible);
+	private void showProgress(boolean visibility) {
+		setSupportProgressBarIndeterminateVisibility(visibility);
 	}
 
 	/**
@@ -206,4 +250,8 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		}
 
 	}
+
+	/* Keys para preferences relacionados con dropbox */
+	private static final String PREFS_DROPBOX = "dropbpox";
+
 }

@@ -24,7 +24,7 @@ public class ExercisePostService extends ExerciseRESTService {
 	private static final String TAG = ExercisePostService.class.getName();
 
 	public static final String INTENT_RESULT_ACTION = "com.fmat.REST_POST_RESULT";
-	
+
 	public static final String EXTRA_RESULT_CODE = "EXTRA_RESULT_CODE";
 	public static final String EXTRA_EXERCISE_ANSWER = "EXTRA_EXERCISE_ANSWER";
 
@@ -43,7 +43,7 @@ public class ExercisePostService extends ExerciseRESTService {
 		// is called on a new thread.
 
 		super.onHandleIntent(intent);
-		
+
 		if (!super.hasExtras())
 			return;
 
@@ -86,18 +86,18 @@ public class ExercisePostService extends ExerciseRESTService {
 			resultIntent.putExtra(EXTRA_RESULT_CODE, statusCode);
 
 		} catch (UnsupportedEncodingException e) {
-			message = "A UrlEncodedFormEntity was created with an unsupported encoding.";
+			message = "La direccion del servicio es invalida.";
 			// Log.e(TAG, errorMessage, e);
 		} catch (URISyntaxException e) {
-			message = "A URISyntaxException was created with an unsupported encoding.";
+			message = "La direccion del servicio es invalida.";
 		} catch (ClientProtocolException e) {
-			message = "There was a problem when sending the request.";
+			message = "Hubo un problema al contactar al servidor.";
 			// Log.e(TAG, errorMessage, e);
 		} catch (ConnectTimeoutException e) {
-			message = "There's no Internet Connection. Please Verify it.";
+			message = "No hay conexion a Internet.";
 			// Log.e(TAG, errorMessage, e);
 		} catch (IOException e) {
-			message = "There was a problem when sending the request.";
+			message = "Hubo un problema al contactar al servidor.";
 			// Log.e(TAG, errorMessage, e);
 		}
 

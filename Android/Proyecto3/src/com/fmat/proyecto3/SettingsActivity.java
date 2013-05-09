@@ -92,20 +92,22 @@ public class SettingsActivity extends PreferenceActivity implements
 	@Override
 	public void onClick(View v) {
 
-		String key = getResources().getString(R.string.dropbox_access_key);
-		String secret = getResources()
-				.getString(R.string.dropbox_access_secret);
+		String key = getString(R.string.dropbox_access_key);
+		String secret = getString(R.string.dropbox_access_secret);
 
-		if (getPreferenceScreen().getSharedPreferences().contains(key)
-				|| getPreferenceScreen().getSharedPreferences()
-						.contains(secret)) {
+		String folder = getString(R.string.pref_dropbox_dir);
 
-			Editor editor = getPreferenceScreen().getSharedPreferences().edit();
-			editor.remove(key);
-			editor.remove(secret);
+		Editor editor = getPreferenceScreen().getSharedPreferences().edit();
+		editor.remove(key);
+		editor.remove(secret);
+		editor.remove(folder);
 
-			editor.commit();
+		editor.commit();
 
-		}
+		Preference pref = findPreference(folder);
+		String summary = getPreferenceScreen().getSharedPreferences()
+				.getString(getString(R.string.not_set), getString(R.string.not_set));
+		pref.setSummary(summary);
+		
 	}
 }
