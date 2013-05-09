@@ -14,7 +14,6 @@ import com.fmat.proyecto3.dropbox.DropboxAPIFactory;
 public class DropboxCredentialsActivity extends Activity {
 
 	private DropboxAPI<AndroidAuthSession> dropboxApi;
-
 	private SharedPreferences preferences;
 	
 	@Override
