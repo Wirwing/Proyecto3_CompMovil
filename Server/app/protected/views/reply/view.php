@@ -26,6 +26,10 @@ Yii::app()->clientScript->registerScriptFile("https://google-code-prettify.googl
     <dd class="<?php echo $esCorrecto ? 'text-success' : 'text-error' ?>">
         <?php echo $esCorrecto ? 'Correcto' : 'Incorrecto'; ?>
     </dd>
+    <dt>Fecha de resolución:</dt>
+    <dd><?php echo $reply->date !== null ? $reply->date : 'No disponible'; ?></dd>
+    <dt>Lugar de resolución:</dt>
+    <dd><?php echo $reply->date !== null ? $reply->date : 'No disponible'; ?></dd>
 </dl>
 
 <?php $this->renderPartial('/common/_statementSet', array('statementSets' => $reply->getStatementSetsInAnsweredOrder())); ?>

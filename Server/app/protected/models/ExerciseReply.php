@@ -89,8 +89,8 @@ class ExerciseReply extends CActiveRecord
         $criteria->compare('comments', $this->comments, true);
 
         return new CActiveDataProvider($this, array(
-                    'criteria' => $criteria,
-                ));
+            'criteria' => $criteria,
+        ));
     }
 
     /**
@@ -105,36 +105,36 @@ class ExerciseReply extends CActiveRecord
         if ($answerCount != count($studentAnswers)) {
             return false;
         }
-        
+
         $isCorrect = $correctAnswers == $studentAnswers;
 
         return (boolean) $isCorrect;
     }
-    
-    public function getNumberOfCorrectAnswers(){
+
+    public function getNumberOfCorrectAnswers()
+    {
         $studentAnswers = $this->answers;
         $correctAnswers = $this->exercise->key;
-        
+
         $correctCount = 0;
-        for($i = 0; $i < count($correctAnswers); $i++){
-            if(!isset($studentAnswers[$i])){
+        for ($i = 0; $i < count($correctAnswers); $i++) {
+            if (!isset($studentAnswers[$i])) {
                 break;
             }
-            
-            if($correctAnswers[$i] == $studentAnswers[$i]){
+
+            if ($correctAnswers[$i] == $studentAnswers[$i]) {
                 $correctCount++;
             }
-            
         }
-        
+
         return $correctCount;
-        
     }
-    
-    public function getStatementSetsInAnsweredOrder(){
+
+    public function getStatementSetsInAnsweredOrder()
+    {
         $statementSets = $this->exercise->getStatementSets();
         $ordered = array();
-        foreach($this->answers as $answer){
+        foreach ($this->answers as $answer) {
             $ordered[] = $statementSets[$answer];
         }
         return $ordered;
@@ -153,24 +153,38 @@ class ExerciseReply extends CActiveRecord
         $answerString = ArrayUtilities::arrayToString($this->answers);
         $this->answers = $answerString;
 
+        if ($this->location != null) {
+            $this->location = $this->location->getString();
+        }
+
         return parent::beforeSave();
     }
 
     public function afterSave()
     {
         $this->_fixAnswerArray();
+        $this->_fixLocation();
         return parent::afterFind();
     }
 
     public function afterFind()
     {
         $this->_fixAnswerArray();
+        $this->_fixLocation();
         return parent::afterFind();
     }
 
     private function _fixAnswerArray()
     {
         $this->answers = explode(',', $this->answers);
+    }
+
+    private function _fixLocation()
+    {
+        if ($this->location != null) {
+            $values = explode(',', $this->location);
+            $this->location = new Location((double) $values[0], (double) $values[1]);
+        }
     }
 
 }

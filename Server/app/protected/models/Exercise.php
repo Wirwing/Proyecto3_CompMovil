@@ -8,6 +8,8 @@
  * @property string $title
  * @property string $description
  * @property string $key
+ * @property date $date
+ * @property string $location
  *
  * The followings are the available model relations:
  * @property StatementSet[] $statementSets
@@ -93,8 +95,8 @@ class Exercise extends CActiveRecord
         $criteria->compare('key', $this->key, true);
 
         return new CActiveDataProvider($this, array(
-                    'criteria' => $criteria,
-                ));
+            'criteria' => $criteria,
+        ));
     }
 
     /**
@@ -149,6 +151,14 @@ class Exercise extends CActiveRecord
 
         $statements = $this->getStatementSets();
         $array['statements'] = $statements;
+        
+        if($this->location != null){
+            $array['location'] = $this->location->getArray();
+        }
+        
+        if($this->date != null){
+            $array['date'] = $this->date;
+        }
 
         return $array;
     }
@@ -157,24 +167,38 @@ class Exercise extends CActiveRecord
     {
         $answersString = ArrayUtilities::arrayToString($this->key);
         $this->key = $answersString;
-
+        if ($this->location != null) {
+            $this->location = $this->location->getString();
+        }
         return parent::beforeSave();
     }
-    
-    public function afterSave(){
+
+    public function afterSave()
+    {
         $this->_fixKeyArray();
+        $this->_fixLocation();
         return parent::afterSave();
     }
 
     public function afterFind()
     {
         $this->_fixKeyArray();
+        $this->_fixLocation();
         return parent::afterFind();
     }
 
-    public function _fixKeyArray()
+    //because key array is persisted as a comma separated string
+    private function _fixKeyArray()
     {
         $this->key = explode(',', $this->key);
+    }
+
+    private function _fixLocation()
+    {
+        if ($this->location != null) {
+            $values = explode(',', $this->location);
+            $this->location = new Location((double)$values[0], (double)$values[1], (double)$values[2]);
+        }
     }
 
 }

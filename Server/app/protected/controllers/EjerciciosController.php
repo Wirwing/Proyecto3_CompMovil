@@ -23,30 +23,33 @@ class EjerciciosController extends Controller
         }
 
         $replies = new CActiveDataProvider('ExerciseReply', array(
-                    'criteria' => array(
-                        'condition' => "exercise_id=$id",
-                        'with' => array('student'),
-                    ),
-                ));
+            'criteria' => array(
+                'condition' => "exercise_id='$id'",
+                'with' => array('student'),
+            ),
+        ));
 
         $this->render('view', array(
             'exercise' => $exercise, 'replies' => $replies,
-            )
+                )
         );
     }
 
     public function actionCreate()
     {
+        $availableExercises = Exercise::model()->findAll();
+        
+        $this->render('crear', array('exercises' => $availableExercises));
 
-        $exercise = new ExerciseForm();
+        /* $exercise = new ExerciseForm();
 
-        if (isset($_POST['ExerciseForm'])) {
-            $exercise->attributes = $_POST['ExerciseForm'];
-            $exercise->statements = $_POST['ExerciseForm']['statements'];
-            $exercise->keys = $_POST['ExerciseForm']['order'];
-        }
+          if (isset($_POST['ExerciseForm'])) {
+          $exercise->attributes = $_POST['ExerciseForm'];
+          $exercise->statements = $_POST['ExerciseForm']['statements'];
+          $exercise->keys = $_POST['ExerciseForm']['order'];
+          }
 
-        $this->render('exercise', array('exercise' => $exercise));
+          $this->render('exercise', array('exercise' => $exercise)); */
     }
 
 }

@@ -13,10 +13,23 @@ class ExerciseAPI implements APIProvider
         $exercises = Exercise::model()->findAll();
         $exerciseList = array();
         foreach ($exercises as $exercise) {
-            $exerciseArray = $exercise->toArray();
-            unset($exerciseArray['statements']);
-            unset($exerciseArray['description']);
-            $exerciseList[] = $exerciseArray;
+            $exArray = array(
+                'id' => $exercise->id,
+                'titulo' => $exercise->title
+            );
+
+            if ($exercise->date != null) {
+                date_default_timezone_set('America/Mexico_City');
+                $date = new DateTime($exercise->date);
+                $exArray['fecha'] = $date->format('U');
+            }
+
+            if ($exercise->location != null) {
+                $location = $exercise->location;
+                $exArray['lugar'] = $location->getArray();
+            }
+
+            $exerciseList[] = $exArray;
         }
         $APIManager->sendResponse(200, CJSON::encode($exerciseList), 'application/json');
     }
@@ -31,6 +44,17 @@ class ExerciseAPI implements APIProvider
             $response['titulo'] = $exercise->title;
             $response['descripcion'] = $exercise->description;
             $response['sentencias'] = $exercise->getStatementSets();
+
+            if ($exercise->date != null) {
+                date_default_timezone_set('America/Mexico_City');
+                $date = new DateTime($exercise->date);
+                $response['fecha'] = $date->format('U');
+            }
+
+            if ($exercise->location != null) {
+                $location = $exercise->location;
+                $response['lugar'] = $location->getArray();
+            }
 
             $APIManager->sendResponse(200, CJSON::encode($response), 'application/json');
         } else {
@@ -53,8 +77,17 @@ class ExerciseAPI implements APIProvider
         $duration = $data['duracion'];
         $comments = isset($data['comentarios']) ? $data['comentarios'] : '';
         
+        if(isset($data['lugar'])){
+            $coords = $data['lugar'];
+            $location = new Location($coords[0], $coords[1]);
+        }
+        
+        if(isset($data['fecha'])){
+            $date = date('Y-m-d', $data['fecha']);
+        }
+
         $student = $this->updateOrCreateStudent($idStudent, $data['nombre'], $data['licenciatura']);
-        if($student === null){
+        if ($student === null) {
             $APIManager->sendResponse(500, 'Error al crear o actualizar estudiante');
         }
 
@@ -69,11 +102,11 @@ class ExerciseAPI implements APIProvider
                     400, 'Answers count doesn\'t match questions count (You are missing answers)');
         }
 
-        /*$student = Student::model()->findByPk($idStudent);
-        if (!$student) {
-            $APIManager->sendResponse(
-                    400, 'No existe estudiante con id "' . htmlspecialchars($idStudent) . '"');
-        }*/
+        /* $student = Student::model()->findByPk($idStudent);
+          if (!$student) {
+          $APIManager->sendResponse(
+          400, 'No existe estudiante con id "' . htmlspecialchars($idStudent) . '"');
+          } */
 
         $existsExerciseReply = ExerciseReply::model()->findByPk(
                 array('student_id' => $idStudent, 'exercise_id' => $idExercise));
@@ -89,6 +122,12 @@ class ExerciseAPI implements APIProvider
         $exerciseReply->answers = $answers;
         $exerciseReply->duration = $duration;
         $exerciseReply->comments = $comments;
+        if(isset($date)){
+            $exerciseReply->date = $date;
+        }
+        if(isset($location)){
+            $exerciseReply->location = $location;
+        }
 
         if ($exerciseReply->save()) {
             $isCorrect = $exerciseReply->isCorrect();
@@ -140,7 +179,7 @@ class ExerciseAPI implements APIProvider
             }
             return null;
         }
-        
+
         return $student;
     }
 
