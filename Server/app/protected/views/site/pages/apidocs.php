@@ -14,6 +14,7 @@ Yii::app()->clientScript->registerScriptFile("https://google-code-prettify.googl
             <li class="nav-header"><a href="#estudiantes">Estudiantes</a></li>
             <li><a href="#reg_estudiante">Registrar estudiante</a></li>
             <li class="nav-header"><a href="#ejercicios">Ejercicios</a></li>
+            <li><a href="#listar_ejercicios">Listar ejercicios</a></li>
             <li><a href="#obtener_ejercicio">Obtener un ejercicio</a></li>
             <li><a href="#enviar_ejercicio">Enviar respuesta a un ejercicio</a></li>
             <li class="divider"></li>
@@ -28,6 +29,8 @@ Yii::app()->clientScript->registerScriptFile("https://google-code-prettify.googl
             <code>http://mobileservice.site40.net/api</code></p>
 
         <h2 id="estudiantes">Estudiantes</h2>
+
+
         <div class="method">
             <h3 id="reg_estudiante">Registrar un estudiante</h3>
             <p>Registra a un nuevo estudiante.</p>
@@ -68,6 +71,48 @@ HEADER
 
         <h2 id="ejercicios">Ejercicios</h2>
         <div class="method">
+            <h3 id="listar_ejercicios">Listar ejercicios</h3>
+            <p>Obtiene una lista de los ejercicios disponibles.</p>
+            <pre class="prettyprint">GET /ejercicio</pre>
+
+            <h4>Response</h4>
+
+            <h5>Array of objects</h5>
+            <dl>
+                <dt>id</dt>
+                <dd>string</dd>
+                <dt>titulo</dt>
+                <dd>string</dd>
+                <dt>lugar</dt>
+                <dd>(opcional, sólo si el ejercicio lo define) array of numbers [latitudCentro, longitudCentro, radioEnMetros]. Lugar de realización del ejercicio.</dd>
+                <dt>fecha</dt>
+                <dd>(opcional, sólo si el ejercicio lo define) Número representando la fecha en formato unix. Formato de realización del ejercicio.</dd>
+            </dl>
+
+            <pre class="prettyprint">
+<strong>HEADER</strong>
+    Status: 200 OK
+
+<strong>CONTENT:</strong>
+{
+    [
+        {
+            "id": "UnIdentificador",
+            "titulo": "Titulo del ejercicio",
+            "fecha": 232132232,
+            "lugar": [18.578, 20.122, 8]
+        },
+        {
+            "id": "OtroIdentificador",
+            "titulo": "Titulo del otro ejercicio",
+            "lugar": [18.56, 20.122, 8]
+        }
+    ]
+}
+            </pre>
+
+        </div>
+        <div class="method">
             <h3 id="obtener_ejercicio">Obtener un ejercicio</h3>
             <p>Obtiene la información de un ejercicio.</p>
             <pre class="prettyprint">GET /ejercicio/&lt;id del ejercicio&gt;</pre>
@@ -84,6 +129,10 @@ HEADER
                 <dd>string</dd>
                 <dt>sentencias</dt>
                 <dd>array of strings</dd>
+                <dt>lugar</dt>
+                <dd>(opcional, sólo si el ejercicio lo define) array of numbers [latitudCentro, longitudCentro, radioEnMetros]. Zona permitida para realización del ejercicio.</dd>
+                <dt>fecha</dt>
+                <dd>(opcional, sólo si el ejercicio lo define) opcional) número representado la fecha en formato unix. Fecha permitida para realización del ejercicio.</dd>
             </dl>
 
             <pre class="prettyprint">
@@ -108,8 +157,8 @@ HEADER
         <div class="method">
             <h3 id="enviar_ejercicio">Enviar respuesta a un ejercicio</h3>
             <p>Registra la respuesta a un ejercicio. Se requieren también los datos
-            del estudiante. En base a la matrícula, que actúa como identificación,
-            se registra un nuevo estudiante o de ser necesario se actualizan sus datos.
+                del estudiante. En base a la matrícula, que actúa como identificación,
+                se registra un nuevo estudiante o de ser necesario se actualizan sus datos.
             </p>
             <pre class="prettyprint">POST /ejercicio</pre>
             <h4>Input</h4>
@@ -128,6 +177,10 @@ HEADER
                 <dd>array of integers</dd>
                 <dt>comentarios</dt>
                 <dd>(opcional) string</dd>
+                <dt>lugar</dt>
+                <dd>(opcional) array of numbers [latitud, longitud]. Lugar de realización del ejercicio.</dd>
+                <dt>fecha</dt>
+                <dd>(opcional) número representado la fecha en formato unix. Fecha de realización del ejercicio.</dd>
             </dl>
             <pre class="prettyprint">
 {
@@ -138,7 +191,9 @@ HEADER
     "idUsuario": "09200400",
     "duracion": 15,
     "respuestas": [1,3,2,4],
-    "comentarios": "Me pareció difícil"
+    "comentarios": "Me pareció difícil",
+    "lugar": [18.56, 20.122],
+    "fecha": 232132232
 }
             </pre>
 

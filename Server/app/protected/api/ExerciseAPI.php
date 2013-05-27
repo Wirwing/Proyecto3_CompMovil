@@ -18,16 +18,20 @@ class ExerciseAPI implements APIProvider
                 'titulo' => $exercise->title
             );
 
+            $exerciseDate = null;
             if ($exercise->date != null) {
                 date_default_timezone_set('America/Mexico_City');
                 $date = new DateTime($exercise->date);
-                $exArray['fecha'] = $date->format('U');
+                $exerciseDate = $date->format('U');
             }
+            $exArray['fecha'] = $exerciseDate;
 
+            $exerciseLocation = null;
             if ($exercise->location != null) {
                 $location = $exercise->location;
-                $exArray['lugar'] = $location->getArray();
+                $exerciseLocation = $location->getArray();
             }
+            $exArray['lugar'] = $exerciseLocation;
 
             $exerciseList[] = $exArray;
         }
@@ -45,12 +49,14 @@ class ExerciseAPI implements APIProvider
             $response['descripcion'] = $exercise->description;
             $response['sentencias'] = $exercise->getStatementSets();
 
+            $response['fecha'] = null;
             if ($exercise->date != null) {
                 date_default_timezone_set('America/Mexico_City');
                 $date = new DateTime($exercise->date);
                 $response['fecha'] = $date->format('U');
             }
 
+            $response['lugar'] = null;
             if ($exercise->location != null) {
                 $location = $exercise->location;
                 $response['lugar'] = $location->getArray();
@@ -83,7 +89,7 @@ class ExerciseAPI implements APIProvider
         }
         
         if(isset($data['fecha'])){
-            $date = date('Y-m-d', $data['fecha']);
+            $date = $data['fecha'];
         }
 
         $student = $this->updateOrCreateStudent($idStudent, $data['nombre'], $data['licenciatura']);
@@ -123,9 +129,26 @@ class ExerciseAPI implements APIProvider
         $exerciseReply->duration = $duration;
         $exerciseReply->comments = $comments;
         if(isset($date)){
-            $exerciseReply->date = $date;
+            /*if($exercise->date != null){
+                $dayAfter = new DateTime($exercise->date);
+                $dayAfter->modify('+1 day')
+                $dayAfter = $dayAfter->format('U');
+                $dayBefore = new DateTime($exercise->date);
+                $dayBefore->modify('-1 day');
+                $dayBefore = $dayBefore->format('U');
+                if(!($dayBefore < $date && $date < $dayAfter)){
+                    $APIManager->sendResponse(409, 'Fecha incorrecta para el ejercicio');
+                }
+            }*/
+            $exerciseReply->date = date('Y-m-d', $fecha);;
         }
         if(isset($location)){
+            /*if($exercise->location != null){
+                $rightLocation = $exercise->location->isPointWithin($location->latitude, $location->longitude);
+                if(!$rightLocation){
+                    $APIManager->sendResponse(409, 'Localización incorrecta para el ejercicio');   
+                }
+            }*/
             $exerciseReply->location = $location;
         }
 
