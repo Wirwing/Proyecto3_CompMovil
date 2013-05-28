@@ -6,36 +6,53 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.fmat.proyecto3.fragment.ExerciseDescriptionFragment;
 import com.fmat.proyecto3.fragment.ExerciseFragment;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 
+/**
+ * Actividad encarga del ejercicio que el usuario resuelve.
+ */
 public class ExerciseActivity extends BaseActivity implements
 		ExerciseDescriptionFragment.OnDescriptionListener,
 		ExerciseFragment.OnExerciseListener {
 
-	private static final String TAG = ExerciseActivity.class.getName();
-
+	// Ejercicio pasado por parametro
 	private Exercise exercise;
 
+	/**
+	 * Llamado al crear la actividad.
+	 * 
+	 * @return nothing
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		/*
+		 * Recupera el Bundle pasado por argumento, junto a el ejercicio
+		 * contenido dentro de este.
+		 */
 		if (savedInstanceState == null)
 			savedInstanceState = getIntent().getExtras();
 
+		// Recupera el ejercicio
 		exercise = (Exercise) savedInstanceState.get(Exercise.EXTRA_EXERCISE);
 
+		// Crea un nuevo fragmento que muestra la descripcion
 		Fragment descriptionFragment = ExerciseDescriptionFragment.newInstance(
 				exercise.getId(), exercise.getDescription());
 
+		// Lo muestra dentro de la actividad
 		switchFragment(descriptionFragment);
 
 	}
 
+	/**
+	 * @see com.fmat.proyecto3.fragment.ExerciseFragment.OnExerciseListener#onFinishExcercise(int[],
+	 *      long)
+	 */
 	@Override
 	public void onFinishExcercise(int[] keys, long millis) {
 
@@ -53,6 +70,12 @@ public class ExerciseActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * 
+	 * @see
+	 * com.fmat.proyecto3.fragment.ExerciseDescriptionFragment.OnDescriptionListener
+	 * #onStartExcercise()
+	 */
 	@Override
 	public void onStartExcercise() {
 

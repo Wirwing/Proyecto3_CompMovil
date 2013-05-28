@@ -24,6 +24,9 @@ import android.widget.Button;
 public class SettingsActivity extends PreferenceActivity implements
 		OnSharedPreferenceChangeListener, OnClickListener {
 
+	/**
+	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,6 +53,10 @@ public class SettingsActivity extends PreferenceActivity implements
 		}
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -58,12 +65,20 @@ public class SettingsActivity extends PreferenceActivity implements
 		loadDropboxSettingSummary();
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
 	public void onPause() {
 		super.onPause();
 		getPreferenceScreen().getSharedPreferences()
 				.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.content.SharedPreferences.OnSharedPreferenceChangeListener#onSharedPreferenceChanged(android.content.SharedPreferences, java.lang.String)
+	 */
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		Preference pref = findPreference(key);
@@ -76,7 +91,7 @@ public class SettingsActivity extends PreferenceActivity implements
 		}
 	}
 
-	/*
+	/**
 	 * Carga la información de las preferencias del dir de dropbox Se realiza
 	 * aparte porque esta preferencia se realiza mediante un intent Y
 	 * PreferenceActivity no escucha ese evento
@@ -89,6 +104,9 @@ public class SettingsActivity extends PreferenceActivity implements
 		pref.setSummary(summary);
 	}
 
+	/**
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(View v) {
 

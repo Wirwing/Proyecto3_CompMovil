@@ -20,21 +20,39 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
 import com.mobeta.android.dslv.DragSortListView;
 
+/**
+ * Fragmento que muestra el ejercicio per se: La lista de sentencias a ordenar, el tiempo que ha transcurrido desde que el
+ * fragmento se muestra en pantalla y un boton para finalizar el ejercicio.
+ * 
+ */
 public class ExerciseFragment extends SherlockFragment {
 
+	/**
+	 * Las setencias del ejercicio como argumentos del Bundle
+	 */
 	public static final String STATEMENTS_PARAM = "STATEMENTS_PARAM";
 
 	private ArrayAdapter<String> adapter;
 	private ListView listView;
 	private Chronometer chronometer;
-
 	private ArrayList<Integer> keys;
-
 	private OnExerciseListener listener;
-
 	private String[] statements;
 
+	/**
+	 * Esta interfaz debe ser implementada por las actividades que llaman a este fragmento,
+	 * para poder comunicarse con la actividad.
+	 */
 	public interface OnExerciseListener {
+		
+		/**
+		 * Callback cuando un ejercicio se decide finalizar de resolver
+		 * 
+		 * @param Keys  El orden de la respuesta de las setencias
+		 * @param time El tiempo en milisegundos que tomo resolver el ejercicio
+		 *            
+		 * @return nothing
+		 */
 		public void onFinishExcercise(int[] keys, long time);
 	}
 
@@ -54,6 +72,14 @@ public class ExerciseFragment extends SherlockFragment {
 		}
 	};
 
+	/**
+	 * 
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
+	 * proveidos
+	 * 
+	 * @param statements	Sentencias a ordenar
+	 * @return Una nueva instancia del fragmento
+	 */
 	public static ExerciseFragment newInstance(String[] statements) {
 
 		ExerciseFragment fragment = new ExerciseFragment();
@@ -65,6 +91,9 @@ public class ExerciseFragment extends SherlockFragment {
 
 	}
 
+	/**
+	 * Al crear, checa si han sido pasados argumentos al fragmento
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,7 +102,16 @@ public class ExerciseFragment extends SherlockFragment {
 			statements = getArguments().getStringArray(STATEMENTS_PARAM);
 		}
 	}
-
+	
+	/**
+	 * Infla la vista raiz, obtiene los elementos vista que son nodos hijos de
+	 * esta raiz, les asigna los valores y listener a estos hijos.
+	 * 
+	 * Devuelve la vista inflada, que es establecida a este fragmente y
+	 * desplegada en pantalla.
+	 * 
+	 * @return view vista inflada.
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -116,6 +154,10 @@ public class ExerciseFragment extends SherlockFragment {
 
 	}
 
+	
+	/**
+	 * Obtener el callback a la actividad al adherirla a ella.
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -127,6 +169,9 @@ public class ExerciseFragment extends SherlockFragment {
 		}
 	}
 
+	/**
+	 * Al quitar el fragmento, quitar el callback a la actividad.
+	 */
 	@Override
 	public void onDetach() {
 		super.onDetach();

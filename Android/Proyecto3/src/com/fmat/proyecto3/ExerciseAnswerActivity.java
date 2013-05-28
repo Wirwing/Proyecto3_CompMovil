@@ -19,6 +19,15 @@ import com.fmat.proyecto3.service.ExercisePostService;
 import com.fmat.proyecto3.service.ExerciseRESTService;
 import com.fmat.proyecto3.utils.StatementSorter;
 
+/**
+ * Actividad cuando el ejercicio ha sido resuelto. Maneja los comentarios del
+ * mismo, e intenta enviar los resultados via Servicio, a los cuales escucha
+ * cuando envian un Broadcast indicando el estado de las peticiones e informa al
+ * usuario de las mismas.
+ * 
+ * @author Irving
+ * 
+ */
 public class ExerciseAnswerActivity extends BaseActivity implements
 		ExerciseResultFragment.OnResultListener {
 
@@ -37,6 +46,9 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 	private boolean answerAlreadyOnWS;
 	private boolean sendToDropbox;
 
+	/**
+	 * @see com.fmat.proyecto3.BaseActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,6 +73,10 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.fmat.proyecto3.fragment.ExerciseResultFragment.OnResultListener#onSendAnswer(java.lang.String,
+	 *      boolean)
+	 */
 	@Override
 	public void onSendAnswer(String comments, boolean sendToDropbox) {
 
@@ -95,6 +111,9 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see android.support.v4.app.FragmentActivity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -116,6 +135,9 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onPause()
+	 */
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
@@ -133,8 +155,19 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * Subclase de BroadcastReceiver que escucha las notificaciones de los
+	 * servicios.
+	 * 
+	 * @author Irving
+	 * 
+	 */
 	class SendAnswerReceiver extends BroadcastReceiver {
 
+		/**
+		 * Al recibir respuesta del servicio, le indica al usuario si hubo algun error, de otro modo inicia 
+		 * la subida del ejercicio a Dropbox
+		 */
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -149,10 +182,13 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 				if (sendToDropbox) {
 					startUpload();
 				} else {
-					
-					if(answerAlreadyOnWS)
-						Toast.makeText(ExerciseAnswerActivity.this, "Ya has enviado una respuesta para este ejercicio!", Toast.LENGTH_SHORT).show();
-					
+
+					if (answerAlreadyOnWS)
+						Toast.makeText(
+								ExerciseAnswerActivity.this,
+								"Ya has enviado una respuesta para este ejercicio!",
+								Toast.LENGTH_SHORT).show();
+
 					Intent mainIntent = new Intent(ExerciseAnswerActivity.this,
 							MainActivity.class);
 
@@ -188,8 +224,20 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * Subclase de BroadcastReceiver que escucha las notificaciones de los
+	 * servicios.
+	 * 
+	 * @author Irving
+	 * 
+	 */
 	class UploadToDropBoxReceiver extends BroadcastReceiver {
 
+		/**
+		 * Al finalizar el servicio de subida de ejercicio a Dropbox, indica al
+		 * usuario si fue correcto mandandolo a la pantalla principal; de otro
+		 * modo, le despliega el error en pantalla.
+		 */
 		@Override
 		public void onReceive(Context context, Intent intent) {
 

@@ -12,6 +12,10 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
 
+/**
+ * Fragmento que muestra la descripcion del ejercicio a resolver.
+ * 
+ */
 public class ExerciseDescriptionFragment extends SherlockFragment implements
 		OnClickListener {
 
@@ -23,22 +27,29 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 
 	private OnDescriptionListener listener;
 
+	/**
+	 * Esta interfaz debe ser implementada por las actividades que llaman a este fragmento,
+	 * para poder comunicarse con la actividad.
+	 */
 	public interface OnDescriptionListener {
-		// TODO: Update argument type and name
+		
+		/**
+		 * Callback cuando se decide iniciar el ejercicio
+		 *            
+		 * @return nothing
+		 */
 		public void onStartExcercise();
 	}
 
 	/**
-	 * Use this factory method to create a new instance of this fragment using
-	 * the provided parameters.
 	 * 
-	 * @param param1
-	 *            Parameter 1.
-	 * @param param2
-	 *            Parameter 2.
-	 * @return A new instance of fragment MainFragment.
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
+	 * proveidos
+	 * 
+	 * @param id	Id del ejercicio
+	 * @param description	Descripcion del ejercicio
+	 * @return Una nueva instancia del fragmento
 	 */
-	// TODO: Rename and change types and number of parameters
 	public static ExerciseDescriptionFragment newInstance(String id,
 			String description) {
 
@@ -55,6 +66,9 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Al crear, checa si han sido pasados argumentos al fragmento
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,6 +78,16 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 		}
 	}
 
+	
+	/**
+	 * Infla la vista raiz, obtiene los elementos vista que son nodos hijos de
+	 * esta raiz, les asigna los valores y listener a estos hijos.
+	 * 
+	 * Devuelve la vista inflada, que es establecida a este fragmente y
+	 * desplegada en pantalla.
+	 * 
+	 * @return view vista inflada.
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -81,6 +105,9 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 		return rootView;
 	}
 
+	/**
+	 * Obtener el callback a la actividad al adherirla a ella.
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -92,12 +119,18 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 		}
 	}
 
+	/**
+	 * Al quitar el fragmento, quitar el callback a la actividad.
+	 */
 	@Override
 	public void onDetach() {
 		super.onDetach();
 		listener = null;
 	}
 
+	/**
+	 * Llama al callback para iniciar el ejercicio
+	 */
 	@Override
 	public void onClick(View v) {
 		listener.onStartExcercise();

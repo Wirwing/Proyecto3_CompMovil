@@ -10,32 +10,23 @@ import android.widget.TextView;
 import com.fmat.proyecto3.R;
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass. Activities that
- * contain this fragment must implement the
- * {@link LoadingFragment.OnFragmentInteractionListener} interface to handle
- * interaction events. Use the {@link LoadingFragment#newInstance} factory
- * method to create an instance of this fragment.
- * 
+ * Fragmento que muestra un mensaje mientras se realiza una operacion asincrona
+ * larga.
  */
 public class LoadingFragment extends Fragment {
-	// TODO: Rename parameter arguments, choose names that match
-	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+	
 	private static final String MESSAGE_PARAM = "MESSAGE_PARAM";
 
-	// TODO: Rename and change types of parameters
 	private String message;
 
 	/**
-	 * Use this factory method to create a new instance of this fragment using
-	 * the provided parameters.
 	 * 
-	 * @param param1
-	 *            Parameter 1.
-	 * @param param2
-	 *            Parameter 2.
-	 * @return A new instance of fragment LoadingFragment.
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
+	 * proveidos
+	 * 
+	 * @param message	Mensaje indicativo
+	 * @return
 	 */
-	// TODO: Rename and change types and number of parameters
 	public static LoadingFragment newInstance(String message) {
 		LoadingFragment fragment = new LoadingFragment();
 		Bundle args = new Bundle();
@@ -48,6 +39,9 @@ public class LoadingFragment extends Fragment {
 		// Required empty public constructor
 	}
 
+	/**
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +50,9 @@ public class LoadingFragment extends Fragment {
 		}
 	}
 
+	/**
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -45,6 +45,9 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
 		this.mParent = parent;
 	}
 
+	/**
+	 * @see android.widget.ArrayAdapter#getView(int, android.view.View, android.view.ViewGroup)
+	 */
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 

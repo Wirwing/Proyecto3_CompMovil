@@ -15,12 +15,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass. Activities that
- * contain this fragment must implement the
- * {@link MainFragment.OnExerciseSelectedListener} interface to handle
- * interaction events. Use the {@link MainFragment#newInstance} factory method
- * to create an instance of this fragment.
- * 
+ * Un fragmento que muestra la pantalla principal de la aplicacion.
  */
 public class MainFragment extends SherlockFragment implements OnClickListener {
 
@@ -39,14 +34,15 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	private OnExerciseSelectedListener listener;
 
 	/**
-	 * Use this factory method to create a new instance of this fragment using
-	 * the provided parameters.
 	 * 
-	 * @param param1
-	 *            Parameter 1.
-	 * @param param2
-	 *            Parameter 2.
-	 * @return A new instance of fragment MainFragment.
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
+	 * proveidos
+	 * 
+	 * @param number	Matricula del estudiante
+	 * @param name		Nombre del estudiante
+	 * @param degree	Licenciatura del estudiante
+	 * 
+	 * @return Una nueva instancia del fragmento
 	 */
 	// TODO: Rename and change types and number of parameters
 	public static MainFragment newInstance(String number, String name,
@@ -63,10 +59,17 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		return fragment;
 	}
 
+	/**
+	 * Constructor
+	 */
 	public MainFragment() {
 		// Required empty public constructor
 	}
 
+	
+	/**
+	 * Al crear, checa si han sido pasados argumentos al fragmento
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,6 +80,15 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		}
 	}
 
+	/**
+	 * Infla la vista raiz, obtiene los elementos vista que son nodos hijos de
+	 * esta raiz, les asigna los valores y listener a estos hijos.
+	 * 
+	 * Devuelve la vista inflada, que es establecida a este fragmente y
+	 * desplegada en pantalla.
+	 * 
+	 * @return view vista inflada.
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -105,13 +117,9 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 	}
 
-	// TODO: Rename method, update argument and hook method into UI event
-	// public void onButtonPressed(Uri uri) {
-	// if (listener != null) {
-	// listener.onExerciseSelected(uri);
-	// }
-	// }
-
+	/**
+	 * Obtener el callback a la actividad al adherirla a ella.
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -123,6 +131,9 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		}
 	}
 
+	/**
+	 * Al quitar el fragmento, quitar el callback a la actividad.
+	 */
 	@Override
 	public void onDetach() {
 		super.onDetach();
@@ -130,19 +141,24 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	}
 
 	/**
-	 * This interface must be implemented by activities that contain this
-	 * fragment to allow an interaction in this fragment to be communicated to
-	 * the activity and potentially other fragments contained in that activity.
-	 * <p>
-	 * See the Android Training lesson <a href=
-	 * "http://developer.android.com/training/basics/fragments/communicating.html"
-	 * >Communicating with Other Fragments</a> for more information.
+	 * Esta interfaz debe ser implementada por las actividades que llaman a este
+	 * fragmento, para poder comunicarse con la actividad.
 	 */
 	public interface OnExerciseSelectedListener {
-		// TODO: Update argument type and name
+		/**
+		 * Callback cuando se elige un ejercicio
+		 * 
+		 * @param number
+		 *            Id del ejercicio
+		 * 
+		 * @return nothing
+		 */
 		public void onExerciseSelected(String number);
 	}
 
+	/**
+	 * Al dar click, iniciar la descarga del ejercicio por la actividad.
+	 */
 	@Override
 	public void onClick(View v) {
 
