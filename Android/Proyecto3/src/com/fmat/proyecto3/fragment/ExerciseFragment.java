@@ -5,8 +5,16 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
@@ -29,16 +38,31 @@ import com.mobeta.android.dslv.DragSortListView;
  * un boton para finalizar el ejercicio.
  * 
  */
-public class ExerciseFragment extends SherlockFragment {
+public class ExerciseFragment extends SherlockFragment implements
+		SensorEventListener {
+
+	private static final String TAG = ExerciseFragment.class.getName();
 
 	/**
 	 * Las setencias del ejercicio como argumentos del Bundle
 	 */
 	public static final String STATEMENTS_PARAM = "STATEMENTS_PARAM";
 
+	private final float UNDO_TOTAL_NOISE = (float) 25.0;
+	private final float UNDO_NOISE = (float) 10.0;
+
+	private float mLastX, mLastY;
+	private boolean mInitialized;
+	private SensorManager mSensorManager;
+	private Sensor mAccelerometer;
+
 	private ISorter sorter;
 
+	private boolean isDialogShown;
+
 	private LinkedList<PreviousSortToCareTaker> steps;
+
+	private ArrayAdapter<String> adapter;
 
 	private ListView listView;
 	private Chronometer chronometer;
@@ -69,9 +93,7 @@ public class ExerciseFragment extends SherlockFragment {
 		@Override
 		public void drop(int from, int to) {
 			if (from != to) {
-
 				steps.add(sorter.swap(from, to));
-
 			}
 		}
 	};
@@ -105,7 +127,32 @@ public class ExerciseFragment extends SherlockFragment {
 		if (getArguments() != null) {
 
 			statements = getArguments().getStringArray(STATEMENTS_PARAM);
+			isDialogShown = false;
+
 		}
+
+		mSensorManager = (SensorManager) getActivity().getSystemService(
+				Context.SENSOR_SERVICE);
+		mAccelerometer = mSensorManager
+				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+		mSensorManager.registerListener(this, mAccelerometer,
+				SensorManager.SENSOR_DELAY_NORMAL);
+
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		mSensorManager.unregisterListener(this);
 	}
 
 	/**
@@ -141,8 +188,6 @@ public class ExerciseFragment extends SherlockFragment {
 	}
 
 	private void setAdapterAndKeys() {
-
-		ArrayAdapter<String> adapter;
 
 		ArrayList<String> arrayList = new ArrayList<String>(
 				Arrays.asList(statements));
@@ -180,6 +225,132 @@ public class ExerciseFragment extends SherlockFragment {
 	public void onDetach() {
 		super.onDetach();
 		listener = null;
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+
+		float x = event.values[0];
+		float y = event.values[1];
+
+		if (!mInitialized) {
+
+			mLastX = x;
+			mLastY = y;
+			mInitialized = true;
+
+		} else {
+
+			float deltaX = Math.abs(mLastX - x);
+			float deltaY = Math.abs(mLastY - y);
+			if (deltaX < UNDO_TOTAL_NOISE)
+				deltaX = (float) 0.0;
+			if (deltaY < UNDO_TOTAL_NOISE)
+				deltaY = (float) 0.0;
+			mLastX = x;
+			mLastY = y;
+
+			if (x > UNDO_NOISE && deltaY == 0) {
+				undoStep();
+				return;
+			}
+
+			if (deltaY > 0)
+				undoAll();
+
+		}
+
+	}
+
+	private void undoStep() {
+
+		if (!isDialogShown) {
+
+			isDialogShown = true;
+
+			if (steps.size() == 0)
+				Toast.makeText(getActivity(),
+						"No hay movimientos para deshacer", Toast.LENGTH_SHORT);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage("¿Deseas deshacer movimiento?")
+					.setCancelable(false)
+					.setPositiveButton("Si",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+
+									sorter.restorePreviousSorting(steps
+											.removeLast());
+
+									isDialogShown = false;
+
+								}
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+
+									isDialogShown = false;
+
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
+
+		}
+	}
+
+	private void undoAll() {
+
+		if (!isDialogShown) {
+
+			isDialogShown = true;
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage("¿Deseas reiniciar ejercicio?")
+					.setCancelable(false)
+					.setPositiveButton("Si",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+
+									isDialogShown = false;
+									ArrayList<String> arrayList = new ArrayList<String>(
+											Arrays.asList(statements));
+
+									adapter = new ArrayAdapter<String>(
+											getActivity(),
+											R.layout.list_item_statement,
+											R.id.tv_statement, arrayList);
+									listView.setAdapter(adapter);
+
+									sorter = new Sorter(adapter);
+									steps.clear();
+
+								}
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+
+									isDialogShown = false;
+
+									dialog.cancel();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
 	}
 
 	private class OnFinishExerciseListener implements OnClickListener {

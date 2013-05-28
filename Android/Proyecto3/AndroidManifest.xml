@@ -60,6 +60,7 @@
 
         <activity
             android:name="com.fmat.proyecto3.ExerciseActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_exercise"
             android:noHistory="true" >
         </activity>

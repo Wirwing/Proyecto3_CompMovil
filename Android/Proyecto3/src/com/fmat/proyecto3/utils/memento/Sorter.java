@@ -9,9 +9,6 @@ public class Sorter implements ISorter {
 	private ArrayAdapter<String> adapter;
 	private ArrayList<Integer> keys;
 
-//	private int from;
-//	private int to;
-
 	public Sorter(ArrayAdapter<String> adapter) {
 
 		this.adapter = adapter;
@@ -26,11 +23,13 @@ public class Sorter implements ISorter {
 	@Override
 	public void restorePreviousSorting(PreviousSortToCareTaker memento) {
 
-		int oldFrom = ((PreviousSortToOriginator)memento).getFrom();
-		int oldTo = ((PreviousSortToOriginator)memento).getTo();
-		
-		swap(oldFrom, oldTo);
-		
+		int oldFrom = ((PreviousSortToOriginator) memento).getFrom();
+		int oldTo = ((PreviousSortToOriginator) memento).getTo();
+
+		if (oldFrom != oldTo) {
+			swap(oldFrom, oldTo);
+		}
+
 	}
 
 	@Override
