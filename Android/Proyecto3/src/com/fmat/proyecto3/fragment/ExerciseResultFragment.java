@@ -18,6 +18,15 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
 
+/**
+ * Fragmento que muestra el resultado del ejercicio, es decir, el orden de las sentencias 
+ * como el usuario las dispuso.
+ * 
+ * Resuelve los comentarios del ejercicio y se los pasa a al actividad para enviar todo al WS.
+ * 
+ * @author Irving
+ *
+ */
 public class ExerciseResultFragment extends SherlockFragment implements
 		OnClickListener {
 
@@ -35,23 +44,32 @@ public class ExerciseResultFragment extends SherlockFragment implements
 	private String comments;
 	
 	private CheckBox chx_dropbox;
-	
+
+	/**
+	 * Esta interfaz debe ser implementada por las actividades que llaman a este fragmento,
+	 * para poder comunicarse con la actividad.
+	 */
 	public interface OnResultListener {
-		// TODO: Update argument type and name
+		
+		/**
+		 * Enviar la respuesta con los comentarios
+		 * @param comments
+		 * @param sendToDropbox
+		 */
 		public void onSendAnswer(String comments, boolean sendToDropbox);
 	}
 
 	/**
-	 * Use this factory method to create a new instance of this fragment using
-	 * the provided parameters.
 	 * 
-	 * @param param1
-	 *            Parameter 1.
-	 * @param param2
-	 *            Parameter 2.
-	 * @return A new instance of fragment MainFragment.
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
+	 * proveidos
+	 * 
+	 * 
+	 * @param id					Id del ejercio
+	 * @param elapsedTimeInSeconds	Tiempo transcurrido
+	 * @param statements			Sentencias ya ordenadas.
+	 * @return
 	 */
-	// TODO: Rename and change types and number of parameters
 	public static ExerciseResultFragment newInstance(String id, int elapsedTimeInSeconds, String[] statements) {
 
 		long millis = TimeUnit.SECONDS.toMillis(elapsedTimeInSeconds);
@@ -77,6 +95,9 @@ public class ExerciseResultFragment extends SherlockFragment implements
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,6 +108,9 @@ public class ExerciseResultFragment extends SherlockFragment implements
 		}
 	}
 
+	/**
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -109,6 +133,9 @@ public class ExerciseResultFragment extends SherlockFragment implements
 		return rootView;
 	}
 
+	/**
+	 * @see com.actionbarsherlock.app.SherlockFragment#onAttach(android.app.Activity)
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -120,12 +147,18 @@ public class ExerciseResultFragment extends SherlockFragment implements
 		}
 	}
 
+	/**
+	 * @see com.actionbarsherlock.app.SherlockFragment#onDetach()
+	 */
 	@Override
 	public void onDetach() {
 		super.onDetach();
 		listener = null;
 	}
 
+	/**
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(View v) {
 		

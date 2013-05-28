@@ -11,13 +11,14 @@ public class TempFileHandler {
 
 	private static final String SEPARATOR = "###################################";
 
-	public static void createTempFile(BufferedWriter bw, Exercise exercise, ExerciseAnswer answer) throws IOException{
+	public static void createTempFile(BufferedWriter bw, Exercise exercise,
+			ExerciseAnswer answer) throws IOException {
 
 		String[] statements = StatementSorter.rearrangeStatementsByKeys(
 				exercise.getStatements(), answer.getAnswerKeys());
-		
+
 		long millis = TimeUnit.SECONDS.toMillis(answer.getDurationInSeconds());
-		
+
 		String elapsedTime = String.format(
 				"Tiempo: %d minutos, %d segundos",
 				TimeUnit.MILLISECONDS.toMinutes(millis),
@@ -25,8 +26,8 @@ public class TempFileHandler {
 						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 								.toMinutes(millis)));
 
-		//Datos estudiante
-		
+		// Datos estudiante
+
 		bw.append(SEPARATOR);
 		bw.newLine();
 		bw.append("Estudiante");
@@ -37,13 +38,13 @@ public class TempFileHandler {
 		bw.append("Nombre: " + answer.getStudentName());
 		bw.newLine();
 		bw.append("Licenciatura: " + answer.getCareer());
-		
+
 		bw.newLine();
 		bw.newLine();
 		bw.append(SEPARATOR);
 		bw.newLine();
 
-		//Datos Ejercicio
+		// Datos Ejercicio
 		bw.append("Ejercicio");
 		bw.newLine();
 		bw.append("ID: " + exercise.getId());
@@ -57,7 +58,7 @@ public class TempFileHandler {
 		bw.newLine();
 		bw.append("------------------------");
 		bw.newLine();
-		for(String statement : statements){
+		for (String statement : statements) {
 			bw.append(statement);
 			bw.newLine();
 			bw.newLine();
@@ -69,9 +70,9 @@ public class TempFileHandler {
 		bw.newLine();
 		bw.append(SEPARATOR);
 		bw.newLine();
-		
+
 		bw.flush();
 		bw.close();
-		
+
 	}
 }

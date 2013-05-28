@@ -43,6 +43,9 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 	private String KEY_PREF;
 	private String SECRET_PREF;
 
+	/**
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +73,9 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 
 	}
 
+	/**
+	 * @see com.actionbarsherlock.app.SherlockListActivity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == android.R.id.home) {
@@ -79,6 +85,9 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * @see android.app.ListActivity#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Entry selectedEntry = mAdapter.getItem(position);
@@ -89,6 +98,9 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		}
 	}
 
+	/**
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		AndroidAuthSession session = mDBApi.getSession();
@@ -110,6 +122,9 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		super.onResume();
 	}
 
+	/**
+	 * @see android.app.Activity#onBackPressed()
+	 */
 	@Override
 	public void onBackPressed() {
 		if (mCurrentDir != null && !mCurrentDir.path.equals("/")) {
@@ -119,6 +134,9 @@ public class DirectoryChooserActivity extends SherlockListActivity {
 		}
 	}
 
+	/**
+	 * @see android.app.Activity#onRetainNonConfigurationInstance()
+	 */
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		return mCurrentDir;

@@ -18,6 +18,12 @@ import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.service.ExerciseGetService;
 import com.fmat.proyecto3.service.ExerciseRESTService;
 
+/**
+ * Clase principal que administra las opciones principales de la aplicacion: Iniciar un ejercicio y 
+ * establecer configuracion.
+ * @author Irving
+ *
+ */
 public class MainActivity extends BaseActivity implements
 		MainFragment.OnExerciseSelectedListener {
 
@@ -28,6 +34,9 @@ public class MainActivity extends BaseActivity implements
 	private ExerciseReceiver receiver;
 	private IntentFilter filter;
 
+	/**
+	 * @see com.fmat.proyecto3.BaseActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,6 +45,9 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see android.support.v4.app.FragmentActivity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -64,7 +76,9 @@ public class MainActivity extends BaseActivity implements
 		return true;
 	}
 
-	// Para fines de prueba se configuración
+	/**
+	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onMenuItemSelected(int, android.view.MenuItem)
+	 */
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
@@ -78,6 +92,9 @@ public class MainActivity extends BaseActivity implements
 		return true;
 	}
 
+	/**
+	 * @see com.fmat.proyecto3.BaseActivity#onActivityResult(int, int, android.content.Intent)
+	 */
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
 		// TODO Auto-generated method stub
@@ -93,6 +110,9 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onPause()
+	 */
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
@@ -105,6 +125,9 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.fmat.proyecto3.fragment.MainFragment.OnExerciseSelectedListener#onExerciseSelected(java.lang.String)
+	 */
 	@Override
 	public void onExerciseSelected(String number) {
 
@@ -128,8 +151,16 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * BroadcastReceiver que escucha al servicio que solicita el ejercicio.
+	 * @author Irving
+	 *
+	 */
 	class ExerciseReceiver extends BroadcastReceiver {
 
+		/**
+		 * Notifica al usuario si el ejercicio no se pudo encontrar, de otra forma inicia una actividad con el mismo.
+		 */
 		@Override
 		public void onReceive(Context context, Intent intent) {
 

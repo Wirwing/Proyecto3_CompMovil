@@ -5,8 +5,19 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Bean que contiene los datos del resultado del ejercicio. Implementa la
+ * interaz {@link Parcelable} para poder ser enviado entre actividades y
+ * Servicios.
+ * 
+ * @author Irving
+ * 
+ */
 public class ExerciseAnswer implements Parcelable {
 
+	/**
+	 * Identificador cuando se pasa la respuesta dentro de un Bundle
+	 */
 	public static final String EXTRA_EXERCISE_ANSWER = "EXTRA_EXERCISE_ANSWER";
 	
 	@SerializedName("idEjercicio")
