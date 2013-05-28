@@ -21,8 +21,9 @@ class ExerciseAPI implements APIProvider
             $exerciseDate = null;
             if ($exercise->date != null) {
                 date_default_timezone_set('America/Mexico_City');
-                $date = new DateTime($exercise->date);
-                $exerciseDate = $date->format('U');
+                //$date = new DateTime($exercise->date);
+                //$exerciseDate = intval($date->format('U'));
+                $exerciseDate = strtotime($exercise->date);
             }
             $exArray['fecha'] = $exerciseDate;
 
@@ -52,8 +53,9 @@ class ExerciseAPI implements APIProvider
             $response['fecha'] = null;
             if ($exercise->date != null) {
                 date_default_timezone_set('America/Mexico_City');
-                $date = new DateTime($exercise->date);
-                $response['fecha'] = $date->format('U');
+                //$date = new DateTime($exercise->date);
+                //$response['fecha'] = $date->format('U');
+                $response['fecha'] = strtotime($exercise->date);
             }
 
             $response['lugar'] = null;
