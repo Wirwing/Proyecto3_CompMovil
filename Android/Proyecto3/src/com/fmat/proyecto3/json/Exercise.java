@@ -19,11 +19,18 @@ public class Exercise implements Parcelable {
 	 * Identificador cuando se pasa el ejercicio dentro de un Bundle
 	 */
 	public static final String EXTRA_EXERCISE = "EXTRA_EXERCISE";
+	public static final String EXTRA_EXERCISES = "EXTRA_EXERCISES";
 
 	private String id;
 
 	@SerializedName("titulo")
 	private String title;
+
+	@SerializedName("fecha")
+	private long date;
+
+	@SerializedName("lugar")
+	private double[] place;
 
 	@SerializedName("descripcion")
 	private String description;
@@ -41,7 +48,9 @@ public class Exercise implements Parcelable {
 		title = source.readString();
 		description = source.readString();
 		statements = source.createStringArray();
-
+		date = source.readLong();
+		place = source.createDoubleArray();
+		
 	}
 
 	public String getId() {
@@ -58,6 +67,22 @@ public class Exercise implements Parcelable {
 
 	public void setTitle(String titulo) {
 		this.title = titulo;
+	}
+
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long fecha) {
+		this.date = fecha;
+	}
+
+	public double[] getPlace() {
+		return place;
+	}
+
+	public void setPlace(double[] place) {
+		this.place = place;
 	}
 
 	public String getDescription() {
@@ -89,6 +114,13 @@ public class Exercise implements Parcelable {
 		dest.writeString(title);
 		dest.writeString(description);
 		dest.writeStringArray(statements);
+		dest.writeLong(date);
+		dest.writeDoubleArray(place);
+	}
+
+	@Override
+	public String toString() {
+		return title;
 	}
 
 	/**

@@ -21,7 +21,7 @@
     <string name="matricula_description">Matrícula</string>
     <string name="name_description">Nombre</string>
     <string name="degree_description">Licenciatura</string>
-    <string name="exercise_description">Ejercicio #</string>
+    <string name="exercise_description">Ejercicio: </string>
     <string name="play_description">Jugar</string>
     <string name="exercise">Ejercicio</string>
     <string name="exercise_dummy_description">Banana banana banana banana banana</string>
@@ -58,5 +58,6 @@
     <string name="pref_server_send_exercise_title">Método API para enviar respuesta de ejercicio</string>
     <string name="pref_dropbox_dir_title">Directorio de dropbox</string>
     <string name="sentences">Sentencias</string>
+    <string name="date_description">Fecha agendada:</string>
 
 </resources>

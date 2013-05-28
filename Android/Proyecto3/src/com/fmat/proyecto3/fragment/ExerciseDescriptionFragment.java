@@ -14,7 +14,6 @@ import com.fmat.proyecto3.R;
 
 /**
  * Fragmento que muestra la descripcion del ejercicio a resolver.
- * 
  */
 public class ExerciseDescriptionFragment extends SherlockFragment implements
 		OnClickListener {

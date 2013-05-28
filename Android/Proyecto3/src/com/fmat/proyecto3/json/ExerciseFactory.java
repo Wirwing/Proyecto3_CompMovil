@@ -63,4 +63,25 @@ public class ExerciseFactory {
 
 	}
 	
+	/**
+	 * 
+	 * Crea un objeto ejercicio desde la cadena de texto JSON.
+	 * 
+	 * @param responseEntity JSON recibido
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	public static Exercise[] unmarshallExercises(HttpEntity responseEntity)
+			throws IllegalStateException, IOException {
+
+		InputStreamReader contentReader = new InputStreamReader(
+				responseEntity.getContent());
+
+		Exercise[] exercises = gson.fromJson(contentReader, Exercise[].class);
+
+		return exercises;
+
+	}
+	
 }

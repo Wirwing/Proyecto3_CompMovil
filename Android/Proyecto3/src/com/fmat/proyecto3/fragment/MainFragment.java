@@ -1,52 +1,79 @@
 package com.fmat.proyecto3.fragment;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.fmat.proyecto3.R;
+import com.fmat.proyecto3.json.Exercise;
+import com.fmat.proyecto3.utils.animation.MarkerPulseAnimation;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Un fragmento que muestra la pantalla principal de la aplicacion.
  */
 public class MainFragment extends SherlockFragment implements OnClickListener {
 
-	private static final String STUDENT_NUMBER_PARAM = "STUDENT_NUMBER_PARAM";
+	private static final String TAG = MainFragment.class.getName();
 
-	// TODO: Rename parameter arguments, choose names that match
-	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+	private static final String STUDENT_NUMBER_PARAM = "STUDENT_NUMBER_PARAM";
 	private static final String STUDENT_NAME_PARAM = "STUDENT_NAME_PARAM";
 	private static final String DEGREE_PARAM = "DEGREE_PARAM";
+	private static final String EXERCISES_PARAM = "EXERCISES_PARAM";
 
 	private String number;
 	private String name;
 	private String degree;
+	private ArrayList<Exercise> exercises;
 
-	private EditText et_exercise_number;
+	private TextView tv_exercise_date;
+
 	private OnExerciseSelectedListener listener;
+	private Spinner sp_exercises;
+
+	private LatLng currentExercisePoint;
+	private GoogleMap map;
+
+	private MarkerPulseAnimation animator;
 
 	/**
 	 * 
-	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
-	 * proveidos
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento
+	 * usandos los parametros proveidos
 	 * 
-	 * @param number	Matricula del estudiante
-	 * @param name		Nombre del estudiante
-	 * @param degree	Licenciatura del estudiante
+	 * @param number
+	 *            Matricula del estudiante
+	 * @param name
+	 *            Nombre del estudiante
+	 * @param degree
+	 *            Licenciatura del estudiante
 	 * 
 	 * @return Una nueva instancia del fragmento
 	 */
 	// TODO: Rename and change types and number of parameters
 	public static MainFragment newInstance(String number, String name,
-			String degree) {
+			String degree, ArrayList<Exercise> exercises) {
 
 		MainFragment fragment = new MainFragment();
 
@@ -55,6 +82,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		args.putString(STUDENT_NUMBER_PARAM, number);
 		args.putString(STUDENT_NAME_PARAM, name);
 		args.putString(DEGREE_PARAM, degree);
+		args.putParcelableArrayList(EXERCISES_PARAM, exercises);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -66,7 +94,6 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		// Required empty public constructor
 	}
 
-	
 	/**
 	 * Al crear, checa si han sido pasados argumentos al fragmento
 	 */
@@ -77,6 +104,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 			name = getArguments().getString(STUDENT_NAME_PARAM);
 			number = getArguments().getString(STUDENT_NUMBER_PARAM);
 			degree = getArguments().getString(DEGREE_PARAM);
+			exercises = getArguments().getParcelableArrayList(EXERCISES_PARAM);
 		}
 	}
 
@@ -112,8 +140,66 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		((Button) rootView.findViewById(R.id.btn_play))
 				.setOnClickListener(this);
 
-		et_exercise_number = (EditText) rootView
-				.findViewById(R.id.et_excercise_number);
+		tv_exercise_date = (TextView) rootView
+				.findViewById(R.id.tv_exercise_date);
+
+		sp_exercises = (Spinner) rootView.findViewById(R.id.sp_excercise);
+
+		ArrayAdapter<Exercise> adapter = new ArrayAdapter<Exercise>(
+				getActivity(), android.R.layout.simple_spinner_item, exercises);
+
+		sp_exercises.setAdapter(adapter);
+
+		FragmentManager manager = ((SherlockFragmentActivity) getActivity())
+				.getSupportFragmentManager();
+
+		map = ((SupportMapFragment) manager.findFragmentById(R.id.exercise_map))
+				.getMap();
+
+		map.setMyLocationEnabled(true);
+
+		animator = new MarkerPulseAnimation(map);
+
+		sp_exercises.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+
+				animator.cancel();
+
+				Exercise selected = exercises.get(position);
+
+				String dateString = null;
+				if (selected.getDate() * 1000 > 0) {
+					dateString = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy")
+							.format(new Date(selected.getDate() * 1000));
+				} else {
+					dateString = "Hora no establecida.";
+				}
+
+				tv_exercise_date.setText(dateString);
+
+				if (selected.getPlace() != null) {
+
+					currentExercisePoint = new LatLng(selected.getPlace()[0],
+							selected.getPlace()[1]);
+
+					double radius = selected.getPlace()[2];
+
+					animator.animate(currentExercisePoint, radius);
+
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
 
 	}
 
@@ -153,7 +239,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		 * 
 		 * @return nothing
 		 */
-		public void onExerciseSelected(String number);
+		public void onExerciseSelected(Exercise exercise);
 	}
 
 	/**
@@ -162,14 +248,20 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 
-		String number = et_exercise_number.getText().toString();
+		Exercise selected = (Exercise) sp_exercises.getSelectedItem();
 
-		if (number.isEmpty()) {
+		if (selected == null) {
 			Toast.makeText(getActivity(), "Selecciona un ejercicio primero",
 					Toast.LENGTH_SHORT).show();
-		} else
-			listener.onExerciseSelected(number);
+		} else {
+			listener.onExerciseSelected(selected);
+		}
+	}
 
+	public void onLocationChanged(Location location) {
+		Log.i(TAG,
+				"New location: " + location.getLatitude() + ", "
+						+ location.getLongitude());
 	}
 
 }

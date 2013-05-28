@@ -66,45 +66,92 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="30dp"
             android:text="@string/matricula_description" />
-
     </RelativeLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="14dp"
+        android:background="@android:color/darker_gray" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/relativeLayout1"
+        android:layout_below="@+id/separator"
         android:layout_marginTop="22dp" >
 
         <TextView
             android:id="@+id/tv_excercise_number_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/et_excercise_number"
-            android:layout_alignBottom="@+id/et_excercise_number"
+            android:layout_alignBaseline="@+id/sp_excercise"
+            android:layout_alignBottom="@+id/sp_excercise"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="36dp"
             android:text="@string/exercise_description" />
 
-        <EditText
-            android:id="@+id/et_excercise_number"
+        <Spinner
+            android:id="@+id/sp_excercise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@+id/tv_excercise_number_desc"
-            android:ems="5"
-            android:inputType="numberSigned" />
+            android:layout_marginLeft="36dp"
+            android:layout_toRightOf="@+id/tv_excercise_number_desc" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/tv_excercise_number_desc"
+            android:layout_below="@+id/tv_excercise_number_desc"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="36dp"
+            android:text="@string/date_description" />
+
+        <fragment
+            android:id="@+id/exercise_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView1"
+            android:layout_marginBottom="50dp"
+            android:layout_weight=".4" />
+
+        <TextView
+            android:id="@+id/tv_exercise_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/sp_excercise"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/textView1"
+            android:layout_marginRight="22dp"
+            android:layout_marginTop="17dp"
+            android:text="TextView" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@android:style/ButtonBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btn_play"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_excercise_number"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
+            android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
+            android:layout_weight="1"
             android:text="@string/play_description" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
