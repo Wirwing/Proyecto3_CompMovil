@@ -270,13 +270,12 @@ public class ExerciseFragment extends SherlockFragment implements
 
 	private void undoStep() {
 
-		if (!isDialogShown) {
+		if (!steps.isEmpty()) {
+
+			if (isDialogShown)
+				return;
 
 			isDialogShown = true;
-
-			if (steps.size() == 0)
-				Toast.makeText(getActivity(),
-						"No hay movimientos para deshacer", Toast.LENGTH_SHORT);
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			builder.setMessage("¿Deseas deshacer movimiento?")
@@ -306,6 +305,9 @@ public class ExerciseFragment extends SherlockFragment implements
 			AlertDialog alert = builder.create();
 			alert.show();
 
+		} else {
+			Toast.makeText(getActivity(), "No hay movimientos para deshacer",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -314,7 +316,7 @@ public class ExerciseFragment extends SherlockFragment implements
 		if (!isDialogShown) {
 
 			isDialogShown = true;
-			
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			builder.setMessage("¿Deseas reiniciar ejercicio?")
 					.setCancelable(false)
