@@ -2,7 +2,7 @@ package com.fmat.proyecto3.fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,11 +18,15 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.fmat.proyecto3.R;
+import com.fmat.proyecto3.utils.memento.ISorter;
+import com.fmat.proyecto3.utils.memento.PreviousSortToCareTaker;
+import com.fmat.proyecto3.utils.memento.Sorter;
 import com.mobeta.android.dslv.DragSortListView;
 
 /**
- * Fragmento que muestra el ejercicio per se: La lista de sentencias a ordenar, el tiempo que ha transcurrido desde que el
- * fragmento se muestra en pantalla y un boton para finalizar el ejercicio.
+ * Fragmento que muestra el ejercicio per se: La lista de sentencias a ordenar,
+ * el tiempo que ha transcurrido desde que el fragmento se muestra en pantalla y
+ * un boton para finalizar el ejercicio.
  * 
  */
 public class ExerciseFragment extends SherlockFragment {
@@ -32,25 +36,30 @@ public class ExerciseFragment extends SherlockFragment {
 	 */
 	public static final String STATEMENTS_PARAM = "STATEMENTS_PARAM";
 
-	private ArrayAdapter<String> adapter;
+	private ISorter sorter;
+
+	private LinkedList<PreviousSortToCareTaker> steps;
+
 	private ListView listView;
 	private Chronometer chronometer;
-	private ArrayList<Integer> keys;
+
 	private OnExerciseListener listener;
 	private String[] statements;
 
 	/**
-	 * Esta interfaz debe ser implementada por las actividades que llaman a este fragmento,
-	 * para poder comunicarse con la actividad.
+	 * Esta interfaz debe ser implementada por las actividades que llaman a este
+	 * fragmento, para poder comunicarse con la actividad.
 	 */
 	public interface OnExerciseListener {
-		
+
 		/**
 		 * Callback cuando un ejercicio se decide finalizar de resolver
 		 * 
-		 * @param Keys  El orden de la respuesta de las setencias
-		 * @param time El tiempo en milisegundos que tomo resolver el ejercicio
-		 *            
+		 * @param Keys
+		 *            El orden de la respuesta de las setencias
+		 * @param time
+		 *            El tiempo en milisegundos que tomo resolver el ejercicio
+		 * 
 		 * @return nothing
 		 */
 		public void onFinishExcercise(int[] keys, long time);
@@ -60,24 +69,20 @@ public class ExerciseFragment extends SherlockFragment {
 		@Override
 		public void drop(int from, int to) {
 			if (from != to) {
-				
-				Integer key = keys.get(from);
-				keys.remove(key);
-				keys.add(to, key);
-				
-				String item = adapter.getItem(from);
-				adapter.remove(item);
-				adapter.insert(item, to);
+
+				steps.add(sorter.swap(from, to));
+
 			}
 		}
 	};
 
 	/**
 	 * 
-	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
-	 * proveidos
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento
+	 * usandos los parametros proveidos
 	 * 
-	 * @param statements	Sentencias a ordenar
+	 * @param statements
+	 *            Sentencias a ordenar
 	 * @return Una nueva instancia del fragmento
 	 */
 	public static ExerciseFragment newInstance(String[] statements) {
@@ -102,7 +107,7 @@ public class ExerciseFragment extends SherlockFragment {
 			statements = getArguments().getStringArray(STATEMENTS_PARAM);
 		}
 	}
-	
+
 	/**
 	 * Infla la vista raiz, obtiene los elementos vista que son nodos hijos de
 	 * esta raiz, les asigna los valores y listener a estos hijos.
@@ -137,16 +142,16 @@ public class ExerciseFragment extends SherlockFragment {
 
 	private void setAdapterAndKeys() {
 
+		ArrayAdapter<String> adapter;
+
 		ArrayList<String> arrayList = new ArrayList<String>(
 				Arrays.asList(statements));
 
-		keys = new ArrayList<Integer>();
-		for (int i = 0; i < arrayList.size(); i++) {
-			keys.add(i);
-		}
-
 		adapter = new ArrayAdapter<String>(getActivity(),
 				R.layout.list_item_statement, R.id.tv_statement, arrayList);
+
+		sorter = new Sorter(adapter);
+		steps = new LinkedList<PreviousSortToCareTaker>();
 
 		listView.setAdapter(adapter);
 		((DragSortListView) listView).setDropListener(onDrop);
@@ -154,7 +159,6 @@ public class ExerciseFragment extends SherlockFragment {
 
 	}
 
-	
 	/**
 	 * Obtener el callback a la actividad al adherirla a ella.
 	 */
@@ -188,12 +192,9 @@ public class ExerciseFragment extends SherlockFragment {
 			long elapsedMillis = SystemClock.elapsedRealtime()
 					- chronometer.getBase();
 
-			int[] ret = new int[keys.size()];
-			int i = 0;
-			for (Integer e : keys)
-				ret[i++] = e.intValue();
+			int[] keys = sorter.getKeys();
 
-			listener.onFinishExcercise(ret, elapsedMillis);
+			listener.onFinishExcercise(keys, elapsedMillis);
 		}
 
 	}

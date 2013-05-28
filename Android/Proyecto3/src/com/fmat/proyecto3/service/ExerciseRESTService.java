@@ -33,6 +33,6 @@ public abstract class ExerciseRESTService extends IntentService {
 	}
 
 	protected boolean hasExtras() {
-		return (extras == null || url == null)? false : true;
+		return (url == null)? false : true;
 	}
 }
