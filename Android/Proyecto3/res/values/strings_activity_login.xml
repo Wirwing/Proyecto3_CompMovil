@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="title_activity_login">Todoist Login</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_register">Ingresar</string>
+    <string name="action_sign_in_short">Ingresar</string>
+    <string name="login_progress_signing_in">Ingresando&#8230;</string>
+    <string name="error_invalid_email">Este email es inválido</string>
+    <string name="error_invalid_password">La contraseña es muy corta</string>
+    <string name="error_incorrect_password">El usuario/contraseña es incorrecto</string>
+    <string name="error_field_required">Este campo es necesario</string>
+
+</resources>

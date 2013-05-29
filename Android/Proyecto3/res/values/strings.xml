@@ -36,11 +36,15 @@
     <!-- Settings -->
     <string name="title_activity_settings">Configuración</string>
     <string name="title_activity_dropbox_chooser">Sel. directorio dropbox</string>
+    <string name="title_activity_todoist_chooser">Sel. proyecto todoist</string>
     <string name="folder_select">Usar</string>
     <string name="up">Arriba</string>
     <string name="pref_student_settings_title">Config. de alumno</string>
     <string name="pref_server_settings_title">Config. de servidor de webservice</string>
     <string name="pref_dropbox_settings_title">Config. de Dropbox</string>
+    <string name="pref_clear_dropbox_title">Borrar cuenta de dropbox</string>
+    <string name="pref_todoist_settings_title">Config. de Todoist</string>
+    <string name="pref_clear_todoist_title">Borrar cuenta de Todoist</string>
     <string name="not_set">Sin definir</string>
     <string name="pref_student_id">student_id</string>
  <!-- (matricula) -->
@@ -59,5 +63,11 @@
     <string name="pref_dropbox_dir_title">Directorio de dropbox</string>
     <string name="sentences">Sentencias</string>
     <string name="date_description">Fecha agendada:</string>
+    <string name="pref_clear_dropbox">clear_dopbox</string>
+    <string name="pref_clear_todoist">clear_todoist</string>
+    
+    <string name="pref_todoist_token">todoist_token</string>
+    <string name="pref_todoist_project_id">todoist_project_id</string>
+    <string name="pref_todoist_project_name">todoist_project_name</string>
 
 </resources>

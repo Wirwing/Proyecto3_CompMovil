@@ -38,12 +38,25 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:key="pref_dropbox_settings"
-        android:title="@string/pref_dropbox_dir_title" >
+        android:title="@string/pref_dropbox_settings_title" >
         <Preference
             android:key="@string/pref_dropbox_dir"
-            android:title="Directorio de dropbox" >
+            android:title="@string/pref_dropbox_dir_title" >
             <intent android:action=".activites.DropboxSelector" />
         </Preference>
+        <Preference android:key="@string/pref_clear_dropbox" 
+            android:title="@string/pref_clear_dropbox_title"></Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_todoist_settings"
+        android:title="@string/pref_todoist_settings_title" >
+        <Preference
+            android:key="@string/pref_todoist_project_name"
+            android:title="Projecto de todoist" >
+            <intent android:action=".activites.TodoistSelector" />
+        </Preference>
+        <Preference android:key="@string/pref_clear_todoist"
+            android:title="@string/pref_clear_todoist_title" ></Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>

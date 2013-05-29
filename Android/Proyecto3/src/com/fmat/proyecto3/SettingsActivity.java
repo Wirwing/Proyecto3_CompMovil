@@ -9,6 +9,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,8 +34,8 @@ public class SettingsActivity extends PreferenceActivity implements
 		addPreferencesFromResource(R.xml.preferences);
 		setContentView(R.layout.activity_preferences);
 
-		((Button) findViewById(R.id.bnt_clear_dropbox))
-				.setOnClickListener(this);
+		//((Button) findViewById(R.id.bnt_clear_dropbox))
+			//	.setOnClickListener(this);
 
 		SharedPreferences preferences = getPreferenceScreen()
 				.getSharedPreferences();
@@ -51,10 +52,33 @@ public class SettingsActivity extends PreferenceActivity implements
 			Preference preference = findPreference(settingKey);
 			preference.setSummary(preferences.getString(settingKey, notSet));
 		}
+
+		Preference clearTodoistPref = findPreference(getString(R.string.pref_clear_todoist));
+		clearTodoistPref
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(Preference preference) {
+						clearTodoistInfo();
+						loadTodoistSettingSummary();
+						return false;
+					}
+				});
+		
+		Preference clearDropboxPref = findPreference(getString(R.string.pref_clear_dropbox));
+		clearDropboxPref
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(Preference preference) {
+						clearDropboxInfo();
+						loadDropboxSettingSummary();
+						return false;
+					}
+				});
 	}
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -63,10 +87,12 @@ public class SettingsActivity extends PreferenceActivity implements
 		getPreferenceScreen().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);
 		loadDropboxSettingSummary();
+		loadTodoistSettingSummary();
 	}
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	public void onPause() {
@@ -77,7 +103,9 @@ public class SettingsActivity extends PreferenceActivity implements
 
 	/**
 	 * (non-Javadoc)
-	 * @see android.content.SharedPreferences.OnSharedPreferenceChangeListener#onSharedPreferenceChanged(android.content.SharedPreferences, java.lang.String)
+	 * 
+	 * @see android.content.SharedPreferences.OnSharedPreferenceChangeListener#onSharedPreferenceChanged(android.content.SharedPreferences,
+	 *      java.lang.String)
 	 */
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
@@ -105,6 +133,55 @@ public class SettingsActivity extends PreferenceActivity implements
 	}
 
 	/**
+	 * Carga la información de las preferencias de todoist Se realiza aparte
+	 * porque esta preferencia se realiza mediante un intent Y
+	 * PreferenceActivity no escucha ese evento
+	 */
+	private void loadTodoistSettingSummary() {
+		String projectKey = getString(R.string.pref_todoist_project_name);
+		Preference pref = findPreference(projectKey);
+		String summary = getPreferenceScreen().getSharedPreferences()
+				.getString(projectKey, getString(R.string.not_set));
+		pref.setSummary(summary);
+	}
+
+	private void clearDropboxInfo() {
+		String key = getString(R.string.dropbox_access_key);
+		String secret = getString(R.string.dropbox_access_secret);
+
+		String folder = getString(R.string.pref_dropbox_dir);
+
+		Editor editor = getPreferenceScreen().getSharedPreferences().edit();
+		editor.remove(key);
+		editor.remove(secret);
+		editor.remove(folder);
+
+		editor.commit();
+
+		Preference pref = findPreference(folder);
+		String summary = getString(R.string.not_set);
+		pref.setSummary(summary);
+	}
+
+	private void clearTodoistInfo() {
+		String token = getString(R.string.pref_todoist_token);
+		String projectId = getString(R.string.pref_todoist_project_id);
+		String projectName = getString(R.string.pref_todoist_project_name);
+
+		Editor editor = getPreferenceScreen().getSharedPreferences().edit();
+		editor.remove(token);
+		editor.remove(projectId);
+		editor.remove(projectName);
+
+		editor.commit();
+
+		Preference pref = findPreference(projectName);
+		String summary = getString(R.string.not_set);
+		pref.setSummary(summary);
+
+	}
+
+	/**
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
 	@Override
@@ -124,8 +201,9 @@ public class SettingsActivity extends PreferenceActivity implements
 
 		Preference pref = findPreference(folder);
 		String summary = getPreferenceScreen().getSharedPreferences()
-				.getString(getString(R.string.not_set), getString(R.string.not_set));
+				.getString(getString(R.string.not_set),
+						getString(R.string.not_set));
 		pref.setSummary(summary);
-		
+
 	}
 }

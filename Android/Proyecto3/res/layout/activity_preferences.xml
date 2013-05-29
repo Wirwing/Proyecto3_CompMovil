@@ -9,10 +9,10 @@
         android:layout_height="80dp"
         android:background="@color/abs__bright_foreground_disabled_holo_dark"
         android:gravity="center"
-        android:text="Prerencias"
+        android:text="Preferencias"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
-     <Button
+     <!--<Button
          android:id="@+id/bnt_clear_dropbox"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
          android:layout_marginLeft="20dp"
          android:layout_marginRight="20dp"
          android:layout_marginTop="10dp"
-         android:text="Borrar Cuenta de Dropbox" />
+         android:text="Borrar Cuenta de Dropbox" />-->
 
     <ListView android:id="@android:id/list"
               android:layout_width="fill_parent"

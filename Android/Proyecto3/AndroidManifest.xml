@@ -12,31 +12,30 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    
+
     <permission
         android:name="com.fmat.proyecto3.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-feature android:glEsVersion="0x00020000"
-              android:required="true"/>
-    
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
-        
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCjqchsfgCirsBDsHxPuJpGSM10PzdN8CY" />
-        
+            android:value="AIzaSyCv3jwoDVRVkrz2s-eykCO1QGAOk4jwBww" />
+
         <activity
             android:name="com.fmat.proyecto3.MainActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,7 +47,6 @@
             android:name="com.fmat.proyecto3.service.ExerciseGetService"
             android:enabled="true"
             android:exported="false" />
-
         <service
             android:name="com.fmat.proyecto3.service.DropboxUploadService"
             android:enabled="true"
@@ -57,12 +55,16 @@
             android:name="com.fmat.proyecto3.service.ExercisePostService"
             android:enabled="true"
             android:exported="false" />
+        <service
+            android:name="com.fmat.proyecto3.todoist.TodoistService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity
             android:name="com.fmat.proyecto3.ExerciseActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_exercise"
-            android:noHistory="true" >
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.fmat.proyecto3.SettingsActivity"
@@ -92,13 +94,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ExerciseAnswerActivity"
+            android:name="com.fmat.proyecto3.ExerciseAnswerActivity"
             android:noHistory="true"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name="DropboxCredentialsActivity"
+            android:name="com.fmat.proyecto3.DropboxCredentialsActivity"
             android:noHistory="true" >
+        </activity>
+        <activity
+            android:name="com.fmat.proyecto3.todoist.ProjectChooserActivity"
+            android:label="@string/title_activity_todoist_chooser"
+            android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+            <intent-filter>
+                <action android:name=".activites.TodoistSelector" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.fmat.proyecto3.todoist.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
     </application>
 
