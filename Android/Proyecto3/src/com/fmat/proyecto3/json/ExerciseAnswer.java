@@ -19,7 +19,7 @@ public class ExerciseAnswer implements Parcelable {
 	 * Identificador cuando se pasa la respuesta dentro de un Bundle
 	 */
 	public static final String EXTRA_EXERCISE_ANSWER = "EXTRA_EXERCISE_ANSWER";
-	
+
 	@SerializedName("idEjercicio")
 	private String id;
 
@@ -41,6 +41,12 @@ public class ExerciseAnswer implements Parcelable {
 	@SerializedName("comentarios")
 	private String comments;
 
+	@SerializedName("fecha")
+	private long date;
+
+	@SerializedName("lugar")
+	private double[] place;
+
 	public ExerciseAnswer() {
 		// TODO Auto-generated constructor stub
 	}
@@ -54,9 +60,11 @@ public class ExerciseAnswer implements Parcelable {
 		durationInSeconds = source.readInt();
 		answerKeys = source.createIntArray();
 		comments = source.readString();
+		date = source.readLong();
+		place = source.createDoubleArray();
 
 	}
-	
+
 	public String getStudentName() {
 		return studentName;
 	}
@@ -113,6 +121,22 @@ public class ExerciseAnswer implements Parcelable {
 		this.comments = comments;
 	}
 
+	public void setDate(long date) {
+		this.date = date;
+	}
+
+	public void setPlace(double[] place) {
+		this.place = place;
+	}
+
+	public long getDate() {
+		return date;
+	}
+
+	public double[] getPlace() {
+		return place;
+	}
+
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -129,6 +153,8 @@ public class ExerciseAnswer implements Parcelable {
 		dest.writeInt(durationInSeconds);
 		dest.writeIntArray(answerKeys);
 		dest.writeString(comments);
+		dest.writeLong(date);
+		dest.writeDoubleArray(place);
 
 	}
 

@@ -14,10 +14,12 @@ import com.fmat.proyecto3.fragment.ExerciseResultFragment;
 import com.fmat.proyecto3.fragment.LoadingFragment;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
+import com.fmat.proyecto3.json.ServerMessage;
 import com.fmat.proyecto3.service.DropboxUploadService;
 import com.fmat.proyecto3.service.ExercisePostService;
 import com.fmat.proyecto3.service.ExerciseRESTService;
 import com.fmat.proyecto3.utils.StatementSorter;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Actividad cuando el ejercicio ha sido resuelto. Maneja los comentarios del
@@ -64,8 +66,23 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 		String[] statements = StatementSorter.rearrangeStatementsByKeys(
 				exercise.getStatements(), answer.getAnswerKeys());
 
+		LatLng exerciseLocation = null;
+
+		double radius = 0;
+
+		if (exercise.getPlace() != null) {
+			exerciseLocation = new LatLng(exercise.getPlace()[0],
+					exercise.getPlace()[1]);
+			radius = exercise.getPlace()[2];
+
+		}
+
+		LatLng solvedLocation = new LatLng(answer.getPlace()[0],
+				answer.getPlace()[1]);
+
 		contentFragment = ExerciseResultFragment.newInstance(answer.getId(),
-				answer.getDurationInSeconds(), statements);
+				answer.getDurationInSeconds(), statements, answer.getDate(),
+				solvedLocation, exerciseLocation, radius);
 
 		switchFragment(contentFragment);
 
@@ -165,8 +182,8 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 	class SendAnswerReceiver extends BroadcastReceiver {
 
 		/**
-		 * Al recibir respuesta del servicio, le indica al usuario si hubo algun error, de otro modo inicia 
-		 * la subida del ejercicio a Dropbox
+		 * Al recibir respuesta del servicio, le indica al usuario si hubo algun
+		 * error, de otro modo inicia la subida del ejercicio a Dropbox
 		 */
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -177,6 +194,24 @@ public class ExerciseAnswerActivity extends BaseActivity implements
 
 				if (extras.getInt(ExercisePostService.EXTRA_RESULT_CODE) == ExercisePostService.EXERCISE_ALREADY_SOLVED_BY_USER_SERVER_RESPONSE_CODE) {
 					answerAlreadyOnWS = true;
+				}
+
+				if (extras.containsKey(ServerMessage.EXTRA_SERVER_MESSAGE)) {
+
+					boolean isCorrect = extras
+							.getBoolean(ServerMessage.EXTRA_SERVER_MESSAGE);
+
+					if (isCorrect)
+						Toast.makeText(
+								ExerciseAnswerActivity.this,
+								"Respuesta de ejercicio es correcta!",
+								Toast.LENGTH_LONG).show();
+					else{
+						Toast.makeText(
+								ExerciseAnswerActivity.this,
+								"Respuesta de ejercicio incorrecta!",
+								Toast.LENGTH_LONG).show();
+					}
 				}
 
 				if (sendToDropbox) {

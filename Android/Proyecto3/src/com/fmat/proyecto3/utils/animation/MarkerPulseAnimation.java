@@ -18,6 +18,10 @@ import com.google.android.gms.maps.model.LatLng;
 public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 		ValueAnimator.AnimatorUpdateListener {
 
+	public enum StatusColor {
+		RED, BLUE
+	};
+
 	private final WeakReference<GoogleMap> mapRef;
 
 	private CameraPosition cameraPosition;
@@ -46,7 +50,7 @@ public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 
 		if (map != null && point != null) {
 			circle = map.addCircle(new CircleOptions().center(point)
-					.strokeColor(Color.BLUE));
+					.strokeColor(Color.RED));
 
 			// Animate Camera to Marker
 			cameraPosition = CameraPosition.builder().target(point).zoom(18)
@@ -77,6 +81,16 @@ public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 
 	}
 
+	public void setColor(int color) {
+
+//		int color = status == StatusColor.BLUE ? Color.BLUE : Color.RED;
+		
+		if(circle.getStrokeColor() != color){
+			circle.setStrokeColor(color);
+		}
+
+	}
+
 	@Override
 	public void onAnimationUpdate(ValueAnimator animation) {
 		// TODO Auto-generated method stub
@@ -96,12 +110,12 @@ public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 
 	@Override
 	public void onAnimationEnd(Animator animation) {
-		
+
 		GoogleMap map = mapRef.get();
 
 		if (map != null)
 			map.clear();
-		
+
 	}
 
 	@Override
