@@ -7,7 +7,16 @@ package com.fmat.proyecto3.utils.memento;
  */
 public interface PreviousSortToOriginator {
 
+	/**
+	 * 
+	 * @return desde
+	 */
 	public int getFrom();
+	
+	/**
+	 * 
+	 * @return hasta
+	 */
 	public int getTo();
 	
 }

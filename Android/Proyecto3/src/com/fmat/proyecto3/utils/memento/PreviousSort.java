@@ -1,5 +1,10 @@
 package com.fmat.proyecto3.utils.memento;
 
+/**
+ * Clase que contiene los valores de las operaciones anteriores
+ * @author Irving
+ *
+ */
 public class PreviousSort implements PreviousSortToCareTaker,
 		PreviousSortToOriginator {
 

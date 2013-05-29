@@ -15,6 +15,11 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+/**
+ * Clase que anima un punto dado en el mapa
+ * @author Irving
+ *
+ */
 public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 		ValueAnimator.AnimatorUpdateListener {
 
@@ -35,12 +40,21 @@ public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 	private LatLng point;
 	private Double radius;
 
+	/**
+	 * Constructor, recibe el mapa sobre el cual dibujar
+	 * @param map
+	 */
 	public MarkerPulseAnimation(GoogleMap map) {
 
 		mapRef = new WeakReference<GoogleMap>(map);
 
 	}
 
+	/**
+	 * Anima un punto latitud/longitud hasta un radio dado
+	 * @param point
+	 * @param radius
+	 */
 	public void animate(LatLng point, double radius) {
 
 		this.point = point;
@@ -74,6 +88,9 @@ public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 
 	}
 
+	/**
+	 * Cance la animacion
+	 */
 	public void cancel() {
 
 		if (animator != null)
@@ -81,6 +98,10 @@ public class MarkerPulseAnimation implements ValueAnimator.AnimatorListener,
 
 	}
 
+	/**
+	 * Coloca el color del circulo dibujado
+	 * @param color
+	 */
 	public void setColor(int color) {
 
 //		int color = status == StatusColor.BLUE ? Color.BLUE : Color.RED;

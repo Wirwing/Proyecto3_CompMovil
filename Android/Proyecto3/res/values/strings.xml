@@ -70,5 +70,6 @@
     <string name="pref_todoist_token">todoist_token</string>
     <string name="pref_todoist_project_id">todoist_project_id</string>
     <string name="pref_todoist_project_name">todoist_project_name</string>
+    <string name="label_description">Titulo:</string>
 
 </resources>

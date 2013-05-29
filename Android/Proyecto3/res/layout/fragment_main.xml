@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tv_student_number_desc"
             android:layout_below="@+id/tv_student_number_desc"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:text="@string/name_description" />
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tv_name_desc"
             android:layout_below="@+id/tv_name_desc"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:text="@string/degree_description" />
 
         <TextView
@@ -85,16 +85,6 @@
         android:layout_below="@+id/separator"
         android:layout_marginTop="22dp" >
 
-        <TextView
-            android:id="@+id/tv_excercise_number_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/sp_excercise"
-            android:layout_alignBottom="@+id/sp_excercise"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="36dp"
-            android:text="@string/exercise_description" />
-
         <Spinner
             android:id="@+id/sp_excercise"
             android:layout_width="wrap_content"
@@ -102,16 +92,6 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="36dp"
             android:layout_toRightOf="@+id/tv_excercise_number_desc" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/tv_excercise_number_desc"
-            android:layout_below="@+id/tv_excercise_number_desc"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="36dp"
-            android:text="@string/date_description" />
 
         <fragment
             android:id="@+id/exercise_map"
@@ -124,15 +104,51 @@
             android:layout_weight=".4" />
 
         <TextView
+            android:id="@+id/tv_excercise_number_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="41dp"
+            android:text="@string/exercise_description" />
+
+        <TextView
             android:id="@+id/tv_exercise_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/sp_excercise"
+            android:layout_above="@+id/exercise_map"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/textView1"
-            android:layout_marginRight="22dp"
-            android:layout_marginTop="17dp"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/textView1"
             android:text="TextView" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/tv_excercise_number_desc"
+            android:layout_below="@+id/sp_excercise"
+            android:text="@string/label_description" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_excercise_number_desc"
+            android:layout_below="@+id/textView2"
+            android:layout_marginTop="18dp"
+            android:text="@string/date_description" />
+
+        <TextView
+            android:id="@+id/tv_description_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView1"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/textView2"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>
 
@@ -152,6 +168,17 @@
             android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
             android:layout_weight="1"
             android:text="@string/play_description" />
+        
+        
+        <Button
+            android:id="@+id/btn_schedule_exercise"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
+            android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
+            android:layout_weight="1"
+            android:text="@string/schedule" />
+        
     </LinearLayout>
 
 </RelativeLayout>

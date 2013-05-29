@@ -294,5 +294,8 @@ public class MainActivity extends BaseActivity implements
 			((MainFragment) contentFragment).onLocationChanged(location);
 
 	}
+	
+	
+	
 
 }

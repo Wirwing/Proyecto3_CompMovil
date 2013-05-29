@@ -5,10 +5,15 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,8 +28,12 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.fmat.proyecto3.MainActivity;
 import com.fmat.proyecto3.R;
 import com.fmat.proyecto3.json.Exercise;
+import com.fmat.proyecto3.todoist.Item;
+import com.fmat.proyecto3.todoist.Todoist;
+import com.fmat.proyecto3.todoist.TodoistException;
 import com.fmat.proyecto3.utils.animation.MarkerPulseAnimation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -48,6 +57,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	private ArrayList<Exercise> exercises;
 
 	private TextView tv_exercise_date;
+	private TextView tv_exercise_description;
 
 	private OnExerciseSelectedListener listener;
 	private Spinner sp_exercises;
@@ -65,7 +75,13 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 	private GoogleMap map;
 
+	private long exerciseDate;
+
 	private MarkerPulseAnimation animator;
+
+	private Button todoistButton;
+
+	private boolean isTodoistEnabled;
 
 	/**
 	 * 
@@ -117,8 +133,9 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 			exercises = getArguments().getParcelableArrayList(EXERCISES_PARAM);
 
 			result = new float[1];
-
 			dateExpirated = true;
+
+			isTodoistEnabled = false;
 
 		}
 	}
@@ -152,8 +169,16 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		((TextView) rootView.findViewById(R.id.tv_name)).setText(name);
 		((TextView) rootView.findViewById(R.id.tv_degree)).setText(degree);
 
+		tv_exercise_description = ((TextView) rootView
+				.findViewById(R.id.tv_description_main));
+
 		playButton = ((Button) rootView.findViewById(R.id.btn_play));
 		playButton.setOnClickListener(this);
+
+		todoistButton = (Button) rootView
+				.findViewById(R.id.btn_schedule_exercise);
+
+		prepareScheduleButton(todoistButton);
 
 		tv_exercise_date = (TextView) rootView
 				.findViewById(R.id.tv_exercise_date);
@@ -185,9 +210,11 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 				selected = exercises.get(position);
 
+				tv_exercise_description.setText(selected.getTitle());
+
 				boolean enabled = true;
 
-				long exerciseDate = selected.getDate() * 1000;
+				exerciseDate = selected.getDate() * 1000;
 
 				String dateString = null;
 				if (exerciseDate > 0) {
@@ -200,15 +227,15 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 					if (exerciseDate < new Date().getTime()) {
 
 						tv_exercise_date.setTextColor(Color.RED);
-
 						enabled = true;
-
 						dateExpirated = true;
-
+						todoistButton.setEnabled(false);
+						
 					} else {
 
+						tv_exercise_date.setTextColor(Color.BLACK);
 						dateExpirated = false;
-
+						todoistButton.setEnabled(true);
 					}
 
 				} else {
@@ -217,7 +244,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 					tv_exercise_date.setText(dateString);
 
 					dateExpirated = false;
-
+					todoistButton.setEnabled(false);
 				}
 
 				if (selected.getPlace() != null) {
@@ -288,6 +315,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		 * @return nothing
 		 */
 		public void onExerciseSelected(Exercise exercise);
+
 	}
 
 	/**
@@ -339,5 +367,75 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		}
 
 	}
+
+	private void prepareScheduleButton(Button button) {
+
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getActivity()
+						.getApplicationContext());
+		String todoistToken = prefs.getString(
+				getString(R.string.pref_todoist_token), null);
+
+		if (todoistToken != null) {
+			isTodoistEnabled = true;
+			button.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					scheduleExercise();
+				}
+			});
+		} else {
+			button.setEnabled(false);
+		}
+
+	}
+
+	public void scheduleExercise() {
+
+		final ProgressDialog dialog = ProgressDialog.show(getActivity(),
+				"Calendarizando", "Enviando ejercicio a Todoist", true, false);
+
+		AsyncTask<Exercise, Void, Boolean> task = new AsyncTask<Exercise, Void, Boolean>() {
+
+			@Override
+			protected Boolean doInBackground(Exercise... exercises) {
+				Exercise exercise = exercises[0];
+
+				SharedPreferences prefs = PreferenceManager
+						.getDefaultSharedPreferences(getActivity());
+				String token = prefs.getString(
+						getString(R.string.pref_todoist_token), null);
+				int projectId = prefs.getInt(
+						getString(R.string.pref_todoist_project_id), -1);
+				String content = exercise.getTitle() + ": "
+						+ exercise.getDescription();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				String dateString = dateFormat.format(new Date(exercise
+						.getDate() * 1000));
+
+				try {
+					Todoist todoist = new Todoist(token);
+					Item item = todoist.addItem(projectId, content, dateString);
+					if (item != null)
+						return true;
+				} catch (TodoistException te) {
+					Log.e(this.toString(), "Todoist: " + te.getMessage());
+				}
+				return false;
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				dialog.dismiss();
+				super.onPostExecute(result);
+			}
+
+		};
+
+		task.execute(selected);
+
+	} // fin onScheduleExercise()
 
 }

@@ -42,7 +42,10 @@ public class ExerciseActivity extends BaseActivity implements
 	private Exercise exercise;
 	private LocationClient client;
 
+	// Solicitante de cambios de ubicacion
 	private LocationRequest locationRequest;
+
+	// Ubicacion obtenida del GPS
 	private Location location;
 
 	/**
@@ -67,8 +70,9 @@ public class ExerciseActivity extends BaseActivity implements
 		exercise = (Exercise) savedInstanceState.get(Exercise.EXTRA_EXERCISE);
 
 		// Crea un nuevo fragmento que muestra la descripcion
-		Fragment descriptionFragment = ExerciseDescriptionFragment.newInstance(
-				exercise.getId(), exercise.getDescription(), exercise.getDate());
+		Fragment descriptionFragment = ExerciseDescriptionFragment
+				.newInstance(exercise.getId(), exercise.getDescription(),
+						exercise.getDate());
 
 		// Lo muestra dentro de la actividad
 		switchFragment(descriptionFragment);
@@ -93,9 +97,9 @@ public class ExerciseActivity extends BaseActivity implements
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 
+		// conectar cliente
 		client.connect();
 
 	}
@@ -105,6 +109,7 @@ public class ExerciseActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.onStop();
 
+		// quitar notificaciones y desconectar cliente
 		client.removeLocationUpdates(this);
 		client.disconnect();
 
@@ -117,8 +122,10 @@ public class ExerciseActivity extends BaseActivity implements
 	@Override
 	public void onFinishExcercise(int[] keys, long millis) {
 
+		//Obtener duracion de la resolucion del ejercicio 
 		int durationInSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis);
 
+		//Establecer los valores de respuesta
 		ExerciseAnswer answer = new ExerciseAnswer();
 		answer.setId(exercise.getId());
 		answer.setAnswerKeys(keys);
@@ -182,46 +189,5 @@ public class ExerciseActivity extends BaseActivity implements
 		this.location = location;
 
 	}
-
-	@Override
-	public void onScheduleExercise() {
-		
-		final ProgressDialog dialog = ProgressDialog.show(this, "Calendarizando",
-				"Enviando ejercicio a Todoist", true, false);
-		
-		AsyncTask<Exercise, Void, Boolean> task = new AsyncTask<Exercise, Void, Boolean>(){
-
-			@Override
-			protected Boolean doInBackground(Exercise... exercises) {
-				Exercise exercise = exercises[0];
-				
-				SharedPreferences prefs =  PreferenceManager.getDefaultSharedPreferences(ExerciseActivity.this);
-				String token = prefs.getString(getString(R.string.pref_todoist_token), null);
-				int projectId = prefs.getInt(getString(R.string.pref_todoist_project_id), -1);
-				String content = exercise.getTitle() +  ": " + exercise.getDescription();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-				String dateString = dateFormat.format(new Date(exercise.getDate() * 1000));
-				
-				try{
-					Todoist todoist = new Todoist(token);
-					Item item = todoist.addItem(projectId, content, dateString);
-					if(item != null) return
-							true;
-				} catch (TodoistException te){
-					Log.e(this.toString(), "Todoist: " + te.getMessage());
-				}
-				return false;
-			}
-			
-		@Override
-			protected void onPostExecute(Boolean result) {
-				dialog.dismiss();
-				super.onPostExecute(result);
-			}	
-			
-		};
-		
-		task.execute(exercise);
-
-	} // fin onScheduleExercise()
+	
 }

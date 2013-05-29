@@ -4,11 +4,21 @@ import java.util.ArrayList;
 
 import android.widget.ArrayAdapter;
 
+/**
+ * Clase que administra las operaciones de intercambio entre lineas de
+ * sentencias
+ * @author Irving
+ *
+ */
 public class Sorter implements ISorter {
 
 	private ArrayAdapter<String> adapter;
 	private ArrayList<Integer> keys;
 
+	/**
+	 * Constructor
+	 * @param adapter adaptador linkeado a la vista
+	 */
 	public Sorter(ArrayAdapter<String> adapter) {
 
 		this.adapter = adapter;
@@ -20,6 +30,9 @@ public class Sorter implements ISorter {
 
 	}
 
+	/**
+	 * Restaura la operacion a un estado anterior
+	 */
 	@Override
 	public void restorePreviousSorting(PreviousSortToCareTaker memento) {
 
@@ -32,6 +45,9 @@ public class Sorter implements ISorter {
 
 	}
 
+	/**
+	 * Realiza el intercambio y retorna un estado de operacion dado
+	 */
 	@Override
 	public PreviousSortToCareTaker swap(int from, int to) {
 
@@ -47,6 +63,9 @@ public class Sorter implements ISorter {
 
 	}
 
+	/**
+	 * Devuelve las llaves del ejercicio
+	 */
 	@Override
 	public int[] getKeys() {
 

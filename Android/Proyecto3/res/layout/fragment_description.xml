@@ -54,15 +54,6 @@
             android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
             android:layout_weight="1"
             android:text="@string/start" />
-        
-        <Button
-            android:id="@+id/btn_schedule_exercise"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
-            android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
-            android:layout_weight="1"
-            android:text="@string/schedule" />
     </LinearLayout>
 
 </RelativeLayout>

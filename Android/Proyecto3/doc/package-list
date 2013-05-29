@@ -4,5 +4,9 @@ com.fmat.proyecto3.dropbox
 com.fmat.proyecto3.fragment
 com.fmat.proyecto3.json
 com.fmat.proyecto3.service
+com.fmat.proyecto3.todoist
 com.fmat.proyecto3.utils
+com.fmat.proyecto3.utils.animation
+com.fmat.proyecto3.utils.memento
+com.google.android.gms
 com.mobeta.android.dslv
