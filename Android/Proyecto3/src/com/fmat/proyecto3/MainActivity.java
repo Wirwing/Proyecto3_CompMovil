@@ -63,30 +63,27 @@ public class MainActivity extends BaseActivity implements
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		
-		  /*
-         * Connect the client. Don't re-start any requests here;
-         * instead, wait for onResume()
-         */
+
+		/*
+		 * Connect the client. Don't re-start any requests here; instead, wait
+		 * for onResume()
+		 */
 		locationHandler.onConnect();
 
-		
 	}
-	
-	
-	 /*
-     * Called when the Activity is no longer visible at all.
-     * Stop updates and disconnect.
-     */
-    @Override
-    public void onStop() {
 
-    	locationHandler.onDisconnect();
+	/*
+	 * Called when the Activity is no longer visible at all. Stop updates and
+	 * disconnect.
+	 */
+	@Override
+	public void onStop() {
 
-        super.onStop();
-    }
-	
-	
+		locationHandler.onDisconnect();
+
+		super.onStop();
+	}
+
 	/**
 	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onPause()
 	 */
@@ -168,19 +165,20 @@ public class MainActivity extends BaseActivity implements
 	}
 
 	/**
-	 * @see com.fmat.proyecto3.fragment.MainFragment.OnExerciseSelectedListener#onExerciseSelected(java.lang.S)tring)
+	 * @see com.fmat.proyecto3.fragment.MainFragment.OnExerciseSelectedListener#onExerciseSelected(java.lang.S)
+	 *      tring)
 	 */
 	@Override
 	public void onExerciseSelected(Exercise exercise) {
 
 		if (exercise != null) {
-			contentFragment = LoadingFragment
-					.newInstance("Cargando ejercicio " + exercise.getId());
+			Fragment fragment = LoadingFragment.newInstance("Cargando ejercicio "
+					+ exercise.getId());
 
-			switchFragment(contentFragment);
+			switchFragment(fragment);
 
 			alreadyFetching = true;
-
+			
 			Intent intent = new Intent(this, ExerciseGetService.class);
 			String url = wsUrl + wsExercisePath;
 
@@ -198,10 +196,9 @@ public class MainActivity extends BaseActivity implements
 
 	private void initFetchExercises() {
 
-		contentFragment = LoadingFragment
-				.newInstance("Cargando ejercicios");
+		Fragment fragment = LoadingFragment.newInstance("Cargando ejercicios");
 
-		switchFragment(contentFragment);
+		switchFragment(fragment);
 
 		alreadyFetching = true;
 
@@ -258,6 +255,8 @@ public class MainActivity extends BaseActivity implements
 			// Single exercise
 			if (extras.containsKey(Exercise.EXTRA_EXERCISE)) {
 
+				// switchFragment(mainFragment);
+
 				Exercise exercise = extras
 						.getParcelable(Exercise.EXTRA_EXERCISE);
 
@@ -277,8 +276,8 @@ public class MainActivity extends BaseActivity implements
 				exercises = extras
 						.getParcelableArrayList(Exercise.EXTRA_EXERCISES);
 
-				contentFragment = MainFragment.newInstance(studentId,
-						studentName, studentCareer, exercises);
+				contentFragment = MainFragment.newInstance(studentId, studentName,
+						studentCareer, exercises);
 
 				switchFragment(contentFragment);
 

@@ -1,9 +1,14 @@
 package com.fmat.proyecto3.fragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import android.R.raw;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,16 +21,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.fmat.proyecto3.R;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
- * Fragmento que muestra el resultado del ejercicio, es decir, el orden de las sentencias 
- * como el usuario las dispuso.
+ * Fragmento que muestra el resultado del ejercicio, es decir, el orden de las
+ * sentencias como el usuario las dispuso.
  * 
- * Resuelve los comentarios del ejercicio y se los pasa a al actividad para enviar todo al WS.
+ * Resuelve los comentarios del ejercicio y se los pasa a al actividad para
+ * enviar todo al WS.
  * 
  * @author Irving
- *
+ * 
  */
 public class ExerciseResultFragment extends SherlockFragment implements
 		OnClickListener {
@@ -34,25 +46,40 @@ public class ExerciseResultFragment extends SherlockFragment implements
 	private static final String EXERCISE_ELLAPSED_PARAM = "EXERCISE_ELLAPSED_PARAM";
 	private static final String EXERCISE_STATEMENTS_PARAM = "EXERCISE_STATEMENTS_PARAM";
 
+	private static final String EXERCISE_SOLVED_DATE_PARAM = "EXERCISE_SOLVED_DATE_PARAM";
+
+	private static final String EXERCISE_SOLVED_LOCATION_PARAM = "EXERCISE_SOLVED_LOCATION_PARAM";
+	private static final String EXERCISE_EXERCISE_LOCATION_PARAM = "EXERCISE_EXERCISE_LOCATION_PARAM";
+	private static final String EXERCISE_EXERCISE_RADIUS_PARAM = "EXERCISE_EXERCISE_RADIUS_PARAM";
+
 	private String id;
 	private String ellapsedTime;
-	private String[] statements; 
-	
+	private String[] statements;
+
 	private OnResultListener listener;
 
 	private EditText et_comments;
 	private String comments;
-	
+
+	private GoogleMap map;
+
+	private LatLng solvedLocation, exerciseLocation;
+
+	private long date;
+
+	private double radius;
+
 	private CheckBox chx_dropbox;
 
 	/**
-	 * Esta interfaz debe ser implementada por las actividades que llaman a este fragmento,
-	 * para poder comunicarse con la actividad.
+	 * Esta interfaz debe ser implementada por las actividades que llaman a este
+	 * fragmento, para poder comunicarse con la actividad.
 	 */
 	public interface OnResultListener {
-		
+
 		/**
 		 * Enviar la respuesta con los comentarios
+		 * 
 		 * @param comments
 		 * @param sendToDropbox
 		 */
@@ -61,38 +88,52 @@ public class ExerciseResultFragment extends SherlockFragment implements
 
 	/**
 	 * 
-	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
-	 * proveidos
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento
+	 * usandos los parametros proveidos
 	 * 
 	 * 
-	 * @param id					Id del ejercio
-	 * @param elapsedTimeInSeconds	Tiempo transcurrido
-	 * @param statements			Sentencias ya ordenadas.
+	 * @param id
+	 *            Id del ejercio
+	 * @param elapsedTimeInSeconds
+	 *            Tiempo transcurrido
+	 * @param statements
+	 *            Sentencias ya ordenadas.
 	 * @return
 	 */
-	public static ExerciseResultFragment newInstance(String id, int elapsedTimeInSeconds, String[] statements) {
+	public static ExerciseResultFragment newInstance(String id,
+			int elapsedTimeInSeconds, String[] statements, long rawDate,
+			LatLng solvedLocation, LatLng exerciseLocation, double radius) {
 
 		long millis = TimeUnit.SECONDS.toMillis(elapsedTimeInSeconds);
-		
+
 		String elapsedTime = String.format(
 				"Tiempo: %d minutos, %d segundos",
 				TimeUnit.MILLISECONDS.toMinutes(millis),
 				TimeUnit.MILLISECONDS.toSeconds(millis)
 						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 								.toMinutes(millis)));
-		
+
 		ExerciseResultFragment fragment = new ExerciseResultFragment();
 		Bundle args = new Bundle();
 		args.putString(EXERCISE_ID_PARAM, "Ejercicio " + id);
 		args.putString(EXERCISE_ELLAPSED_PARAM, elapsedTime);
 		args.putStringArray(EXERCISE_STATEMENTS_PARAM, statements);
+
+		args.putLong(EXERCISE_SOLVED_DATE_PARAM, rawDate);
+		args.putParcelable(EXERCISE_SOLVED_LOCATION_PARAM, solvedLocation);
+
+		if (exerciseLocation != null && radius != 0) {
+			args.putDouble(EXERCISE_EXERCISE_RADIUS_PARAM, radius);
+			args.putParcelable(EXERCISE_EXERCISE_LOCATION_PARAM,
+					exerciseLocation);
+		}
+
 		fragment.setArguments(args);
 		return fragment;
 
 	}
 
 	public ExerciseResultFragment() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -104,12 +145,25 @@ public class ExerciseResultFragment extends SherlockFragment implements
 		if (getArguments() != null) {
 			id = getArguments().getString(EXERCISE_ID_PARAM);
 			ellapsedTime = getArguments().getString(EXERCISE_ELLAPSED_PARAM);
-			statements = getArguments().getStringArray(EXERCISE_STATEMENTS_PARAM);
+			statements = getArguments().getStringArray(
+					EXERCISE_STATEMENTS_PARAM);
+			solvedLocation = getArguments().getParcelable(
+					EXERCISE_SOLVED_LOCATION_PARAM);
+
+			date = getArguments().getLong(EXERCISE_SOLVED_DATE_PARAM);
+
+			if (getArguments().containsKey(EXERCISE_EXERCISE_LOCATION_PARAM)) {
+				exerciseLocation = getArguments().getParcelable(
+						EXERCISE_EXERCISE_LOCATION_PARAM);
+				radius = getArguments().getDouble(
+						EXERCISE_EXERCISE_RADIUS_PARAM);
+			}
 		}
 	}
 
 	/**
-	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater,
+	 *      android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,16 +174,47 @@ public class ExerciseResultFragment extends SherlockFragment implements
 				container, false);
 
 		((TextView) rootView.findViewById(R.id.tv_exercise)).setText(id);
-		((TextView) rootView.findViewById(R.id.tv_elapsed_time)).setText(ellapsedTime);
-		((Button)rootView.findViewById(R.id.btn_send_exercise)).setOnClickListener(this);
-		
-		((ListView)rootView.findViewById(R.id.lv_statements)).setAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_list_item_1, android.R.id.text1, statements));
-		
-		et_comments = (EditText)rootView.findViewById(R.id.et_answer_comments);
 
-		chx_dropbox = (CheckBox)rootView.findViewById(R.id.chkbx_dropbox);
-		
+		((TextView) rootView.findViewById(R.id.tv_elapsed_time))
+				.setText(ellapsedTime);
+
+		String dateString = "";
+		if (date > 0) {
+			dateString = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy")
+					.format(new Date(date));
+		} else {
+			dateString = "Hora no establecida.";
+		}
+
+		((TextView) rootView.findViewById(R.id.tv_solved_date))
+				.setText(dateString);
+
+		((Button) rootView.findViewById(R.id.btn_send_exercise))
+				.setOnClickListener(this);
+
+		((ListView) rootView.findViewById(R.id.lv_statements))
+				.setAdapter(new ArrayAdapter<String>(getActivity(),
+						android.R.layout.simple_list_item_1,
+						android.R.id.text1, statements));
+
+		et_comments = (EditText) rootView.findViewById(R.id.et_answer_comments);
+
+		chx_dropbox = (CheckBox) rootView.findViewById(R.id.chkbx_dropbox);
+
+		FragmentManager manager = ((SherlockFragmentActivity) getActivity())
+				.getSupportFragmentManager();
+
+		map = ((SupportMapFragment) manager
+				.findFragmentById(R.id.exercise_result_map)).getMap();
+
+
+		map.addMarker(new MarkerOptions().position(solvedLocation).title(
+				"Finalizado aquí"));
+
+		if (exerciseLocation != null && radius > 0)
+			map.addCircle(new CircleOptions().center(exerciseLocation)
+					.radius(radius).strokeColor(Color.BLUE).strokeWidth(2));
+
 		return rootView;
 	}
 
@@ -161,10 +246,10 @@ public class ExerciseResultFragment extends SherlockFragment implements
 	 */
 	@Override
 	public void onClick(View v) {
-		
+
 		comments = et_comments.getText().toString();
 		listener.onSendAnswer(comments, chx_dropbox.isChecked());
-		
+
 	}
 
 }

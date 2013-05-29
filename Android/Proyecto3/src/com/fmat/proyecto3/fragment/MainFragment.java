@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,7 +52,17 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	private OnExerciseSelectedListener listener;
 	private Spinner sp_exercises;
 
+	private Exercise selected;
+
 	private LatLng currentExercisePoint;
+	private double radius;
+
+	private float[] result;
+
+	private Button playButton;
+
+	private boolean dateExpirated;
+
 	private GoogleMap map;
 
 	private MarkerPulseAnimation animator;
@@ -105,6 +115,11 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 			number = getArguments().getString(STUDENT_NUMBER_PARAM);
 			degree = getArguments().getString(DEGREE_PARAM);
 			exercises = getArguments().getParcelableArrayList(EXERCISES_PARAM);
+
+			result = new float[1];
+
+			dateExpirated = true;
+
 		}
 	}
 
@@ -137,8 +152,8 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		((TextView) rootView.findViewById(R.id.tv_name)).setText(name);
 		((TextView) rootView.findViewById(R.id.tv_degree)).setText(degree);
 
-		((Button) rootView.findViewById(R.id.btn_play))
-				.setOnClickListener(this);
+		playButton = ((Button) rootView.findViewById(R.id.btn_play));
+		playButton.setOnClickListener(this);
 
 		tv_exercise_date = (TextView) rootView
 				.findViewById(R.id.tv_exercise_date);
@@ -168,28 +183,61 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 				animator.cancel();
 
-				Exercise selected = exercises.get(position);
+				selected = exercises.get(position);
+
+				boolean enabled = true;
+
+				long exerciseDate = selected.getDate() * 1000;
 
 				String dateString = null;
-				if (selected.getDate() * 1000 > 0) {
+				if (exerciseDate > 0) {
+
 					dateString = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy")
-							.format(new Date(selected.getDate() * 1000));
+							.format(new Date(exerciseDate));
+
+					tv_exercise_date.setText(dateString);
+
+					if (exerciseDate < new Date().getTime()) {
+
+						tv_exercise_date.setTextColor(Color.RED);
+
+						enabled = true;
+
+						dateExpirated = true;
+
+					} else {
+
+						dateExpirated = false;
+
+					}
+
 				} else {
+
 					dateString = "Hora no establecida.";
+					tv_exercise_date.setText(dateString);
+
+					dateExpirated = false;
+
 				}
 
-				tv_exercise_date.setText(dateString);
-
 				if (selected.getPlace() != null) {
+
+					enabled = false;
 
 					currentExercisePoint = new LatLng(selected.getPlace()[0],
 							selected.getPlace()[1]);
 
-					double radius = selected.getPlace()[2];
+					radius = selected.getPlace()[2];
 
 					animator.animate(currentExercisePoint, radius);
 
+				} else {
+
+					currentExercisePoint = null;
+
 				}
+
+				playButton.setEnabled(enabled);
 
 			}
 
@@ -259,9 +307,37 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	}
 
 	public void onLocationChanged(Location location) {
-		Log.i(TAG,
-				"New location: " + location.getLatitude() + ", "
-						+ location.getLongitude());
+
+		if (currentExercisePoint != null && radius > 0) {
+
+			Location.distanceBetween(location.getLatitude(),
+					location.getLongitude(), currentExercisePoint.latitude,
+					currentExercisePoint.longitude, result);
+
+			int color = Color.RED;
+			boolean enabled = false;
+
+			if (radius > result[0]) {
+				color = Color.BLUE;
+				enabled = true;
+			}
+
+			animator.setColor(color);
+			setPlayEnabled(enabled);
+
+		}
+
+		// Log.i(TAG,
+		// "New location: " + location.getLatitude() + ", "
+		// + location.getLongitude());
+	}
+
+	private void setPlayEnabled(boolean enabled) {
+
+		if (playButton.isEnabled() != enabled && !dateExpirated) {
+			playButton.setEnabled(enabled);
+		}
+
 	}
 
 }

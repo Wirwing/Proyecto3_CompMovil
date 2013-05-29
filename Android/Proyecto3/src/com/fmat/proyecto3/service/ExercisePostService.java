@@ -1,10 +1,12 @@
 package com.fmat.proyecto3.service;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -16,8 +18,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Intent;
 
+import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 import com.fmat.proyecto3.json.ExerciseFactory;
+import com.fmat.proyecto3.json.ServerMessage;
+import com.google.gson.Gson;
 
 public class ExercisePostService extends ExerciseRESTService {
 
@@ -83,6 +88,20 @@ public class ExercisePostService extends ExerciseRESTService {
 			HttpResponse response = client.execute(request);
 			// HttpEntity responseEntity = response.getEntity();
 
+			HttpEntity responseEntity = response.getEntity();
+
+			if (responseEntity != null) {
+
+				InputStreamReader contentReader = new InputStreamReader(
+						responseEntity.getContent());
+
+				ServerMessage serverMessage = new Gson().fromJson(contentReader, ServerMessage.class);
+
+				resultIntent.putExtra(ServerMessage.EXTRA_SERVER_MESSAGE, serverMessage.isCorrect());
+
+			}
+			
+			
 			int statusCode = response.getStatusLine().getStatusCode();
 
 			resultIntent.putExtra(EXTRA_RESULT_CODE, statusCode);

@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="12dp"
         android:text="@string/exercise"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -42,17 +42,23 @@
         android:layout_alignLeft="@+id/tv_exercise_description"
         android:layout_below="@+id/tv_exercise_description"
         android:layout_marginRight="@dimen/exercise_item_horizontal_margin"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:ems="140"
         android:inputType="textMultiLine" />
 
+    <fragment
+        android:id="@+id/exercise_result_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/et_answer_comments" />
+        
     <CheckBox
         android:id="@+id/chkbx_dropbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/et_answer_comments"
-        android:layout_below="@+id/et_answer_comments"
-        android:layout_marginTop="20dp"
+        android:layout_alignRight="@+id/exercise_result_map"
+        android:layout_below="@+id/exercise_result_map"
         android:text="@string/dropbox" />
 
     <TextView
@@ -68,7 +74,7 @@
     <ListView
         android:id="@+id/lv_statements"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1"
         android:layout_marginLeft="@dimen/exercise_item_horizontal_margin"
@@ -98,5 +104,13 @@
         android:layout_marginLeft="23dp"
         android:layout_marginTop="6dp"
         android:text="Ola ke ase" />
+
+    <TextView
+        android:id="@+id/tv_solved_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/lv_statements"
+        android:layout_alignTop="@+id/tv_exercise"
+        android:text="TextView" />
 
 </RelativeLayout>

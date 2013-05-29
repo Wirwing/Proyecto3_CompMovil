@@ -1,8 +1,10 @@
 package com.fmat.proyecto3;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -10,16 +12,28 @@ import com.fmat.proyecto3.fragment.ExerciseDescriptionFragment;
 import com.fmat.proyecto3.fragment.ExerciseFragment;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
+import com.fmat.proyecto3.service.LocationTrackingHandler;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 
 /**
  * Actividad encarga del ejercicio que el usuario resuelve.
  */
 public class ExerciseActivity extends BaseActivity implements
 		ExerciseDescriptionFragment.OnDescriptionListener,
-		ExerciseFragment.OnExerciseListener {
+		ExerciseFragment.OnExerciseListener,
+		GooglePlayServicesClient.ConnectionCallbacks,
+		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
 	// Ejercicio pasado por parametro
 	private Exercise exercise;
+	private LocationClient client;
+
+	private LocationRequest locationRequest;
+	private Location location;
 
 	/**
 	 * Llamado al crear la actividad.
@@ -29,6 +43,8 @@ public class ExerciseActivity extends BaseActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		client = new LocationClient(this, this, this);
 
 		/*
 		 * Recupera el Bundle pasado por argumento, junto a el ejercicio
@@ -47,6 +63,40 @@ public class ExerciseActivity extends BaseActivity implements
 		// Lo muestra dentro de la actividad
 		switchFragment(descriptionFragment);
 
+		// Create a new global location parameters object
+		locationRequest = LocationRequest.create();
+
+		/*
+		 * Set the update interval
+		 */
+		locationRequest.setInterval(LocationTrackingHandler.UPDATE_INTERVAL_IN_MILLISECONDS);
+
+		// Use high accuracy
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+		// Set the interval ceiling to one minute
+		locationRequest
+				.setFastestInterval(LocationTrackingHandler.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
+
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+
+		client.connect();
+
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+
+		client.removeLocationUpdates(this);
+		client.disconnect();
+
 	}
 
 	/**
@@ -63,6 +113,17 @@ public class ExerciseActivity extends BaseActivity implements
 		answer.setAnswerKeys(keys);
 		answer.setDurationInSeconds(durationInSeconds);
 
+		answer.setDate(new Date().getTime());
+
+		while(location == null){
+			
+		}
+		
+		double[] rawLoc = new double[] { location.getLatitude(),
+				location.getLongitude() };
+
+		answer.setPlace(rawLoc);
+
 		Intent intent = new Intent(this, ExerciseAnswerActivity.class);
 		intent.putExtra(ExerciseAnswer.EXTRA_EXERCISE_ANSWER, answer);
 		intent.putExtra(Exercise.EXTRA_EXERCISE, exercise);
@@ -72,9 +133,8 @@ public class ExerciseActivity extends BaseActivity implements
 
 	/**
 	 * 
-	 * @see
-	 * com.fmat.proyecto3.fragment.ExerciseDescriptionFragment.OnDescriptionListener
-	 * #onStartExcercise()
+	 * @see com.fmat.proyecto3.fragment.ExerciseDescriptionFragment.OnDescriptionListener
+	 *      #onStartExcercise()
 	 */
 	@Override
 	public void onStartExcercise() {
@@ -83,6 +143,32 @@ public class ExerciseActivity extends BaseActivity implements
 				.getStatements());
 
 		switchFragment(content);
+
+	}
+
+	@Override
+	public void onConnected(Bundle arg0) {
+
+		client.requestLocationUpdates(locationRequest, this);
+
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+
+		this.location = location;
 
 	}
 
