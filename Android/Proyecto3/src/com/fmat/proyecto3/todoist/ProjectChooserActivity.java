@@ -114,7 +114,7 @@ public class ProjectChooserActivity extends SherlockListActivity {
 	 * @param projectName el nombre del projecto
 	 */
 	private void storeProjectInfo(int projectId, String projectName) {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(getString(R.string.pref_todoist_project_id), projectId);
 		editor.putString(getString(R.string.pref_todoist_project_name), projectName);

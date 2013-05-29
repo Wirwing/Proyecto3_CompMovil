@@ -27,6 +27,7 @@
     <string name="exercise_dummy_description">Banana banana banana banana banana</string>
     <string name="exercise_answer_comments">Comentarios</string>
     <string name="start">Iniciar</string>
+    <string name="schedule">Calendarizar</string>
     <string name="send_exercise">Enviar Respuesta</string>
     
     <string name="dropbox">"DropBox"</string>

@@ -1,7 +1,9 @@
 package com.fmat.proyecto3.fragment;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,9 +22,11 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 
 	private static final String EXERCISE_ID_PARAM = "EXERCISE_NUMBER_PARAM";
 	private static final String EXERCISE_DESCRIPTION_PARAM = "EXERCISE_DESCRIPTION_PARAM";
+	private static final String EXERCISE_DATE_PARAM = "EXERCISE_DATE_PARAM";
 
 	private String id;
 	private String description;
+	private Long date = null;
 
 	private OnDescriptionListener listener;
 
@@ -38,6 +42,12 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 		 * @return nothing
 		 */
 		public void onStartExcercise();
+		/**
+		 * Callback cuando se decide calendarizar el ejercicio
+		 *            
+		 * @return nothing
+		 */
+		public void onScheduleExercise();
 	}
 
 	/**
@@ -51,11 +61,31 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 	 */
 	public static ExerciseDescriptionFragment newInstance(String id,
 			String description) {
+		return ExerciseDescriptionFragment.newInstance(id, description, null);
+	}
+	
+	/**
+	 * 
+	 * Usa este metodo factory para crear una nueva instancia de este fragmento usandos los parametros
+	 * proveidos
+	 * 
+	 * @param id	Id del ejercicio
+	 * @param description	Descripcion del ejercicio
+	 * @param date Fecha del ejercicio
+	 * @return Una nueva instancia del fragmento
+	 */
+	public static ExerciseDescriptionFragment newInstance(String id,
+			String description, Long date) {
 
+		if(date == null){
+			date = (long) -1;
+		}
+		
 		ExerciseDescriptionFragment fragment = new ExerciseDescriptionFragment();
 		Bundle args = new Bundle();
 		args.putString(EXERCISE_ID_PARAM, id);
 		args.putString(EXERCISE_DESCRIPTION_PARAM, description);
+		args.putLong(EXERCISE_DATE_PARAM, date);
 		fragment.setArguments(args);
 		return fragment;
 
@@ -74,6 +104,7 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 		if (getArguments() != null) {
 			id = getArguments().getString(EXERCISE_ID_PARAM);
 			description = getArguments().getString(EXERCISE_DESCRIPTION_PARAM);
+			date = getArguments().getLong(EXERCISE_DATE_PARAM);
 		}
 	}
 
@@ -100,6 +131,8 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 				.setText(description);
 
 		((Button)rootView.findViewById(R.id.btn_start_exercise)).setOnClickListener(this);
+		
+		prepareScheduleButton(rootView);
 		
 		return rootView;
 	}
@@ -132,7 +165,26 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 	 */
 	@Override
 	public void onClick(View v) {
-		listener.onStartExcercise();
+		int viewId = v.getId();
+		if(viewId == R.id.btn_start_exercise){
+			listener.onStartExcercise();
+		} else if(viewId == R.id.btn_schedule_exercise) {
+			listener.onScheduleExercise();
+		}
+		
+	}
+	
+	private void prepareScheduleButton(View rootView){
+		Button button = (Button) rootView.findViewById(R.id.btn_schedule_exercise);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		String todoistToken = prefs.getString(getString(R.string.pref_todoist_token), null);
+		if(todoistToken != null && date != null && date > 0){
+			button.setOnClickListener(this);
+			button.setEnabled(true);
+		} else {
+			button.setEnabled(false);
+		}
 	}
 
 }
