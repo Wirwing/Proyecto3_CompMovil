@@ -52,7 +52,7 @@
         android:title="@string/pref_todoist_settings_title" >
         <Preference
             android:key="@string/pref_todoist_project_name"
-            android:title="Projecto de todoist" >
+            android:title="Proyecto de todoist" >
             <intent android:action=".activites.TodoistSelector" />
         </Preference>
         <Preference android:key="@string/pref_clear_todoist"

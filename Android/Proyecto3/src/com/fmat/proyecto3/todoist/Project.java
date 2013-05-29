@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Un proyecto en Todoist
+ * Representa un proyecto de Todoist
  * 
  * @author Fabián Castillo
  * 

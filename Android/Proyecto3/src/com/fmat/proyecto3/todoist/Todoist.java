@@ -22,18 +22,39 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 
+/**
+ * Acceso a Todoist
+ * @author Fabián Castillo
+ *
+ */
 public class Todoist {
 
+	/**Token necesario para la comunicación con Todoist**/
 	private String token;
 
+	/**
+	 * Constructor 
+	 */
 	public Todoist() {
 		this(null);
 	}
 
+	/**
+	 * Constructor
+	 * @param token token para comunicación con Todoist
+	 */
 	public Todoist(String token) {
 		this.token = token;
 	}
 
+	/**
+	 * Realiza el inicio de sesión con Todoist
+	 * @param email email de usuario
+	 * @param password contraseña del usuario
+	 * @return Usuario Objeto Usuario con la información del usuario autenticado
+	 * @throws TodoistException Si existe algún error en la comunicación o si
+	 * la combinación usuario/contraseña es incorrecta
+	 */
 	public User login(String email, String password) throws TodoistException {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("email", email);
@@ -45,6 +66,10 @@ public class Todoist {
 		return user;
 	}
 
+	/**
+	 * Obtiene los proyectos del usuario
+	 * @return Conjunto de proyectos del usuario
+	 */
 	public Project[] getProjects() {
 		if (this.token != null) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
@@ -57,6 +82,14 @@ public class Todoist {
 		}
 	}
 
+	/**
+	 * Crea un nuevo item o tarea en Todoist
+	 * @param projectId Id del proyecto del item o tarea
+	 * @param content Descripción del item o tarea
+	 * @param dateString Fecha del item o tarea. Los formatos permitidos
+	 * se describen en: https://todoist.com/Help/timeInsert
+	 * @return El Item creado
+	 */
 	public Item addItem(long projectId, String content, String dateString) {
 		if (this.token != null) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
@@ -71,10 +104,18 @@ public class Todoist {
 		}
 	}
 	
+	/**
+	 * Obtiene el token para comunicación
+	 * @return token
+	 */
 	public String getToken(){
 		return token;
 	}
 	
+	/**
+	 * Establece el token para comunicación
+	 * @param token el token
+	 */
 	public void setToken(String token){
 		this.token = token;
 	}

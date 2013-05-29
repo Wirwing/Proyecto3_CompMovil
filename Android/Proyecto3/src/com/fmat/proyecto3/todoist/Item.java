@@ -5,6 +5,11 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Representa a un item de todoist
+ * @author Fabián Castillo
+ *
+ */
 public class Item implements Parcelable{
 	@SerializedName("user_id")
 	private Integer userId;
@@ -17,10 +22,17 @@ public class Item implements Parcelable{
 	@SerializedName("date_string")
 	private String dateString;
 	
+	/**
+	 * Constructor de la clase
+	 */
 	public Item(){
 		
 	}
 	
+	/**
+	 * Constructor de la clase
+	 * @param source Fuente parcelable
+	 */
 	public Item(Parcel source) {
 		userId = source.readInt();
 		priority = source.readInt();
@@ -30,7 +42,7 @@ public class Item implements Parcelable{
 	}
 	
 	/**
-	 * @return the userId
+	 * @return el userId
 	 */
 	public Integer getUserId() {
 		return userId;

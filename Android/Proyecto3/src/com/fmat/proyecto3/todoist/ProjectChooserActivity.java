@@ -108,7 +108,7 @@ public class ProjectChooserActivity extends SherlockListActivity {
 	}
 
 	/**
-	 * Persiste la información sobre el proyecto seleccionado
+	 * Persiste la información sobre un proyecto
 	 * 
 	 * @param projectId el id del proyecto
 	 * @param projectName el nombre del projecto
@@ -131,8 +131,7 @@ public class ProjectChooserActivity extends SherlockListActivity {
 	}
 
 	/**
-	 * Realiza carga de los datos de los proyectos del usuarios
-	 * 
+	 * Realiza carga de los datos de los proyectos de todoist
 	 * @author Fabián Castillo
 	 * 
 	 */

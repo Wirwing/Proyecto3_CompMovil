@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Representa a un usuario en Todoist
- * @author Fabián
+ * Representa a un usuario de Todoist
+ * @author Fabián Castillo
  *
  */
 public class User implements Parcelable{
