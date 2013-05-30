@@ -3,6 +3,8 @@
  */
 package com.fmat.proyecto3;
 
+import com.fmat.proyecto3.todoist.ScheduledExercisesTracker;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -60,6 +62,8 @@ public class SettingsActivity extends PreferenceActivity implements
 					public boolean onPreferenceClick(Preference preference) {
 						clearTodoistInfo();
 						loadTodoistSettingSummary();
+						ScheduledExercisesTracker tracker = new ScheduledExercisesTracker(getApplicationContext());
+						tracker.clearScheduleRegistry();
 						return false;
 					}
 				});

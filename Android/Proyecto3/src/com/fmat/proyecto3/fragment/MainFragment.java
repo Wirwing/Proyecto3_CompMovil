@@ -6,6 +6,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
@@ -28,11 +29,13 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.fmat.proyecto3.MainActivity;
 import com.fmat.proyecto3.R;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.todoist.Item;
+import com.fmat.proyecto3.todoist.ScheduledExercisesTracker;
 import com.fmat.proyecto3.todoist.Todoist;
+import com.fmat.proyecto3.todoist.TodoistAPI;
+import com.fmat.proyecto3.todoist.TodoistConfig;
 import com.fmat.proyecto3.todoist.TodoistException;
 import com.fmat.proyecto3.utils.animation.MarkerPulseAnimation;
 import com.google.android.gms.maps.GoogleMap;
@@ -82,6 +85,14 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	private Button todoistButton;
 
 	private boolean isTodoistEnabled;
+
+	/* Lleva cuenta de las tareas calendarizadas */
+	private ScheduledExercisesTracker scheduledTracker;
+	/*
+	 * Task para calendarizar ejercicio, es atributo para que pueda ser
+	 * canelable
+	 */
+	private AsyncTask<Exercise, Void, Boolean> scheduleTask;
 
 	/**
 	 * 
@@ -138,6 +149,8 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 			isTodoistEnabled = false;
 
 		}
+		scheduledTracker = new ScheduledExercisesTracker(getActivity()
+				.getBaseContext());
 	}
 
 	/**
@@ -224,18 +237,25 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 					tv_exercise_date.setText(dateString);
 
+					todoistButton.setEnabled(false);
 					if (exerciseDate < new Date().getTime()) {
 
 						tv_exercise_date.setTextColor(Color.RED);
 						enabled = true;
 						dateExpirated = true;
 						todoistButton.setEnabled(false);
-						
+
 					} else {
 
 						tv_exercise_date.setTextColor(Color.BLACK);
 						dateExpirated = false;
-						todoistButton.setEnabled(true);
+
+						if (TodoistConfig.isTodoistConfigured(getActivity())
+								&& !scheduledTracker.isScheduled(selected
+										.getId())) {
+							todoistButton.setEnabled(true);
+						}
+
 					}
 
 				} else {
@@ -370,19 +390,12 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 	private void prepareScheduleButton(Button button) {
 
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getActivity()
-						.getApplicationContext());
-		String todoistToken = prefs.getString(
-				getString(R.string.pref_todoist_token), null);
-
-		if (todoistToken != null) {
+		if (TodoistConfig.isTodoistConfigured(getActivity())) {
 			isTodoistEnabled = true;
 			button.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
 					scheduleExercise();
 				}
 			});
@@ -393,22 +406,26 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	}
 
 	public void scheduleExercise() {
+		final ProgressDialog dialog = ProgressDialog.show(getActivity(), "Calendarizando",
+				"Enviando ejercicio a Todoist", true, false,
+				new DialogInterface.OnCancelListener() {
 
-		final ProgressDialog dialog = ProgressDialog.show(getActivity(),
-				"Calendarizando", "Enviando ejercicio a Todoist", true, false);
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						if (scheduleTask != null) {
+							scheduleTask.cancel(true);
+							scheduleTask = null;
+						}
+					}
+				});
 
-		AsyncTask<Exercise, Void, Boolean> task = new AsyncTask<Exercise, Void, Boolean>() {
-
+		scheduleTask = new AsyncTask<Exercise, Void, Boolean>() {
 			@Override
 			protected Boolean doInBackground(Exercise... exercises) {
 				Exercise exercise = exercises[0];
 
-				SharedPreferences prefs = PreferenceManager
-						.getDefaultSharedPreferences(getActivity());
-				String token = prefs.getString(
-						getString(R.string.pref_todoist_token), null);
-				int projectId = prefs.getInt(
-						getString(R.string.pref_todoist_project_id), -1);
+				String token = TodoistConfig.findApiToken(getActivity());
+				int projectId = TodoistConfig.findProjectId(getActivity());
 				String content = exercise.getTitle() + ": "
 						+ exercise.getDescription();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -418,8 +435,10 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 				try {
 					Todoist todoist = new Todoist(token);
 					Item item = todoist.addItem(projectId, content, dateString);
-					if (item != null)
+					if (item != null) {
+						scheduledTracker.markAsScheduled(exercise.getId());
 						return true;
+					}
 				} catch (TodoistException te) {
 					Log.e(this.toString(), "Todoist: " + te.getMessage());
 				}
@@ -429,13 +448,14 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 			@Override
 			protected void onPostExecute(Boolean result) {
 				dialog.dismiss();
-				super.onPostExecute(result);
+				todoistButton.setEnabled(false);
+				scheduleTask = null;
 			}
 
 		};
 
-		task.execute(selected);
+		scheduleTask.execute(selected);
 
-	} // fin onScheduleExercise()
+	} // fin scheduleExercise()
 
 }
