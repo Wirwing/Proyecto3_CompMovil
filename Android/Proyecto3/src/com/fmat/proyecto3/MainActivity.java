@@ -42,6 +42,8 @@ public class MainActivity extends BaseActivity implements
 
 	private ArrayList<Exercise> exercises;
 
+	private Fragment mainFragment;
+	
 	private boolean alreadyFetching = false;
 
 	private LocationTrackingHandler locationHandler;
@@ -106,6 +108,9 @@ public class MainActivity extends BaseActivity implements
 	protected void onResume() {
 		super.onResume();
 
+		if(mainFragment != null)
+			switchFragment(mainFragment);
+		
 		if (exercises == null && !alreadyFetching) {
 			initFetchExercises();
 		}
@@ -172,6 +177,9 @@ public class MainActivity extends BaseActivity implements
 	public void onExerciseSelected(Exercise exercise) {
 
 		if (exercise != null) {
+			
+			mainFragment = contentFragment;
+			
 			Fragment fragment = LoadingFragment.newInstance("Cargando ejercicio "
 					+ exercise.getId());
 
@@ -278,7 +286,7 @@ public class MainActivity extends BaseActivity implements
 
 				contentFragment = MainFragment.newInstance(studentId, studentName,
 						studentCareer, exercises);
-
+				
 				switchFragment(contentFragment);
 
 			}

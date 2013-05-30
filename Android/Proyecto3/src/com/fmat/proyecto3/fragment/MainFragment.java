@@ -7,13 +7,13 @@ import java.util.Date;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +34,6 @@ import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.todoist.Item;
 import com.fmat.proyecto3.todoist.ScheduledExercisesTracker;
 import com.fmat.proyecto3.todoist.Todoist;
-import com.fmat.proyecto3.todoist.TodoistAPI;
 import com.fmat.proyecto3.todoist.TodoistConfig;
 import com.fmat.proyecto3.todoist.TodoistException;
 import com.fmat.proyecto3.utils.animation.MarkerPulseAnimation;
@@ -312,6 +311,26 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		}
 	}
 
+	public void onDestroyView() {
+		super.onDestroyView();
+
+		try {
+
+			FragmentManager manager = ((SherlockFragmentActivity) getActivity())
+					.getSupportFragmentManager();
+
+			Fragment frag = ((SupportMapFragment) manager
+					.findFragmentById(R.id.exercise_map));
+			FragmentTransaction ft = getActivity().getSupportFragmentManager()
+					.beginTransaction();
+			ft.remove(frag);
+			ft.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Al quitar el fragmento, quitar el callback a la actividad.
 	 */
@@ -406,8 +425,8 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	}
 
 	public void scheduleExercise() {
-		final ProgressDialog dialog = ProgressDialog.show(getActivity(), "Calendarizando",
-				"Enviando ejercicio a Todoist", true, false,
+		final ProgressDialog dialog = ProgressDialog.show(getActivity(),
+				"Calendarizando", "Enviando ejercicio a Todoist", true, false,
 				new DialogInterface.OnCancelListener() {
 
 					@Override

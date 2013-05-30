@@ -133,10 +133,8 @@ public class ExerciseActivity extends BaseActivity implements
 
 		answer.setDate(new Date().getTime());
 
-		while (location == null) {
-
-		}
-
+		location = client.getLastLocation();
+		
 		double[] rawLoc = new double[] { location.getLatitude(),
 				location.getLongitude() };
 
