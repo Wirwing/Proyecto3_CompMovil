@@ -2,11 +2,17 @@ package com.fmat.proyecto3.json;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Bean que contiene la respuesta del servidor cuando se envia
+ * un ejercicio resuelto.
+ * @author Irving
+ *
+ */
 public class ServerMessage {
 
 	public static final String EXTRA_SERVER_MESSAGE = "EXTRA_SERVER_MESSAGE";
 	
-	@SerializedName("esCorrectp")
+	@SerializedName("esCorrecto")
 	private boolean isCorrect;
 
 	@SerializedName("mensaje")

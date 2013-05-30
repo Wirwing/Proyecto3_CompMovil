@@ -23,9 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Actividad cuando el ejercicio ha sido resuelto. Maneja los comentarios del
- * mismo, e intenta enviar los resultados via Servicio, a los cuales escucha
- * cuando envian un Broadcast indicando el estado de las peticiones e informa al
- * usuario de las mismas.
+ * mismo, y envia los resultados via Web Service.
  * 
  * @author Irving
  * 

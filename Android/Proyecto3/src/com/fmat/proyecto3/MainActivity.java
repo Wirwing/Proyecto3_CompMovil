@@ -34,18 +34,12 @@ public class MainActivity extends BaseActivity implements
 		LocationTrackingHandler.OnLocationTrackingLocationChanged {
 
 	private static final String TAG = MainActivity.class.getName();
-
 	private Fragment contentFragment;
-
 	private ExerciseReceiver receiver;
 	private IntentFilter filter;
-
 	private ArrayList<Exercise> exercises;
-
 	private Fragment mainFragment;
-	
 	private boolean alreadyFetching = false;
-
 	private LocationTrackingHandler locationHandler;
 
 	/**
@@ -61,6 +55,9 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see android.support.v4.app.FragmentActivity#onStart()
+	 */
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
@@ -74,9 +71,8 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
-	/*
-	 * Called when the Activity is no longer visible at all. Stop updates and
-	 * disconnect.
+	/**
+	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onStop()
 	 */
 	@Override
 	public void onStop() {
@@ -125,7 +121,7 @@ public class MainActivity extends BaseActivity implements
 	}
 
 	/**
-	 * Infla el menu.
+	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onCreateOptionsMenu(android.view.Menu)
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,13 +155,13 @@ public class MainActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.onActivityResult(arg0, arg1, arg2);
 
-		Intent intent = getIntent();
-		overridePendingTransition(0, 0);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-		finish();
-
-		overridePendingTransition(0, 0);
-		startActivity(intent);
+//		Intent intent = getIntent();
+//		overridePendingTransition(0, 0);
+//		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//		finish();
+//
+//		overridePendingTransition(0, 0);
+//		startActivity(intent);
 
 	}
 
@@ -215,18 +211,13 @@ public class MainActivity extends BaseActivity implements
 
 		intent.setData(Uri.parse(url));
 
-		// intent.putExtra(ExerciseRESTService.EXTRA_HTTP_VERB, HttpMethod.GET);
-		// intent.putExtra(ExerciseGetService.EXTRA_HTTP_RESOURCE_ID, number);
-
 		startService(intent);
 
 	}
 
 	/**
 	 * BroadcastReceiver que escucha al servicio que solicita el ejercicio.
-	 * 
 	 * @author Irving
-	 * 
 	 */
 	class ExerciseReceiver extends BroadcastReceiver {
 
@@ -295,6 +286,9 @@ public class MainActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.fmat.proyecto3.service.LocationTrackingHandler.OnLocationTrackingLocationChanged#onLocationChanged(android.location.Location)
+	 */
 	@Override
 	public void onLocationChanged(Location location) {
 

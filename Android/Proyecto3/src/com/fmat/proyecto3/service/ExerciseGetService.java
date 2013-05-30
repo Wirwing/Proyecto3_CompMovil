@@ -33,11 +33,18 @@ public class ExerciseGetService extends ExerciseRESTService {
 		super(TAG);
 	}
 
+	/**
+	 * 
+	 * @see com.fmat.proyecto3.service.ExerciseRESTService#onCreate()
+	 */
 	@Override
 	public void onCreate() {
 		super.onCreate();
 	}
 
+	/**
+	 * @see com.fmat.proyecto3.service.ExerciseRESTService#onHandleIntent(android.content.Intent)
+	 */
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		super.onHandleIntent(intent);

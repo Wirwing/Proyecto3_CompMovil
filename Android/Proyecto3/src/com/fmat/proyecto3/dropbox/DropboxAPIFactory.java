@@ -14,9 +14,9 @@ import com.dropbox.client2.session.Session.AccessType;
  */
 public class DropboxAPIFactory {
 
-	final static private String APP_KEY = "51n0mgo2szoy31k";
-	final static private String APP_SECRET = "jr18rre2loe9zhe";
-	final static private AccessType ACCESS_TYPE = AccessType.DROPBOX;
+	private final static String APP_KEY = "51n0mgo2szoy31k";
+	private final static String APP_SECRET = "jr18rre2loe9zhe";
+	private final static AccessType ACCESS_TYPE = AccessType.DROPBOX;
 
 	/**
 	 * Obtiene un objeto DropboxAPI

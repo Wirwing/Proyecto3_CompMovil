@@ -77,10 +77,10 @@ public class ExerciseFragment extends SherlockFragment implements
 	public interface OnExerciseListener {
 
 		/**
-		 * Callback cuando un ejercicio se decide finalizar de resolver
+		 * Callback cuando un ejercicio se desea terminar de resolver
 		 * 
 		 * @param Keys
-		 *            El orden de la respuesta de las setencias
+		 *            El orden de la respuesta de las sentencias
 		 * @param time
 		 *            El tiempo en milisegundos que tomo resolver el ejercicio
 		 * 
@@ -90,6 +90,11 @@ public class ExerciseFragment extends SherlockFragment implements
 	}
 
 	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
+
+		/**
+		 * Hace el intercambio de sentencias y genera un estado con el orden de
+		 * las sentencias en este momento.
+		 */
 		@Override
 		public void drop(int from, int to) {
 			if (from != to) {
@@ -119,7 +124,7 @@ public class ExerciseFragment extends SherlockFragment implements
 	}
 
 	/**
-	 * Al crear, checa si han sido pasados argumentos al fragmento
+	 * Al crear, checa si han sido pasados argumentos al fragmento.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,6 +143,9 @@ public class ExerciseFragment extends SherlockFragment implements
 
 	}
 
+	/**
+	 * @see android.support.v4.app.Fragment#onResume()
+	 */
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
@@ -148,6 +156,9 @@ public class ExerciseFragment extends SherlockFragment implements
 
 	}
 
+	/**
+	 * @see android.support.v4.app.Fragment#onPause()
+	 */
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
@@ -227,12 +238,21 @@ public class ExerciseFragment extends SherlockFragment implements
 		listener = null;
 	}
 
+	/**
+	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor,
+	 *      int)
+	 */
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * @see
+	 * android.hardware.SensorEventListener#onSensorChanged(android.hardware
+	 * .SensorEvent)
+	 */
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 
@@ -256,11 +276,13 @@ public class ExerciseFragment extends SherlockFragment implements
 			mLastX = x;
 			mLastY = y;
 
+			//Gesto para deshacer un paso
 			if (x > UNDO_NOISE && deltaY == 0) {
 				undoStep();
 				return;
 			}
 
+			//Gesto para deshacer todo
 			if (deltaY > 0)
 				undoAll();
 
@@ -268,6 +290,9 @@ public class ExerciseFragment extends SherlockFragment implements
 
 	}
 
+	/**
+	 * Restablece a un paso anterior la ordenacion de sentencias, si es que ha habido movimiento.
+	 */
 	private void undoStep() {
 
 		if (!steps.isEmpty()) {
@@ -311,6 +336,9 @@ public class ExerciseFragment extends SherlockFragment implements
 		}
 	}
 
+	/**
+	 * Reestablece la vista a la ordenacion original del ejercicio
+	 */
 	private void undoAll() {
 
 		if (!isDialogShown) {
@@ -355,8 +383,15 @@ public class ExerciseFragment extends SherlockFragment implements
 		}
 	}
 
+	/**
+	 * Clase callback para notificar a la actividad que contiene a este 
+	 * fragmento cuando un ejercicio ha sido completado.
+	 */
 	private class OnFinishExerciseListener implements OnClickListener {
 
+		/*
+		 * @see android.view.View.OnClickListener#onClick(android.view.View)
+		 */
 		@Override
 		public void onClick(View v) {
 

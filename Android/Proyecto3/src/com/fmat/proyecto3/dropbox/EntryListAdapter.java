@@ -24,6 +24,7 @@ import com.fmat.proyecto3.R;
  * 
  */
 public class EntryListAdapter extends ArrayAdapter<Entry> {
+	
 	private Activity mActivity;
 	private List<Entry> mEntries;
 	private Entry mParent;

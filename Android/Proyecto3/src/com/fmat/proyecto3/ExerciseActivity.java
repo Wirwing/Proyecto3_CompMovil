@@ -1,28 +1,18 @@
 package com.fmat.proyecto3;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.fmat.proyecto3.fragment.ExerciseDescriptionFragment;
 import com.fmat.proyecto3.fragment.ExerciseFragment;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 import com.fmat.proyecto3.service.LocationTrackingHandler;
-import com.fmat.proyecto3.todoist.Item;
-import com.fmat.proyecto3.todoist.Todoist;
-import com.fmat.proyecto3.todoist.TodoistException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -162,6 +152,9 @@ public class ExerciseActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks#onConnected(android.os.Bundle)
+	 */
 	@Override
 	public void onConnected(Bundle arg0) {
 
@@ -169,18 +162,27 @@ public class ExerciseActivity extends BaseActivity implements
 
 	}
 
+	/**
+	 * @see com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener#onConnectionFailed(com.google.android.gms.common.ConnectionResult)
+	 */
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * @see com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks#onDisconnected()
+	 */
 	@Override
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * @see com.google.android.gms.location.LocationListener#onLocationChanged(android.location.Location)
+	 */
 	@Override
 	public void onLocationChanged(Location location) {
 

@@ -87,12 +87,17 @@ public class ExerciseDescriptionFragment extends SherlockFragment implements
 
 	}
 
+	/**
+	 * Constructor
+	 */
 	public ExerciseDescriptionFragment() {
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
+	/*
 	 * Al crear, checa si han sido pasados argumentos al fragmento
+	 * 
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

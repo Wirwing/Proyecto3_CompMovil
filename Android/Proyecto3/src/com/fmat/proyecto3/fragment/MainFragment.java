@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -46,8 +47,6 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class MainFragment extends SherlockFragment implements OnClickListener {
 
-	private static final String TAG = MainFragment.class.getName();
-
 	private static final String STUDENT_NUMBER_PARAM = "STUDENT_NUMBER_PARAM";
 	private static final String STUDENT_NAME_PARAM = "STUDENT_NAME_PARAM";
 	private static final String DEGREE_PARAM = "DEGREE_PARAM";
@@ -83,11 +82,11 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 	private Button todoistButton;
 
-	private boolean isTodoistEnabled;
 
 	/* Lleva cuenta de las tareas calendarizadas */
 	private ScheduledExercisesTracker scheduledTracker;
-	/*
+	
+	/**
 	 * Task para calendarizar ejercicio, es atributo para que pueda ser
 	 * canelable
 	 */
@@ -145,8 +144,6 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 			result = new float[1];
 			dateExpirated = true;
 
-			isTodoistEnabled = false;
-
 		}
 		scheduledTracker = new ScheduledExercisesTracker(getActivity()
 				.getBaseContext());
@@ -174,6 +171,10 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		return rootView;
 	}
 
+	/**
+	 * Infla los elementos hijos del fragmento y la retorna
+	 * @param rootView la vista del fragmento
+	 */
 	private void initView(View rootView) {
 
 		((TextView) rootView.findViewById(R.id.tv_student_number))
@@ -214,6 +215,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 		sp_exercises.setOnItemSelectedListener(new OnItemSelectedListener() {
 
+			@SuppressLint("SimpleDateFormat")
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
@@ -373,6 +375,9 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		}
 	}
 
+	/**
+	 * Cuando la ubicacion del dispositivo cambia, activa/desactiva las opciones segun el contexto 
+	 */
 	public void onLocationChanged(Location location) {
 
 		if (currentExercisePoint != null && radius > 0) {
@@ -386,7 +391,7 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 			if (radius > result[0]) {
 				color = Color.BLUE;
-				enabled = true;
+				enabled = !dateExpirated;
 			}
 
 			animator.setColor(color);
@@ -394,9 +399,6 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 
 		}
 
-		// Log.i(TAG,
-		// "New location: " + location.getLatitude() + ", "
-		// + location.getLongitude());
 	}
 
 	private void setPlayEnabled(boolean enabled) {
@@ -410,7 +412,6 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 	private void prepareScheduleButton(Button button) {
 
 		if (TodoistConfig.isTodoistConfigured(getActivity())) {
-			isTodoistEnabled = true;
 			button.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -423,8 +424,8 @@ public class MainFragment extends SherlockFragment implements OnClickListener {
 		}
 
 	}
-
-	public void scheduleExercise() {
+	
+	private void scheduleExercise() {
 		final ProgressDialog dialog = ProgressDialog.show(getActivity(),
 				"Calendarizando", "Enviando ejercicio a Todoist", true, false,
 				new DialogInterface.OnCancelListener() {

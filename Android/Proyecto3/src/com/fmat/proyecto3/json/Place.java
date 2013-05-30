@@ -3,6 +3,11 @@ package com.fmat.proyecto3.json;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Bean que contiene los datos de la ubicacion de un ejercicio
+ * @author Irving
+ *
+ */
 public class Place implements Parcelable	{
 
 	private double latitude;
