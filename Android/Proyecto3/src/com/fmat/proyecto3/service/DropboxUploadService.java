@@ -26,15 +26,26 @@ import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 import com.fmat.proyecto3.utils.TempFileHandler;
 
+/**
+ * Servicio para el envío de ejercicios a Dropbox
+ * @author Irving Caro
+ *
+ */
 public class DropboxUploadService extends IntentService {
 
+	/**
+	 * Acción del servicio
+	*/
 	public static final String INTENT_RESULT_ACTION = "com.fmat.DROPBOX_RESULT";
+	/**
+	 * Código de mensaje de error
+	 */
 	public static final String EXTRA_ERROR_MESSAGE = "EXTRA_ERROR_MESSAGE";
-	
+
 	private static final String TAG = DropboxUploadService.class.getName();
 
 	private static final String FOLDER_SEPARATION = "/";
-	
+
 	private SharedPreferences preferences;
 
 	private String key;
@@ -43,6 +54,9 @@ public class DropboxUploadService extends IntentService {
 
 	private DropboxAPI<AndroidAuthSession> dropboxApi;
 
+	/**
+	 * Constructor
+	 */
 	public DropboxUploadService() {
 		super(TAG);
 	}
@@ -66,7 +80,7 @@ public class DropboxUploadService extends IntentService {
 
 		Intent resultIntent = new Intent(INTENT_RESULT_ACTION);
 		String errorMessage = null;
-		
+
 		try {
 
 			dropboxApi = DropboxAPIFactory.getDropboxAPI(key, secret);
@@ -89,11 +103,11 @@ public class DropboxUploadService extends IntentService {
 			TempFileHandler.createTempFile(bwriter, exercise, answer);
 
 			FileInputStream inputStream = new FileInputStream(file);
-			
-			if(!filePath.equalsIgnoreCase("/")){
+
+			if (!filePath.equalsIgnoreCase("/")) {
 				filePath += FOLDER_SEPARATION;
 			}
-			
+
 			dropboxApi.putFileOverwrite(filePath + fileName, inputStream,
 					file.length(), null);
 
@@ -101,7 +115,7 @@ public class DropboxUploadService extends IntentService {
 
 		} catch (ClassCastException ce) {
 			errorMessage = "La direccion del servicio es invalida.";
-			
+
 		} catch (IOException ioe) {
 			errorMessage = "Hubo un problema al generar archivo.";
 		} catch (DropboxUnlinkedException e) {
@@ -112,15 +126,13 @@ public class DropboxUploadService extends IntentService {
 			e.printStackTrace();
 		}
 
-		
-		if(errorMessage != null){
+		if (errorMessage != null) {
 			Log.e(TAG, errorMessage);
 			resultIntent.putExtra(EXTRA_ERROR_MESSAGE, errorMessage);
 		}
-		
+
 		sendBroadcast(resultIntent);
 
 	}
-	
-	
+
 }

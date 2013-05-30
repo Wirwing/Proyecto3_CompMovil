@@ -16,6 +16,12 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+/**
+ * Servicio de resolución de localización
+ * 
+ * @author Irving Caro
+ * 
+ */
 public class LocationTrackingHandler implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
@@ -23,20 +29,31 @@ public class LocationTrackingHandler implements
 	/*
 	 * Constants for location update parameters
 	 */
-	// Milliseconds per second
+	/**
+	 * Milisegundos por segundo
+	 */
 	public static final int MILLISECONDS_PER_SECOND = 1000;
 
-	// The update interval
+	/**
+	 * Intervalo de actualización
+	 */
 	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
 
-	// A fast interval ceiling
+	/**
+	 * Intervalo de límite rápido
+	 */
 	public static final int FAST_CEILING_IN_SECONDS = 1;
 
-	// Update interval in milliseconds
+	/**
+	 * Intervalo de actualización en milisegundos
+	 */
 	public static final long UPDATE_INTERVAL_IN_MILLISECONDS = MILLISECONDS_PER_SECOND
 			* UPDATE_INTERVAL_IN_SECONDS;
 
-	// A fast ceiling of update intervals, used when the app is visible
+	/**
+	 * Límite de intervalos de actualización, usado cuando la aplicación es
+	 * visible
+	 */
 	public static final long FAST_INTERVAL_CEILING_IN_MILLISECONDS = MILLISECONDS_PER_SECOND
 			* FAST_CEILING_IN_SECONDS;
 
@@ -52,11 +69,15 @@ public class LocationTrackingHandler implements
 	private LocationRequest locationRequest;
 
 	private OnLocationTrackingLocationChanged listener;
-	
+
+	/**
+	 * Constructor
+	 * @param listener Escuchador de cambios de localización
+	 */
 	public LocationTrackingHandler(OnLocationTrackingLocationChanged listener) {
 
 		this.listener = listener;
-		
+
 		locationClient = new LocationClient((Context) listener, this, this);
 
 		// Create a new global location parameters object
@@ -76,12 +97,18 @@ public class LocationTrackingHandler implements
 
 	}
 
+	/**
+	 * Evento de conexión
+	 */
 	public void onConnect() {
 
 		locationClient.connect();
 
 	}
 
+	/**
+	 * Event de desconexión
+	 */
 	public void onDisconnect() {
 
 		// If the client is connected
@@ -179,7 +206,8 @@ public class LocationTrackingHandler implements
 			errorFragment.setDialog(errorDialog);
 
 			// Show the error dialog in the DialogFragment
-			errorFragment.show( ((SherlockFragmentActivity)listener).getSupportFragmentManager(), TAG);
+			errorFragment.show(((SherlockFragmentActivity) listener)
+					.getSupportFragmentManager(), TAG);
 		}
 	}
 

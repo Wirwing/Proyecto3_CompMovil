@@ -20,8 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 /**
- * Activity which displays a login screen to the user, offering registration as
- * well.
+ * Actividad de inicio de sesión en Todoist
  */
 public class LoginActivity extends Activity {
 
@@ -82,9 +81,9 @@ public class LoginActivity extends Activity {
 	}
 
 	/**
-	 * Attempts to sign in or register the account specified by the login form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
-	 * errors are presented and no actual login attempt is made.
+	 * Intenta iniciar sesión con la cuenta especificada en el formulario de
+	 * inicio de sesión Si existen errores, se presentan los errores y no se
+	 * realiza ningún intento de inicio de sesión
 	 */
 	public void attemptLogin() {
 		if (mAuthTask != null) {
@@ -180,8 +179,7 @@ public class LoginActivity extends Activity {
 	}
 
 	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
+	 * Tarea asíncrona para inicio de sesión del usuario
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override

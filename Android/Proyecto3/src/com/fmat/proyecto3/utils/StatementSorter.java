@@ -1,7 +1,18 @@
 package com.fmat.proyecto3.utils;
 
+/**
+ * Ordenador de sentencias
+ * @author Irving Caro
+ *
+ */
 public abstract class StatementSorter {
 	
+	/**
+	 * Reordena el conjunto de sentencias de acuerdo a las claves proporcionadas
+	 * @param statements sentencias a ordenar
+	 * @param sortKeys claves correspondientes
+	 * @return sentencias ordenadas
+	 */
 	public static String[] rearrangeStatementsByKeys(String[] statements,
 			int[] sortKeys) {
 

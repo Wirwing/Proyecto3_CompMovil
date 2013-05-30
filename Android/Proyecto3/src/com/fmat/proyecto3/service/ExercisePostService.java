@@ -18,23 +18,41 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Intent;
 
-import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 import com.fmat.proyecto3.json.ExerciseFactory;
 import com.fmat.proyecto3.json.ServerMessage;
 import com.google.gson.Gson;
 
+/**
+ * Servicio de envío de resoluciones de ejercicios
+ * @author Irving Caro
+ *
+ */
 public class ExercisePostService extends ExerciseRESTService {
 
 	private static final String TAG = ExercisePostService.class.getName();
 
+	/**
+	 * Acción del servicio
+	 */
 	public static final String INTENT_RESULT_ACTION = "com.fmat.REST_POST_RESULT";
 
+	/**
+	 * Código de respuesta del servidor para error de duplicado de envío
+	 */
 	public static final int EXERCISE_ALREADY_SOLVED_BY_USER_SERVER_RESPONSE_CODE = 409;
-	
+	/**
+	 * Código para el resultado de la acción
+	 */
 	public static final String EXTRA_RESULT_CODE = "EXTRA_RESULT_CODE";
+	/**
+	 * Código para la respuesta del servicio
+	 */
 	public static final String EXTRA_EXERCISE_ANSWER = "EXTRA_EXERCISE_ANSWER";
 
+	/**
+	 * Constructor
+	 */
 	public ExercisePostService() {
 		super(TAG);
 	}
