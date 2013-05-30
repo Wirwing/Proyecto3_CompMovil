@@ -20,10 +20,17 @@ public class User implements Parcelable{
 	@SerializedName("api_token")
 	private String apiToken;
 	
+	/**
+	 * Constructor
+	 */
 	public User(){
 		
 	}
 	
+	/**
+	 * Constructor
+	 * @param src fuente parcealable
+	 */
 	public User(Parcel src){
 		email = src.readString();
 		fullName = src.readString();

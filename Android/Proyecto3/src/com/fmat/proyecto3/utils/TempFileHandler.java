@@ -7,10 +7,22 @@ import java.util.concurrent.TimeUnit;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseAnswer;
 
+/**
+ * Manejador de archivo temporal
+ * @author Irving Caro
+ *
+ */
 public class TempFileHandler {
 
 	private static final String SEPARATOR = "###################################";
 
+	/**
+	 * Crea un archivo temporal
+	 * @param bw Buffer de escritura
+	 * @param exercise Ejercicio a exportar
+	 * @param answer Respuesta del ejercicio a exportar
+	 * @throws IOException Si ocurrió un error exportando el ejercicio
+	 */
 	public static void createTempFile(BufferedWriter bw, Exercise exercise,
 			ExerciseAnswer answer) throws IOException {
 

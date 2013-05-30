@@ -13,6 +13,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
+import com.dropbox.client2.android.AndroidAuthSession;
 import com.fmat.proyecto3.R;
 
 /**
@@ -66,6 +67,9 @@ public class ProjectChooserActivity extends SherlockListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/**
+	 * @see android.app.Activity#onActivityResult(android.os.Bundle)
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode == RESULT_OK){
@@ -90,6 +94,9 @@ public class ProjectChooserActivity extends SherlockListActivity {
 		finish();
 	}
 	
+	/**
+	 * Inicia la carga de proyectos de todoist
+	 */
 	protected void loadProjects(){
 		ProjectListLoader loader = new ProjectListLoader();
 		loader.execute();

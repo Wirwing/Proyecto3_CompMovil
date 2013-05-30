@@ -19,10 +19,17 @@ public class Project implements Parcelable {
 	@SerializedName("user_id")
 	private Integer userId;
 
+	/**
+	 * Constructor
+	 */
 	public Project() {
 
 	}
 
+	/**
+	 * Constructor
+	 * @param source fuente parcelable
+	 */
 	public Project(Parcel source) {
 		id = source.readInt();
 		name = source.readString();

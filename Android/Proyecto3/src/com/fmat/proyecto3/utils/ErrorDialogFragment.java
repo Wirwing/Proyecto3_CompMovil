@@ -4,23 +4,34 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-// Define a DialogFragment that displays the error dialog
+/**
+ * Define un DialogFragment que muestra el diálogo de error 
+ * @author Irving Caro
+ *
+ */
 public class ErrorDialogFragment extends DialogFragment {
 	// Global field to contain the error dialog
 	private Dialog mDialog;
 
-	// Default constructor. Sets the dialog field to null
+	/**
+	 * Constructor por defecto. Establce el campo del diálogo como null
+	 */
 	public ErrorDialogFragment() {
 		super();
 		mDialog = null;
 	}
 
-	// Set the dialog to display
+	/**
+	 * Establece el diálogo a mostrar
+	 * @param dialog
+	 */
 	public void setDialog(Dialog dialog) {
 		mDialog = dialog;
 	}
 
-	// Return a Dialog to the DialogFragment.
+	/**
+	 * Retorna el framgmento del diálogo
+	 */
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		return mDialog;

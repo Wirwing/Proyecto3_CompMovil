@@ -22,13 +22,30 @@ import android.net.Uri;
 import com.fmat.proyecto3.json.Exercise;
 import com.fmat.proyecto3.json.ExerciseFactory;
 
+/**
+ * Servicio para la obtención de ejercicios del servidor
+ * @author Fabián Castillo
+ *
+ */
 public class ExerciseGetService extends ExerciseRESTService {
 
+	/**
+	 * Tag del servicio
+	 */
 	private static final String TAG = ExerciseGetService.class.getName();
 
+	/**
+	 * Acción del servicio
+	 */
 	public static final String INTENT_RESULT_ACTION = "com.fmat.REST_GET_RESULT";
+	/**
+	 * Código de acción
+	 */
 	public static final String EXTRA_HTTP_RESOURCE_ID = "EXTRA_HTTP_RESOURCE_ID";
 
+	/**
+	 * Constructor
+	 */
 	public ExerciseGetService() {
 		super(TAG);
 	}
